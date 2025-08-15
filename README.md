@@ -16,7 +16,7 @@ The tool supports multi-user collaboration, a project initiator can invite other
 ## Tech Stack
 Frontend: Next.js (React + TypeScript), Tailwind CSS, ShadCN/UI, React Flow  
 Backend: Node.js + Express, Prisma ORM  
-Database: PostgreSQL (JSONB)
+Database: PostgreSQL 
 
 ## Core Data Model
 Users/ProjectMembers, Projects, ImpactRows, Risks/Assumptions, DiagramNodes/Edges, MatrixEntries, SDG/SDGTargets, Stakeholders/StakeholderImpactLinks.
