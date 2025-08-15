@@ -11,7 +11,7 @@ The tool supports multi-user collaboration, a project initiator can invite other
 - Table view (results, indicators, SDGs, risks, assumptions)
 - Diagram view (arrows, hierarchy colors, linked risks)
 - SDG matrix (-3..+3)
-- CSV/JSON import, PDF/PNG export
+- CSV/JSON import (for SDGs and SDG targets in the future), PDF/PNG export
 
 ## Tech Stack
 Frontend: Next.js (React + TypeScript), Tailwind CSS, ShadCN/UI, React Flow  
@@ -19,11 +19,11 @@ Backend: Node.js + Express, Prisma ORM
 Database: PostgreSQL 
 
 ## Core Data Model
-Users/ProjectMembers, Projects, ImpactRows, Risks/Assumptions, DiagramNodes/Edges, MatrixEntries, SDG/SDGTargets, Stakeholders/StakeholderImpactLinks.
+Users/ProjectMembers, Projects, ImpactRows, Risks/Assumptions, DiagramNodes/Edges, MatrixEntries, SDG/SDGTargets, Stakeholders/StakeholderImpactLinks, ProjectInvite.
 
 ## Integration Points
-- Identity/SSO: Azure AD or CERN Auth Proxy
-- Email (tbd): SMTP
+- Identity/SSO: CERN Auth Proxy when hosting under CERN.
+- Email (tbc): SMTP
 - File storage for exports: Azure Blob or CERN storage
 
 ## Infrastructure 
