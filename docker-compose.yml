@@ -1,0 +1,12 @@
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: oqi
+      POSTGRES_PASSWORD: oqi
+      POSTGRES_DB: oqi_dev
+    ports: ["5432:5432"]
+    volumes: ["dbdata:/var/lib/postgresql/data"]
+volumes:
+  dbdata:
