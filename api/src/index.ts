@@ -12,6 +12,7 @@ import impactRowTargetRoutes from './routes/impactrowtargets'
 
 
 
+
 import type { Request, Response } from "express";
 
 const app = express();
@@ -21,7 +22,8 @@ app.use(cookieParser());
 
 app.use("/auth", auth);
 app.use("/projects", projects);
-app.use('/risks', riskRoutes)  
+app.use('/risks', riskRoutes)
+  
 app.use('/assumptions', assumptionRoutes)
 app.use('/stakeholders', stakeholderRoutes)
 app.use('/activities', activityRoutes)

@@ -2,7 +2,8 @@ import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { signSession, setCookie, clearCookie } from "../../lib/jwt";
+import { signSession, setCookie, clearCookie , verifySession,COOKIE_NAME} from "../../lib/jwt";
+
 const prisma = new PrismaClient();
 const r = Router();
 
@@ -30,5 +31,10 @@ r.post("/login", async (req, res) => {
 });
 
 r.post("/logout", (_req, res) => { clearCookie(res); res.json({ ok: true }); });
-
+r.get("/me", (req, res) => {
+  const token = req.cookies[COOKIE_NAME];
+  const session = verifySession(token);
+  if (!session) return res.status(401).json({ error: "unauthorized" });
+  res.json({ user: session });
+});
 export default r;

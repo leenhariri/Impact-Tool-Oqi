@@ -30,9 +30,12 @@ r.post("/", requireAuth, async (req, res) => {
     // Prepare collaborators (excluding the owner)
     const collaboratorData = await Promise.all(
       (collaborators ?? [])
-        .filter((collab: { email: string; role: string }) =>
-          collab.email.toLowerCase().trim() !== req.user!.email?.trim().toLowerCase()
-        )
+.filter((collab: { email: string; role: string }) =>
+  collab.email &&
+  collab.email.trim() !== "" &&
+  collab.email.toLowerCase().trim() !== req.user!.email?.trim().toLowerCase()
+)
+
         .map(async (collab: { email: string; role: string }) => {
           const user = await prisma.user.findUnique({
             where: { email: collab.email.trim().toLowerCase() },
@@ -67,6 +70,7 @@ r.post("/", requireAuth, async (req, res) => {
           ],
         },
       },
+      include: { members: true },
     });
 
     res.status(201).json(project);
@@ -171,7 +175,7 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
       },
     });
 
-    // ✅ Collaborators update
+    //  Collaborators update
     if (Array.isArray(collaborators)) {
       // Remove all non-owner members (keep the OWNER intact)
       await prisma.projectMember.deleteMany({
@@ -184,6 +188,8 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
       // Add new collaborators
       await Promise.all(
         collaborators.map(async (collab: { email: string; role?: string }) => {
+          if (!collab.email || collab.email.trim() === "") return;
+
           const user = await prisma.user.findUnique({
             where: { email: collab.email.trim().toLowerCase() },
           });
@@ -205,8 +211,11 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
         })
       );
     }
-
-    return res.json(updatedProject);
+const full = await prisma.project.findUnique({
+  where: { id: projectId },
+  include: { members: true }, // ✅ include members
+});
+    return res.json(full);
   } catch (err: any) {
     console.error("Error updating project:", err);
     return res.status(500).json({ error: err.message || "Server error" });

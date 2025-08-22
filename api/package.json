@@ -4,7 +4,9 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+  "seed": "ts-node --transpile-only ./prisma/seed.ts"
+
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
