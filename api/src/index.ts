@@ -9,8 +9,8 @@ import stakeholderRoutes from './routes/stakeholders'
 import activityRoutes from './routes/activities'
 import impactRowRoutes from './routes/impactrows'
 import impactRowTargetRoutes from './routes/impactrowtargets'
-
-
+import sdgTargetRoutes from './routes/sdgTargets'
+import SDGs from './routes/sdg'
 
 
 import type { Request, Response } from "express";
@@ -23,7 +23,8 @@ app.use(cookieParser());
 app.use("/auth", auth);
 app.use("/projects", projects);
 app.use('/risks', riskRoutes)
-  
+app.use('/sdg-targets', sdgTargetRoutes);
+app.use('/sdgs', SDGs); 
 app.use('/assumptions', assumptionRoutes)
 app.use('/stakeholders', stakeholderRoutes)
 app.use('/activities', activityRoutes)

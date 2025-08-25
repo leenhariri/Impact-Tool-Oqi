@@ -160,7 +160,7 @@ model MatrixEntry {
 }
 
 model SDG {
-  id          Int     @id
+id    Int    @id @default(autoincrement())
   code        String
   name        String
   description String?

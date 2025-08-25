@@ -5,7 +5,11 @@
   "description": "The OQI SDG Tool is a web-based platform for designing, mapping, and evaluating project impact pathways against the UN SDGs. It supports Theory of Change design, SDG alignment, risk/assumption tracking, an SDG interlinkage matrix, collaboration, and PDF/PNG export.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    
+  "seed": "ts-node --project ./api/tsconfig.json ./prisma/seed.ts"
+
+
   },
   "workspaces": [
     "api",
