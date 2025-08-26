@@ -1,211 +1,278 @@
-// pages/project/[projectId].tsx
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import styles from "../../styles/project.module.css";
+import styles from "../styles/dashboard.module.css";
 
-interface ImpactRow {
-  id?: string;
-  hierarchyLevel: string;
-  resultStatement: string;
-  indicator: string;
-  indicatorDefinition: string;
-  meansOfMeasurement: string;
-  baseline: string;
-}
-
-interface SDG {
-  id: number;
-  code: string;
-  name: string;
-}
-
-interface SDGTarget {
-  id: string;
-  sdgId: number;
-  code: string;
-  title: string;
-}
-
-export default function ProjectDetail() {
+export default function Dashboard() {
   const router = useRouter();
-  const { projectId } = router.query;
+  const [user, setUser] = useState<any>(null);
+  const [projects, setProjects] = useState([]);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [collaborators, setCollaborators] = useState("");
+  const [error, setError] = useState("");
+  const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [isEditing, setIsEditing] = useState(false);
+const [editTitle, setEditTitle] = useState("");
+const [editDesc, setEditDesc] = useState("");
+const [editCollaborators, setEditCollaborators] = useState("");
 
-  const [impactRows, setImpactRows] = useState<ImpactRow[]>([]);
-  const [sdgs, setSdgs] = useState<SDG[]>([]);
-  const [targets, setTargets] = useState<SDGTarget[]>([]);
-  const [selectedSDG, setSelectedSDG] = useState<{ [rowId: string]: number }>({});
-  const [selectedTargets, setSelectedTargets] = useState<{ [rowId: string]: string }>({});
-  const [loading, setLoading] = useState(true);
+useEffect(() => {
+  if (selectedProject) {
+    setEditTitle(selectedProject.title);
+    setEditDesc(selectedProject.description || "");
+    setEditCollaborators(
+      selectedProject.members
+        .filter((m: any) => m.role !== "OWNER")
+        .map((m: any) => m.userId) // use `user.email` if you store it
+        .join(", ")
+    );
+  }
+}, [selectedProject]);
+
 
   useEffect(() => {
-    if (!projectId) return;
-
-    fetch(`http://localhost:4000/impact-rows/${projectId}`)
-      .then(res => res.json())
-      .then(data => setImpactRows(data))
-      .finally(() => setLoading(false));
-  }, [projectId]);
-
-  useEffect(() => {
-    fetch("http://localhost:4000/sdg-targets")
-      .then(res => res.json())
-      .then(data => {
-        setTargets(data.targets || []);
-        const uniqueSdgs: { [id: number]: SDG } = {};
-        data.targets.forEach((t: SDGTarget) => {
-          uniqueSdgs[t.sdgId] = {
-            id: t.sdgId,
-            code: String(t.code.split(".")[0]),
-            name: "" // You can fetch SDG name separately if needed
-          };
-        });
-        setSdgs(Object.values(uniqueSdgs));
-      });
+    fetch("http://localhost:4000/auth/me", {
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Unauthorized");
+        return res.json();
+      })
+      .then((data) => setUser(data.user))
+      .catch(() => router.push("/login"));
   }, []);
 
-  const handleFieldChange = (index: number, field: keyof ImpactRow, value: string) => {
-    const updated = [...impactRows];
-    updated[index][field] = value;
-    setImpactRows(updated);
-  };
-
-  const addRow = () => {
-    const tempId = `temp-${Date.now()}`;
-    setImpactRows(prev => [
-      ...prev,
-      {
-        id: tempId,
-        hierarchyLevel: "",
-        resultStatement: "",
-        indicator: "",
-        indicatorDefinition: "",
-        meansOfMeasurement: "",
-        baseline: ""
-      }
-    ]);
-  };
-
-  const deleteRow = (index: number) => {
-    const updated = [...impactRows];
-    updated.splice(index, 1);
-    setImpactRows(updated);
-  };
-
-  const saveRows = async () => {
-    for (const row of impactRows) {
-      let savedRow = row;
-      if (!row.id?.startsWith("temp-")) {
-        await fetch(`http://localhost:4000/impact-rows/${row.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(row)
-        });
-      } else {
-        const res = await fetch("http://localhost:4000/impact-rows", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...row, projectId })
-        });
-        const created = await res.json();
-        savedRow = { ...row, id: created.id };
-      }
-
-      const targetId = selectedTargets[savedRow.id!];
-      if (targetId) {
-        await fetch("http://localhost:4000/impact-row-targets", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            projectId,
-            impactRowId: savedRow.id,
-            sdgTargetId: targetId
-          })
-        });
-      }
+  useEffect(() => {
+    if (user) {
+      fetch("http://localhost:4000/projects", {
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => setProjects(data.projects));
     }
+  }, [user]);
 
-    alert("Saved.");
+  const handleCreate = async () => {
+    setError("");
+    if (!title) return setError("Project title is required");
+
+    try {
+      const response = await fetch("http://localhost:4000/projects", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          description,
+          collaborators: collaborators
+            .split(",")
+            .map((email) => ({ email: email.trim(), role: "EDITOR" })),
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create project");
+
+      const newProject = await response.json();
+      setProjects((prev: any) => [...prev, newProject]);
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setCollaborators("");
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (!user) return <p>Loading...</p>;
 
   return (
     <div className={styles.container}>
       <div className={styles.instructions}>
-        <p>1. Fill in the tables</p>
-        <p>2. To add a row click ➕, to delete a row click ❌</p>
-        <p>3. Save your work once done</p>
-        <p>4. Proceed to view Diagram/Matrix</p>
+        <h2>Instructions</h2>
+        <p>1. To view/edit an old project, click on it.</p>
+        <p>2. To create a new project, enter an optional description, a unique project title, and create</p>
       </div>
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Hierarchy</th>
-            <th>Result Statement</th>
-            <th>Indicator</th>
-            <th>Indicator Definition</th>
-            <th>Means of Measurement</th>
-            <th>Baseline</th>
-            <th>SDG</th>
-            <th>SDG Target</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {impactRows.map((row, i) => (
-            <tr key={row.id}>
-              <td>
-                <select value={row.hierarchyLevel} onChange={e => handleFieldChange(i, "hierarchyLevel", e.target.value)}>
-                  <option value="">Select</option>
-                  <option value="LONG_TERM_IMPACT">Long-Term Impact</option>
-                  <option value="MID_TERM_IMPACT">Mid-Term Impact</option>
-                  <option value="SHORT_TERM_IMPACT">Short-Term Impact</option>
-                  <option value="OUTPUT">Output</option>
-                  <option value="ACTIVITY">Activity</option>
-                </select>
-              </td>
-              <td><input value={row.resultStatement} onChange={e => handleFieldChange(i, "resultStatement", e.target.value)} /></td>
-              <td><input value={row.indicator} onChange={e => handleFieldChange(i, "indicator", e.target.value)} /></td>
-              <td><input value={row.indicatorDefinition} onChange={e => handleFieldChange(i, "indicatorDefinition", e.target.value)} /></td>
-              <td><input value={row.meansOfMeasurement} onChange={e => handleFieldChange(i, "meansOfMeasurement", e.target.value)} /></td>
-              <td><input value={row.baseline} onChange={e => handleFieldChange(i, "baseline", e.target.value)} /></td>
-              <td>
-                <select
-                  value={selectedSDG[row.id!]}
-                  onChange={(e) => {
-                    const sdgId = parseInt(e.target.value);
-                    setSelectedSDG(prev => ({ ...prev, [row.id!]: sdgId }));
-                    setSelectedTargets(prev => ({ ...prev, [row.id!]: "" }));
-                  }}
-                >
-                  <option value="">Select SDG</option>
-                  {sdgs.map(sdg => (
-                    <option key={sdg.id} value={sdg.id}>{sdg.code} - {sdg.name}</option>
-                  ))}
-                </select>
-              </td>
-              <td>
-                <select
-                  value={selectedTargets[row.id!]}
-                  onChange={e => setSelectedTargets(prev => ({ ...prev, [row.id!]: e.target.value }))}
-                >
-                  <option value="">Select Target</option>
-                  {targets.filter(t => t.sdgId === selectedSDG[row.id!]).map(t => (
-                    <option key={t.id} value={t.id}>{t.code} - {t.title}</option>
-                  ))}
-                </select>
-              </td>
-              <td>
-                <button className={styles.deleteBtn} onClick={() => deleteRow(i)}>❌</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className={styles.dashboard}>
+        <div className={styles.left}>
+          <h3>Previous Projects</h3>
+          {projects.map((p: any) => (
+<div
+  key={p.id}
+  className={styles.projectBox}
+  onClick={() => setSelectedProject(p)}
+>
+  <strong>{p.title}</strong>{p.description && ` : ${p.description}`}
+  <span className={styles.arrow}>→</span>
+</div>
 
-      <button className={styles.addRowBtn} onClick={addRow}>➕ Add Row</button>
-      <button className={styles.saveBtn} onClick={saveRows}>💾 Save</button>
+
+
+          ))}
+        </div>
+
+        <div className={styles.right}>
+          <h3>Create New Project</h3>
+          <textarea
+            placeholder="Project Description (Optional):"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Project Title:"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Invite Collaborators: (comma-separated emails)"
+            value={collaborators}
+            onChange={(e) => setCollaborators(e.target.value)}
+          />
+          <button onClick={handleCreate}>Create</button>
+          {error && <p className={styles.error}>{error}</p>}
+        </div>
+      </div>
+{selectedProject && (
+  <div className={styles.modalBackdrop} onClick={() => {
+    setSelectedProject(null);
+    setIsEditing(false); // reset editing mode
+  }}>
+    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <h2>
+        {isEditing ? (
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            className={styles.modalInput}
+          />
+        ) : (
+          selectedProject.title
+        )}
+      </h2>
+
+      {isEditing ? (
+        <textarea
+          value={editDesc}
+          onChange={(e) => setEditDesc(e.target.value)}
+          className={styles.modalInput}
+        />
+      ) : (
+        <p>{selectedProject.description || "No description"}</p>
+      )}
+
+      <h4>Members</h4>
+      <ul>
+        {selectedProject.members.map((m: any) => (
+          <li key={m.id || m.userId}>
+            {m.role} - {m.userId}
+          </li>
+        ))}
+      </ul>
+
+      {isEditing && (
+        <>
+          <label>New Collaborators (comma-separated emails):</label>
+          <input
+            type="text"
+            value={editCollaborators}
+            onChange={(e) => setEditCollaborators(e.target.value)}
+            className={styles.modalInput}
+          />
+        </>
+      )}
+
+      <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem", flexWrap: "wrap" }}>
+        {selectedProject.ownerUserId === user?.uid && (
+          <>
+            <button
+              className={styles.modalButton}
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? "Cancel" : "Edit Project"}
+            </button>
+
+            {isEditing && (
+              <button
+                className={styles.saveButton}
+                onClick={async () => {
+                  try {
+                    const res = await fetch(`http://localhost:4000/projects/${selectedProject.id}`, {
+                      method: "PATCH",
+                      credentials: "include",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        title: editTitle,
+                        description: editDesc,
+                        collaborators: editCollaborators
+                          .split(",")
+                          .map((email) => ({ email: email.trim(), role: "EDITOR" })),
+                      }),
+                    });
+
+                    if (!res.ok) throw new Error("Failed to update project");
+
+                    const updated = await res.json();
+                    setProjects((prev) =>
+                      prev.map((p) => (p.id === updated.id ? updated : p))
+                    );
+                    setSelectedProject(updated);
+                    setIsEditing(false);
+                  } catch (err) {
+                    alert("Failed to update project");
+                  }
+                }}
+              >
+                Save Changes
+              </button>
+            )}
+
+            <button
+              onClick={async () => {
+                if (!confirm("Are you sure you want to delete this project?")) return;
+
+                try {
+                  const res = await fetch(`http://localhost:4000/projects/${selectedProject.id}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                  });
+
+                  if (!res.ok) throw new Error("Failed to delete project");
+
+                  setProjects((prev) =>
+                    prev.filter((p) => p.id !== selectedProject.id)
+                  );
+                  setSelectedProject(null);
+                } catch (err) {
+                  alert("Error deleting project.");
+                  console.error(err);
+                }
+              }}
+              className={styles.deleteButton}
+            >
+              Delete Project
+            </button>
+          </>
+        )}
+
+        <button
+          className={styles.modalButton}
+          onClick={() => {
+            setSelectedProject(null);
+            router.push(`/project/${selectedProject.id}`);
+          }}
+        >
+          Open Full Project →
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 }

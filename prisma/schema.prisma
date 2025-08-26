@@ -127,18 +127,15 @@ model ImpactRow {
 }
 
 model ImpactRowTarget {
-  id          String   @id @default(uuid())
-  projectId   String
-  impactRowId String
-  sdgTargetId String
-  createdAt   DateTime @default(now())
-
-  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  impactRow ImpactRow @relation(fields: [impactRowId], references: [id], onDelete: Cascade)
-  sdgTarget SDGTarget @relation(fields: [sdgTargetId], references: [id])
-
-  @@unique([impactRowId, sdgTargetId])
-  @@index([projectId, sdgTargetId])
+  id           String   @id @default(uuid())
+  impactRow    ImpactRow @relation(fields: [impactRowId], references: [id])
+  impactRowId  String
+  project      Project   @relation(fields: [projectId], references: [id])
+  projectId    String
+  sdgTarget    SDGTarget @relation(fields: [sdgTargetId], references: [id])
+  sdgTargetId  String
+  sdg          SDG       @relation(fields: [sdgId], references: [id])
+  sdgId        Int
 }
 
 model MatrixEntry {
@@ -167,6 +164,7 @@ id    Int    @id @default(autoincrement())
   colorHex    String?
 
   targets SDGTarget[]
+  impactRowTargets ImpactRowTarget[] 
 }
 
 model SDGTarget {

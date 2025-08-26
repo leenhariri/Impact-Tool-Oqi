@@ -29,7 +29,7 @@ app.use('/assumptions', assumptionRoutes)
 app.use('/stakeholders', stakeholderRoutes)
 app.use('/activities', activityRoutes)
 app.use('/impact-rows', impactRowRoutes)
-app.use('/impact-row-targets', impactRowTargetRoutes)
+app.use('/impact-row-targets', impactRowTargetRoutes);
 app.get("/health", (_req: Request, res: Response) => res.json({ ok: true }));
 app.get("/", (_req: Request, res: Response) => {
   res.send("Welcome to the API!");
