@@ -38,18 +38,32 @@ export const createImpactRow = async (req: Request, res: Response) => {
 
 // GET ImpactRows for a project
 export const getImpactRows = async (req: Request, res: Response) => {
-  const { projectId } = req.params
+  const { projectId } = req.params;
 
   try {
     const rows = await prisma.impactRow.findMany({
       where: { projectId },
       orderBy: { orderIndex: 'asc' },
-    })
-    res.json(rows)
+      include: {
+        targets: {
+          include: {
+            sdgTarget: {
+              include: {
+                sdg: true,
+              },
+            },
+            sdg: true,
+          },
+        },
+      },
+    });
+
+    res.json(rows);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch impact rows' })
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch impact rows' });
   }
-}
+};
 
 // UPDATE ImpactRow
 export const updateImpactRow = async (req: Request, res: Response) => {

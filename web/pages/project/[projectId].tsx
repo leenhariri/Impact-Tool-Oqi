@@ -135,8 +135,9 @@ const deleteStakeholder = async (index: number) => {
         const sdgMap: { [rowId: string]: number | null } = {};
 
         data.forEach((row: any) => {
-          targetMap[row.id] = row.sdgTargets?.map((t: any) => t.sdgTargetId) || [];
-          sdgMap[row.id] = row.sdgTargets?.[0]?.sdg?.id || null;
+targetMap[row.id] = row.targets?.map((t: any) => t.sdgTargetId) || [];
+sdgMap[row.id] = row.targets?.[0]?.sdg?.id || null;
+
         });
 
         setSdgTargets(targetMap);
@@ -280,12 +281,12 @@ useEffect(() => {
   };
 
   const saveAll = async () => {
-    for (const row of impactRows) {
+    for (const [index, row] of impactRows.entries()) {
       if (!row.id || row.id.startsWith('temp-')) {
         const res = await fetch(`http://localhost:4000/impact-rows`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...row, projectId })
+          body: JSON.stringify({ ...row, projectId,orderIndex: index  })
         });
         const created = await res.json();
         row.id = created.id;
@@ -293,18 +294,20 @@ useEffect(() => {
         await fetch(`http://localhost:4000/impact-rows/${row.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(row)
+          body: JSON.stringify({ ...row, orderIndex: index })
         });
       }
 
       const targetIds = sdgTargets[row.id || ''] || [];
+      const sdgId = selectedSDGs[row.id || ''];  // ✅ Get selected SDG
       await fetch(`http://localhost:4000/impact-row-targets/${row.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
        body: JSON.stringify({
   sdgTargetIds: targetIds,
   projectId: projectId,
-  impactRowId: row.id
+  impactRowId: row.id,
+  sdgId 
 })
 
       });

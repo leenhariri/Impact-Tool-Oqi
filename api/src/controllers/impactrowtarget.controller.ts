@@ -88,6 +88,10 @@ export const replaceTargetsForRow = async (req: Request, res: Response) => {
         error: 'Some SDG Target IDs do not belong to the provided SDG',
       });
     }
+if (!sdgTargetIds || sdgTargetIds.length === 0 || !sdgId) {
+  await prisma.impactRowTarget.deleteMany({ where: { impactRowId: rowId } });
+  return res.status(200).json([]); // return empty if all were removed
+}
 
     // Replace logic
     await prisma.impactRowTarget.deleteMany({
