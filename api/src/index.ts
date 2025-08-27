@@ -11,25 +11,30 @@ import impactRowRoutes from './routes/impactrows'
 import impactRowTargetRoutes from './routes/impactrowtargets'
 import sdgTargetRoutes from './routes/sdgTargets'
 import SDGs from './routes/sdg'
+// import matrixRoutes from './routes/matrixEntries';
 
+import sdgTargetsRoutes from "./routes/sdgTargets";
 
 import type { Request, Response } from "express";
+import matrixRoutes from './routes/matrix';
 
 const app = express();
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
-
+app.use('/api/project', matrixRoutes);
 app.use("/auth", auth);
 app.use("/projects", projects);
 app.use('/risks', riskRoutes)
 app.use('/sdg-targets', sdgTargetRoutes);
+app.use("/api", sdgTargetsRoutes);
 app.use('/sdgs', SDGs); 
 app.use('/assumptions', assumptionRoutes)
 app.use('/stakeholders', stakeholderRoutes)
 app.use('/activities', activityRoutes)
 app.use('/impact-rows', impactRowRoutes)
 app.use('/impact-row-targets', impactRowTargetRoutes);
+// app.use('/matrix', matrixRoutes);
 app.get("/health", (_req: Request, res: Response) => res.json({ ok: true }));
 app.get("/", (_req: Request, res: Response) => {
   res.send("Welcome to the API!");

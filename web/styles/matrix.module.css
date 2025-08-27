@@ -1,0 +1,87 @@
+.container {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f5f7fb;
+  padding: 2rem;
+  color: #222;
+}
+
+.instructions {
+  background-color: #fff;
+  border-left: 6px solid #aaa;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 14px;
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.matrixTable {
+  border-collapse: collapse;
+  background-color: white;
+  table-layout: fixed;
+  min-width: 500px;
+  max-width: 800px;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.matrixTable th,
+.matrixTable td {
+  border: 1.5px solid #3a3a3a;
+  padding: 4px 6px;
+  text-align: center;
+  font-size: 12px;
+  width: 60px;
+  height: 36px;
+}
+
+.headerCell {
+  background-color: #d6d9f5;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 6px;
+}
+
+.inputCell {
+  width: 40px;
+  height: 24px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  background: transparent;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 1px;
+}
+
+.legendWrapper {
+  margin-left: 30px;
+}
+
+.legendBox {
+  font-size: 12px;
+  border: 1.5px solid #aaa;
+  padding: 0.75rem;
+  background: white;
+  width: 200px;
+  line-height: 1.4;
+}
+
+.legendBox li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.legendBox span {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  display: inline-block;
+  border: 1px solid #000;
+}
