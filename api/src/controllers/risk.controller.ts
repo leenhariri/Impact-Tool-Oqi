@@ -101,3 +101,15 @@ export const deleteRisk = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to delete risk' })
   }
 }
+export const getRisksForProject = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+  try {
+    const risks = await prisma.risk.findMany({
+      where: { projectId },
+    });
+    res.status(200).json(risks);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch risks for project' });
+  }
+};

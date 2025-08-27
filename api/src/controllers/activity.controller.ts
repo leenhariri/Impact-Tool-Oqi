@@ -65,3 +65,15 @@ export const deleteActivity = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to delete activity' })
   }
 }
+export const getActivitiesForProject = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+  try {
+    const activities = await prisma.activity.findMany({
+      where: { projectId },
+    });
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch activities for project' });
+  }
+};

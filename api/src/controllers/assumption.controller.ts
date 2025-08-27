@@ -62,3 +62,16 @@ export const deleteAssumption = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to delete assumption' })
   }
 }
+export const getAssumptionsForProject = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+  try {
+    const assumptions = await prisma.assumption.findMany({
+      where: { projectId },
+    });
+    res.status(200).json(assumptions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch assumptions for project' });
+  }
+};
+
