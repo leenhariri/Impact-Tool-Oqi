@@ -245,6 +245,17 @@ useEffect(() => {
     newRows[index][field] = value;
     setImpactRows(newRows);
   };
+const deleteAssumptionOrActivity = async (index: number) => {
+  const item = assumptionsAndActivities[index];
+  if (item.id) {
+    await fetch(`http://localhost:4000/${item.type === 'ASSUMPTION' ? 'assumptions' : 'activities'}/${item.id}`, {
+      method: 'DELETE',
+    });
+  }
+  const updated = [...assumptionsAndActivities];
+  updated.splice(index, 1);
+  setAssumptionsAndActivities(updated); // ✅ Update local state
+};
 
   const addRow = () => {
     const newId = `temp-${Date.now()}`;
@@ -573,11 +584,8 @@ const deleteRisk = async (index: number) => {
           />
         </td>
         <td>
-          <button onClick={() => {
-            const updated = [...assumptionsAndActivities];
-            updated.splice(index, 1);
-            setAssumptionsAndActivities(updated);
-          }}>❌</button>
+<button onClick={() => deleteAssumptionOrActivity(index)}>❌</button>
+
         </td>
       </tr>
     ))}

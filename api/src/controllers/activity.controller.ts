@@ -61,7 +61,7 @@ export const deleteActivity = async (req: Request, res: Response) => {
     })
     res.status(204).send()
   } catch (error) {
-    console.error(error)
+    console.error('failed to delete activity',error)
     res.status(500).json({ error: 'Failed to delete activity' })
   }
 }

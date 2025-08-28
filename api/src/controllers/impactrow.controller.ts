@@ -66,28 +66,62 @@ export const getImpactRows = async (req: Request, res: Response) => {
 };
 
 // UPDATE ImpactRow
+// UPDATE ImpactRow
 export const updateImpactRow = async (req: Request, res: Response) => {
-  const { id } = req.params
+  const { id } = req.params;
+  const {
+    projectId,
+    orderIndex,
+    hierarchyLevel,
+    resultStatement,
+    indicator,
+    indicatorDefinition,
+    meansOfMeasurement,
+    baseline,
+    // targets should NOT be included here
+  } = req.body;
 
   try {
     const updated = await prisma.impactRow.update({
       where: { id },
-      data: req.body,
-    })
-    res.json(updated)
+      data: {
+        projectId,
+        orderIndex,
+        hierarchyLevel,
+        resultStatement,
+        indicator,
+        indicatorDefinition,
+        meansOfMeasurement,
+        baseline,
+      },
+    });
+
+    res.json(updated);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to update row' })
+    console.error("UPDATE ERROR:", error);
+    res.status(500).json({ error: 'Failed to update row' });
   }
-}
+};
+
 
 // DELETE ImpactRow
 export const deleteImpactRow = async (req: Request, res: Response) => {
   const { id } = req.params
 
   try {
-    await prisma.impactRow.delete({ where: { id } })
+    // First delete all related ImpactRowTarget entries
+    await prisma.impactRowTarget.deleteMany({
+      where: { impactRowId: id },
+    });
+
+    // Then delete the ImpactRow
+    await prisma.impactRow.delete({
+      where: { id },
+    });
+
     res.status(204).send()
   } catch (error) {
+    console.error('Failed to delete impact row:', error)
     res.status(500).json({ error: 'Failed to delete row' })
   }
 }
