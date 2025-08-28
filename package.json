@@ -6,10 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    
-  "seed": "ts-node --project ./api/tsconfig.json ./prisma/seed.ts"
-
-
+    "seed": "ts-node --project ./api/tsconfig.json ./prisma/seed.ts"
   },
   "workspaces": [
     "api",
@@ -32,6 +29,8 @@
     "@types/uuid": "^10.0.0"
   },
   "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.2",
     "uuid": "^11.1.0"
   }
 }

@@ -14,16 +14,24 @@ import SDGs from './routes/sdg'
 // import matrixRoutes from './routes/matrixEntries';
 
 import sdgTargetsRoutes from "./routes/sdgTargets";
+import diagramNodes from "./routes/diagramNode";
+import diagramEdges from "./routes/diagramEdge";
+
+
+
 
 import type { Request, Response } from "express";
 import matrixRoutes from './routes/matrix';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const app = express();
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api/project', matrixRoutes);
 app.use("/auth", auth);
+app.use("/diagram-nodes", diagramNodes);
+app.use("/diagram-edges", diagramEdges);
 app.use("/projects", projects);
 app.use('/risks', riskRoutes)
 app.use('/sdg-targets', sdgTargetRoutes);

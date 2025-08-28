@@ -1,4 +1,7 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
+
 const JWT_SECRET = process.env.JWT_SECRET!;
 export const COOKIE_NAME = process.env.COOKIE_NAME || "oqi_session";
 
