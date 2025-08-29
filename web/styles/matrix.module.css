@@ -1,33 +1,38 @@
+/* 🔹 Page Container */
 .container {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f5f7fb;
   padding: 2rem;
-  color: #222;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  min-height: 100vh;
+  /* REMOVE position and overflow */
 }
 
+
+/* 🔹 Instructions Box */
 .instructions {
-  background-color: #fff;
-  border-left: 6px solid #aaa;
-  padding: 0.75rem 1.25rem;
-  margin-bottom: 1.5rem;
-  font-size: 14px;
+  background-color: #f9f9f9;
+  border-left: 5px solid #111730;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  font-size: 16px;
+  line-height: 1.6;
+  border-radius: 0;
 }
 
-.heading {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  text-align: center;
+.instructions h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
+/* 🔹 Matrix Table */
 .matrixTable {
   border-collapse: collapse;
   background-color: white;
   table-layout: fixed;
-  min-width: 500px;
-  max-width: 800px;
   font-size: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 500px;
 }
 
 .matrixTable th,
@@ -45,8 +50,10 @@
   font-weight: bold;
   font-size: 12px;
   padding: 6px;
+  text-align: center;
 }
 
+/* 🔹 Matrix Inputs */
 .inputCell {
   width: 40px;
   height: 24px;
@@ -59,17 +66,28 @@
   padding: 1px;
 }
 
+/* 🔹 Legend Box */
 .legendWrapper {
-  margin-left: 30px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 1rem 1.25rem;
+  min-width: 200px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.legendWrapper h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
 .legendBox {
-  font-size: 12px;
-  border: 1.5px solid #aaa;
-  padding: 0.75rem;
-  background: white;
-  width: 200px;
-  line-height: 1.4;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .legendBox li {
@@ -84,4 +102,66 @@
   margin-right: 8px;
   display: inline-block;
   border: 1px solid #000;
+}
+
+/* 🔹 Buttons */
+.buttonPrimary {
+  background-color: #0b1437;
+  color: white;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 9999px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buttonPrimary:hover {
+  background-color: #111d47;
+}
+
+/* ✅ Fix: Buttons that stay at bottom corners */
+.bottomLeft {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 1000;
+}
+
+.bottomRight {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+
+/* 🔹 Matrix + Legend Layout */
+.flexRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.bottomButtonRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 0 2rem;
+  flex-wrap: wrap;
+}
+
+.leftButtons {
+  display: flex;
+  gap: 1rem;
+}
+
+.rightButtons {
+  display: flex;
+  gap: 1rem;
 }

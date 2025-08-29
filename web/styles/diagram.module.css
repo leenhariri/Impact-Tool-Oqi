@@ -1,0 +1,153 @@
+.container {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  min-height: 100vh;
+  
+}
+.instructions {
+  background-color: #f9f9f9;
+  border-left: 5px solid #111730;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  font-size: 16px;
+  line-height: 1.6;
+  border-radius: 0;
+}
+
+.instructions h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.instructionsBox {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.instructionsTitle {
+  background-color: #dcdcdc;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.instructionsList {
+  margin-left: 1rem;
+}
+
+.diagramArea {
+  position: relative;
+  width: 100%;
+  height: 200px; /* ✅ Ensure the diagram has height */
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.reactFlowWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative; /* ✅ Keep it relative so it fills parent */
+  z-index: 0;
+}
+
+
+.controlsWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.buttonsRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 5px;
+}
+
+.leftButtons,
+.rightButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.resetButton {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+}
+
+.exportButton {
+  background-color: #e0f7fa;
+  border: 1px solid #00acc1;
+}
+
+.editButton {
+  background-color: #276f86;
+  color: white;
+}
+
+.editMatrix {
+  background-color: #0e112b;
+  color: white;
+}
+.buttonPrimary {
+  background-color: #0b1437;
+  color: white;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 9999px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buttonPrimary:hover {
+  background-color: #111d47;
+}
+
+.buttonSecondary {
+  background-color: #e6e6e6;
+  color: #111730;
+  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 9999px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.buttonSecondary:hover {
+  background-color: #d4d4d4;
+}
+
+.bottomButtonRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 0 2rem;
+  flex-wrap: wrap;
+}
+
+.leftButtons,
+.rightButtons {
+  display: flex;
+  gap: 1rem;
+}

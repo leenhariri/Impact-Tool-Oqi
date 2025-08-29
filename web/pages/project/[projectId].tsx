@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styles from '../../styles/project.module.css';
 import SDGDropdown from '../../components/SDGDropdown';
-
+import HierarchyDropdown from '../../components/HierarchyDropdown';
 type StakeholderType = 'DIRECT' | 'INDIRECT';
 type HierarchyLevel = 'LONG_TERM_IMPACT' | 'MID_TERM_IMPACT' | 'SHORT_TERM_IMPACT';
 
@@ -426,21 +426,23 @@ const deleteRisk = async (index: number) => {
 
 return (
   <div className={styles.container}>
+
     <div className={styles.instructions}>
+      <h2>Instructions</h2>
       <p>1. Fill in the tables</p>
-      <p>2. To add a row click ➕, to delete a row click ❌</p>
+      <p>2. To add a row click +, to delete a row click ×</p>
       <p>3. Save your work once done</p>
       <p>4. Proceed to view Diagram/Matrix</p>
     </div>
 
     {/* Impact Rows */}
-    <h3>Impact Rows</h3>
+    {/* <h3>Impact Rows</h3> */}
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
         <thead>
           <tr>
             <th>Hierarchy</th>
-            <th>Result Statement</th>
+            <th>Result </th>
             <th>Indicator</th>
             <th>Indicator Definition</th>
             <th>Means of Measurement</th>
@@ -453,12 +455,34 @@ return (
         <tbody>
           {impactRows.map((row, index) => (
             <tr key={row.id || index}>
-              {(['hierarchyLevel', 'resultStatement', 'indicator', 'indicatorDefinition', 'meansOfMeasurement', 'baseline'] as (keyof ImpactRow)[]).map((field) => (
+              {([
+                'hierarchyLevel',
+                'resultStatement',
+                'indicator',
+                'indicatorDefinition',
+                'meansOfMeasurement',
+                'baseline',
+              ] as (keyof ImpactRow)[]).map((field) => (
                 <td key={field}>
-                  <input
-                    value={row[field]}
-                    onChange={(e) => handleRowChange(index, field, e.target.value)}
-                  />
+{field === 'hierarchyLevel' ? (
+  <select
+    value={row.hierarchyLevel}
+    onChange={(e) => handleRowChange(index, 'hierarchyLevel', e.target.value)}
+  >
+    <option value="">-- Select --</option>
+    <option value="LONG_TERM_IMPACT">Long-Term Impact</option>
+    <option value="MID_TERM_IMPACT">Mid-Term Impact</option>
+    <option value="SHORT_TERM_IMPACT">Short-Term Impact</option>
+    <option value="OUTPUT">Deliverable</option>
+    {/* <option value="ACTIVITY">Activity</option> */}
+  </select>
+) : (
+  <input
+    value={row[field]}
+    onChange={(e) => handleRowChange(index, field, e.target.value)}
+  />
+)}
+
                 </td>
               ))}
               <td>
@@ -490,112 +514,146 @@ return (
                 )}
               </td>
               <td>
-                <button onClick={() => deleteRow(index)}>❌</button>
+                <button className={styles.iconButton} onClick={() => deleteRow(index)}>
+                  ×
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-    <button className={styles.plainBtn} onClick={addRow}>➕ Add Row</button>
+    <div className={styles.tableActions}>
+      <button className={styles.addRowButton} onClick={addRow}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+        Add Row
+      </button>
+    </div>
 
-    {/* Risks */}
-    <h3>Risks</h3>
-    <div className={styles.tableWrapper}>
-      <table className={styles.softTable}>
-        <thead>
-          <tr>
-            <th>Risk Text</th>
-            <th>Hierarchy Levels (comma-separated)</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {risks.map((risk, index) => (
-            <tr key={index}>
-              <td>
-                <input
-                  value={risk.text}
-                  onChange={(e) => handleRiskChange(index, 'text', e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={risk.hierarchyLevels.join(', ')}
-                  onChange={(e) =>
-                    handleRiskChange(index, 'hierarchyLevels', e.target.value.split(',').map((s) => s.trim()))
-                  }
-                />
-              </td>
-              <td>
-                <button onClick={() => deleteRisk(index)}>❌</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <button className={styles.plainBtn} onClick={addRisk}>➕ Add Risk</button>
+    {/* Two-up: Risks + Assumptions */}
+    <div className={styles.twoColumnSection}>
+      {/* Risks */}
+      <div className={styles.column}>
+        <div className={styles.tableWrapper}>
+          <table className={styles.softTable}>
+            <thead>
+              <tr>
+                <th>Risk</th>
+                <th>Scale </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {risks.map((risk, index) => (
+                <tr key={index}>
+                  <td>
+                    <input
+                      value={risk.text}
+                      onChange={(e) => handleRiskChange(index, 'text', e.target.value)}
+                    />
+                  </td>
+<td>
+  <HierarchyDropdown
+    selectedValues={risk.hierarchyLevels}
+    onChange={(newValues) =>
+      handleRiskChange(index, 'hierarchyLevels', newValues)
+    }
+  />
+</td>
 
-    {/* Assumptions & Activities */}
-    <h3>Assumptions & Activities</h3>
-    <div className={styles.tableWrapper}>
-      <table className={styles.softTable}>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>Text</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {assumptionsAndActivities.map((item, index) => (
-            <tr key={index}>
-              <td>
-                <select
-                  value={item.type}
-                  onChange={(e) => {
-                    const updated = [...assumptionsAndActivities];
-                    updated[index].type = e.target.value as AssumptionOrActivityType;
-                    setAssumptionsAndActivities(updated);
-                  }}
-                >
-                  <option value="ASSUMPTION">Assumption</option>
-                  <option value="ACTIVITY">Activity</option>
-                </select>
-              </td>
-              <td>
-                <input
-                  value={item.text}
-                  onChange={(e) => {
-                    const updated = [...assumptionsAndActivities];
-                    updated[index].text = e.target.value;
-                    setAssumptionsAndActivities(updated);
-                  }}
-                />
-              </td>
-              <td>
-                <button onClick={() => deleteAssumptionOrActivity(index)}>❌</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  <td>
+                    <button className={styles.iconButton} onClick={() => deleteRisk(index)}>
+                      ×
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className={styles.tableActions}>
+          <button className={styles.addRowButton} onClick={addRisk}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Risk
+          </button>
+        </div>
+      </div>
+
+      {/* Assumptions & Activities */}
+      <div className={styles.column}>
+        <div className={styles.tableWrapper}>
+          <table className={styles.softTable}>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Text</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {assumptionsAndActivities.map((item, index) => (
+                <tr key={index}>
+                  <td>
+                    <select
+                      value={item.type}
+                      onChange={(e) => {
+                        const updated = [...assumptionsAndActivities];
+                        updated[index].type = e.target.value as AssumptionOrActivityType;
+                        setAssumptionsAndActivities(updated);
+                      }}
+                    >
+                      <option value="ASSUMPTION">Assumption</option>
+                      <option value="ACTIVITY">Action</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      value={item.text}
+                      onChange={(e) => {
+                        const updated = [...assumptionsAndActivities];
+                        updated[index].text = e.target.value;
+                        setAssumptionsAndActivities(updated);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <button
+                      className={styles.iconButton}
+                      onClick={() => deleteAssumptionOrActivity(index)}
+                    >
+                      ×
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className={styles.tableActions}>
+          <button
+            className={styles.addRowButton}
+            onClick={() =>
+              setAssumptionsAndActivities((prev = []) => [
+                ...prev,
+                { type: 'ASSUMPTION', text: '' },
+              ])
+            }
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Item
+          </button>
+        </div>
+      </div>
     </div>
-    <button
-      className={styles.plainBtn}
-      onClick={() =>
-        setAssumptionsAndActivities((prev = []) => [
-          ...prev,
-          { type: 'ASSUMPTION', text: '' },
-        ])
-      }
-    >
-      ➕ Add
-    </button>
 
     {/* Stakeholders */}
-    <h3>Stakeholders</h3>
+    {/* <h3>Stakeholders</h3> */}
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
         <thead>
@@ -605,45 +663,94 @@ return (
             <th>Interest</th>
             <th>Type</th>
             <th>Strategy</th>
-            <th>Hierarchy</th>
+            <th>Scale</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {stakeholders.map((s, index) => (
             <tr key={index}>
-              <td><input value={s.name} onChange={e => updateStakeholderField(index, 'name', e.target.value)} /></td>
-              <td><input value={s.role} onChange={e => updateStakeholderField(index, 'role', e.target.value)} /></td>
-              <td><input value={s.interest} onChange={e => updateStakeholderField(index, 'interest', e.target.value)} /></td>
               <td>
-                <select value={s.stakeholderType} onChange={e => updateStakeholderField(index, 'stakeholderType', e.target.value as StakeholderType)}>
+                <input
+                  value={s.name}
+                  onChange={(e) => updateStakeholderField(index, 'name', e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  value={s.role}
+                  onChange={(e) => updateStakeholderField(index, 'role', e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  value={s.interest}
+                  onChange={(e) => updateStakeholderField(index, 'interest', e.target.value)}
+                />
+              </td>
+              <td>
+                <select
+                  value={s.stakeholderType}
+                  onChange={(e) =>
+                    updateStakeholderField(index, 'stakeholderType', e.target.value as StakeholderType)
+                  }
+                >
                   <option value="DIRECT">Direct</option>
                   <option value="INDIRECT">Indirect</option>
                 </select>
               </td>
-              <td><input value={s.engagementStrategy} onChange={e => updateStakeholderField(index, 'engagementStrategy', e.target.value)} /></td>
               <td>
-                <select value={s.hierarchyLevel} onChange={e => updateStakeholderField(index, 'hierarchyLevel', e.target.value as HierarchyLevel)}>
+                <input
+                  value={s.engagementStrategy}
+                  onChange={(e) => updateStakeholderField(index, 'engagementStrategy', e.target.value)}
+                />
+              </td>
+              <td>
+                <select
+                  value={s.hierarchyLevel}
+                  onChange={(e) =>
+                    updateStakeholderField(index, 'hierarchyLevel', e.target.value as HierarchyLevel)
+                  }
+                >
                   <option value="LONG_TERM_IMPACT">Long-Term</option>
                   <option value="MID_TERM_IMPACT">Mid-Term</option>
                   <option value="SHORT_TERM_IMPACT">Short-Term</option>
                 </select>
               </td>
               <td>
-                <button onClick={() => deleteStakeholder(index)}>❌</button>
+                <button className={styles.iconButton} onClick={() => deleteStakeholder(index)}>
+                  ×
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-    <button className={styles.plainBtn} onClick={addStakeholder}>➕ Add Stakeholder</button>
+    <div className={styles.tableActions}>
+      <button className={styles.addRowButton} onClick={addStakeholder}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+        Add Stakeholder
+      </button>
+    </div>
 
     {/* Final Buttons */}
     <div className={styles.buttonRow}>
       <button className={styles.saveBtn} onClick={saveAll}>Save</button>
-      <button className={styles.editBtn}>Edit Diagram</button>
-      <button className={styles.editBtn}>Edit Matrix</button>
+        <button
+    className={styles.editBtn}
+    onClick={() => router.push(`/project/${projectId}/diagram`)}
+  >
+    Edit Diagram
+  </button>
+        <button
+    className={styles.editBtn}
+    onClick={() => router.push(`/project/${projectId}/matrix`)}
+  >
+    Edit Matrix
+  </button>
     </div>
   </div>
 );

@@ -17,7 +17,7 @@ import jsPDF from "jspdf";
 import { useRef } from "react";
 import { ReactFlowProvider } from "reactflow";
 import { applyEdgeChanges } from "reactflow";
-
+import styles from "../styles/diagram.module.css"; 
 type ImpactRow = {
   id: string;
   hierarchyLevel: string;
@@ -402,110 +402,69 @@ const handleEdgesChange = (changes: any) => {
   if (loading) return <p>Loading diagram...</p>;
 
 return (
-   <ReactFlowProvider>
-  <div
-    style={{
-      padding: "1rem",
-      height: "90vh",
-      display: "flex",
-      flexDirection: "column",
-    }}
-  >
-    {/* Instructions Box */}
-    <div style={{ fontWeight: "bold", marginBottom: "1rem" }}>
-      <h3
-        style={{
-          background: "#dcdcdc",
-          padding: "10px",
-          borderRadius: "5px",
-        }}
-      >
-        Instructions
-      </h3>
-      <ol style={{ marginLeft: "1rem" }}>
-        <li>Insert arrows between diagram boxes.</li>
-        <li>To clear a single arrow, click on it then delete.</li>
-        <li>Save your work once done.</li>
-        <li>Option to export as PDF.</li>
-      </ol>
-    </div>
-
-    {/* Main diagram area */}
-    <div
-      style={{
-        flex: 1,
-        position: "relative",
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#fff",
-      }}
-    >
-      {/* Export-only diagram ref wrapper */}
-      <div
-        ref={diagramOnlyRef}
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          zIndex: 0,
-        }}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={handleNodesChange}
-          onEdgesChange={handleEdgesChange}
-
-          onConnect={onConnect}
-          fitView
-          fitViewOptions={{ padding: 0.2 }}
-          panOnScroll
-          zoomOnScroll
-        >
-          <Background />
-        </ReactFlow>
+  <ReactFlowProvider>
+    <div className={styles.container}>
+      {/* Instructions */}
+      <div className={styles.instructions}>
+        <h2 className="font-bold text-lg mb-2">Instructions</h2>
+        <ol className="list-decimal list-inside text-sm">
+          <li>Insert arrows between diagram boxes.</li>
+          <li>To clear a single arrow, click on it then delete.</li>
+          <li>Save your work once done.</li>
+          <li>Option to export as PDF.</li>
+        </ol>
       </div>
 
-      {/* UI controls (not included in PDF) */}
-      <div style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}>
-        <Controls />
-        <MiniMap />
+      {/* Diagram Area */}
+      <div className={styles.diagramArea}>
+        <div ref={diagramOnlyRef} className={styles.reactFlowWrapper}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={handleNodesChange}
+            onEdgesChange={handleEdgesChange}
+            onConnect={onConnect}
+            fitView
+            fitViewOptions={{ padding: 0.2 }}
+            panOnScroll
+            zoomOnScroll
+          >
+            <Background />
+          </ReactFlow>
+        </div>
+
+        <div className={styles.controlsWrapper}>
+          <Controls />
+          <MiniMap />
+        </div>
+      </div>
+
+      {/* Buttons Row */}
+      <div className={styles.bottomButtonRow}>
+        <div className={styles.leftButtons}>
+          <button onClick={exportAsPDF} className={styles.buttonPrimary}>
+            Export as PDF
+          </button>
+        </div>
+        <div className={styles.rightButtons}>
+          <button onClick={resetNodePositions} className={styles.buttonPrimary}>
+             Reset Positions
+          </button>
+          <button
+            onClick={() => window.location.href = `/project/${projectId}`}
+            className={styles.buttonPrimary}
+          >
+            Edit Table
+          </button>
+          <button
+            onClick={() => window.location.href = `/project/${projectId}/matrix`}
+            className={styles.buttonPrimary}
+          >
+            Edit Matrix
+          </button>
+        </div>
       </div>
     </div>
-
-    {/* Buttons */}
-    <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
-      <button
-        onClick={resetNodePositions}
-        style={{
-          backgroundColor: "#f0f0f0",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-          padding: "8px 12px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-      >
-        🔄 Reset Positions
-      </button>
-
-      <button
-        onClick={exportAsPDF}
-        style={{
-          backgroundColor: "#e0f7fa",
-          border: "1px solid #00acc1",
-          borderRadius: "5px",
-          padding: "8px 12px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-      >
-        📄 Export as PDF
-      </button>
-    </div>
-  </div>
   </ReactFlowProvider>
 );
 }
