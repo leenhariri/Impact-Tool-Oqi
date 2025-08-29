@@ -38,9 +38,16 @@ export default function LoginPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.bannerWrapper}>
-        <img src="/images/oqi-banner.jpg" alt="Banner" className={styles.banner} />
-      </div>
+      
+<div className={styles.bannerWrapper}>
+  <img src="/images/hero-oqi-bg.jpg" alt="Banner" className={styles.banner} />
+  <div style={{
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    background: 'linear-gradient(rgba(17,23,48,0.5), rgba(17,23,48,0.5))'
+  }}></div>
+</div>
+
       <div className={styles.formWrapper}>
         <form onSubmit={handleLogin} className={styles.form}>
           <h2 className={styles.title}>Login</h2>
@@ -64,6 +71,7 @@ export default function LoginPage() {
           {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
         </form>
       </div>
+      
     </div>
   );
 }

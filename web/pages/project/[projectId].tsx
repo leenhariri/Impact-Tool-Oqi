@@ -424,16 +424,19 @@ const deleteRisk = async (index: number) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.instructions}>
-        <p>1. Fill in the tables</p>
-        <p>2. To add a row click ➕, to delete a row click ❌</p>
-        <p>3. Save your work once done</p>
-        <p>4. Proceed to view Diagram/Matrix</p>
-      </div>
+return (
+  <div className={styles.container}>
+    <div className={styles.instructions}>
+      <p>1. Fill in the tables</p>
+      <p>2. To add a row click ➕, to delete a row click ❌</p>
+      <p>3. Save your work once done</p>
+      <p>4. Proceed to view Diagram/Matrix</p>
+    </div>
 
-      <table className={styles.table}>
+    {/* Impact Rows */}
+    <h3>Impact Rows</h3>
+    <div className={styles.tableWrapper}>
+      <table className={styles.softTable}>
         <thead>
           <tr>
             <th>Hierarchy</th>
@@ -452,35 +455,29 @@ const deleteRisk = async (index: number) => {
             <tr key={row.id || index}>
               {(['hierarchyLevel', 'resultStatement', 'indicator', 'indicatorDefinition', 'meansOfMeasurement', 'baseline'] as (keyof ImpactRow)[]).map((field) => (
                 <td key={field}>
-                  <div className={styles.inputGroup}>
-                    <input
-                      value={row[field]}
-                      onChange={(e) => handleRowChange(index, field, e.target.value)}
-                    />
-                  </div>
+                  <input
+                    value={row[field]}
+                    onChange={(e) => handleRowChange(index, field, e.target.value)}
+                  />
                 </td>
               ))}
-
               <td>
-                <div className={styles.inputGroup}>
-                  <select
-                    value={selectedSDGs[row.id || ''] ?? ''}
-                    onChange={(e) => {
-                      const sdgId = parseInt(e.target.value);
-                      setSelectedSDGs((prev) => ({ ...prev, [row.id || '']: sdgId }));
-                      setSdgTargets((prev) => ({ ...prev, [row.id || '']: [] }));
-                    }}
-                  >
-                    <option value="">-- Select SDG --</option>
-                    {allSDGs.map((sdg) => (
-                      <option key={sdg.id} value={sdg.id}>
-                        {sdg.code} – {sdg.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <select
+                  value={selectedSDGs[row.id || ''] ?? ''}
+                  onChange={(e) => {
+                    const sdgId = parseInt(e.target.value);
+                    setSelectedSDGs((prev) => ({ ...prev, [row.id || '']: sdgId }));
+                    setSdgTargets((prev) => ({ ...prev, [row.id || '']: [] }));
+                  }}
+                >
+                  <option value="">-- Select SDG --</option>
+                  {allSDGs.map((sdg) => (
+                    <option key={sdg.id} value={sdg.id}>
+                      {sdg.code} – {sdg.name}
+                    </option>
+                  ))}
+                </select>
               </td>
-
               <td>
                 {selectedSDGs[row.id || ''] && (
                   <SDGDropdown
@@ -493,163 +490,161 @@ const deleteRisk = async (index: number) => {
                 )}
               </td>
               <td>
-                <button className={styles.deleteBtn} onClick={() => deleteRow(index)}>
-                  ❌
-                </button>
+                <button onClick={() => deleteRow(index)}>❌</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <h3>Risks</h3>
-<table>
-<thead>
-  <tr>
-    <th>Risk Text</th>
-    <th>Hierarchy Levels (comma-separated)</th>
-    <th></th>
-  </tr>
-</thead>
-
-  <tbody>
-  {risks.map((risk, index) => (
-    <tr key={index}>
-      <td>
-        <input
-          value={risk.text}
-          onChange={(e) => handleRiskChange(index, 'text', e.target.value)}
-        />
-      </td>
-      <td>
-        <input
-          value={risk.hierarchyLevels.join(', ')} // show it as comma-separated string
-          onChange={(e) =>
-            handleRiskChange(
-              index,
-              'hierarchyLevels',
-              e.target.value.split(',').map(s => s.trim()) // turn back into string[]
-            )
-          }
-        />
-      </td>
-      <td>
-        <button onClick={() => deleteRisk(index)}>❌</button>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-</table>
-
-<button onClick={addRisk}>➕ Add Risk</button>
-
-
-<button className={styles.addRowBtn} onClick={addRisk}>➕ Add Risk</button>
-
-
-      <button className={styles.addRowBtn} onClick={addRow}>➕ Add Row</button>
-<h3>Assumptions & Activities</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Text</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {assumptionsAndActivities.map((item, index) => (
-      <tr key={index}>
-        <td>
-          <select
-            value={item.type}
-            onChange={(e) => {
-              const updated = [...assumptionsAndActivities];
-              updated[index].type = e.target.value as AssumptionOrActivityType;
-              setAssumptionsAndActivities(updated);
-            }}
-          >
-            <option value="ASSUMPTION">Assumption</option>
-            <option value="ACTIVITY">Activity</option>
-          </select>
-        </td>
-        <td>
-          <input
-            value={item.text}
-            onChange={(e) => {
-              const updated = [...assumptionsAndActivities];
-              updated[index].text = e.target.value;
-              setAssumptionsAndActivities(updated);
-            }}
-          />
-        </td>
-        <td>
-<button onClick={() => deleteAssumptionOrActivity(index)}>❌</button>
-
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-<button
-  onClick={() =>
-    setAssumptionsAndActivities((prev = []) => [
-      ...prev,
-      { type: 'ASSUMPTION', text: '' },
-    ])
-  }
->
-  ➕ Add
-</button>
-<h3>Stakeholders</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Role</th>
-      <th>Interest</th>
-      <th>Type</th>
-      <th>Strategy</th>
-      <th>Hierarchy</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {stakeholders.map((s, index) => (
-      <tr key={index}>
-        <td><input value={s.name} onChange={e => updateStakeholderField(index, 'name', e.target.value)} /></td>
-        <td><input value={s.role} onChange={e => updateStakeholderField(index, 'role', e.target.value)} /></td>
-        <td><input value={s.interest} onChange={e => updateStakeholderField(index, 'interest', e.target.value)} /></td>
-        <td>
-          <select value={s.stakeholderType} onChange={e => updateStakeholderField(index, 'stakeholderType', e.target.value as StakeholderType)}>
-            <option value="DIRECT">Direct</option>
-            <option value="INDIRECT">Indirect</option>
-          </select>
-        </td>
-        <td><input value={s.engagementStrategy} onChange={e => updateStakeholderField(index, 'engagementStrategy', e.target.value)} /></td>
-        <td>
-          <select value={s.hierarchyLevel} onChange={e => updateStakeholderField(index, 'hierarchyLevel', e.target.value as HierarchyLevel)}>
-            <option value="LONG_TERM_IMPACT">Long-Term</option>
-            <option value="MID_TERM_IMPACT">Mid-Term</option>
-            <option value="SHORT_TERM_IMPACT">Short-Term</option>
-          </select>
-        </td>
-        <td>
-          <button onClick={() => deleteStakeholder(index)}>❌</button>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
-<button onClick={addStakeholder}>➕ Add Stakeholder</button>
-
-
-      <div className={styles.buttonRow}>
-        <button className={styles.saveBtn} onClick={saveAll}>Save</button>
-        <button className={styles.editBtn}>Edit Diagram</button>
-        <button className={styles.editBtn}>Edit Matrix</button>
-      </div>
     </div>
-  );
+    <button className={styles.plainBtn} onClick={addRow}>➕ Add Row</button>
+
+    {/* Risks */}
+    <h3>Risks</h3>
+    <div className={styles.tableWrapper}>
+      <table className={styles.softTable}>
+        <thead>
+          <tr>
+            <th>Risk Text</th>
+            <th>Hierarchy Levels (comma-separated)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {risks.map((risk, index) => (
+            <tr key={index}>
+              <td>
+                <input
+                  value={risk.text}
+                  onChange={(e) => handleRiskChange(index, 'text', e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  value={risk.hierarchyLevels.join(', ')}
+                  onChange={(e) =>
+                    handleRiskChange(index, 'hierarchyLevels', e.target.value.split(',').map((s) => s.trim()))
+                  }
+                />
+              </td>
+              <td>
+                <button onClick={() => deleteRisk(index)}>❌</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <button className={styles.plainBtn} onClick={addRisk}>➕ Add Risk</button>
+
+    {/* Assumptions & Activities */}
+    <h3>Assumptions & Activities</h3>
+    <div className={styles.tableWrapper}>
+      <table className={styles.softTable}>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Text</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {assumptionsAndActivities.map((item, index) => (
+            <tr key={index}>
+              <td>
+                <select
+                  value={item.type}
+                  onChange={(e) => {
+                    const updated = [...assumptionsAndActivities];
+                    updated[index].type = e.target.value as AssumptionOrActivityType;
+                    setAssumptionsAndActivities(updated);
+                  }}
+                >
+                  <option value="ASSUMPTION">Assumption</option>
+                  <option value="ACTIVITY">Activity</option>
+                </select>
+              </td>
+              <td>
+                <input
+                  value={item.text}
+                  onChange={(e) => {
+                    const updated = [...assumptionsAndActivities];
+                    updated[index].text = e.target.value;
+                    setAssumptionsAndActivities(updated);
+                  }}
+                />
+              </td>
+              <td>
+                <button onClick={() => deleteAssumptionOrActivity(index)}>❌</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <button
+      className={styles.plainBtn}
+      onClick={() =>
+        setAssumptionsAndActivities((prev = []) => [
+          ...prev,
+          { type: 'ASSUMPTION', text: '' },
+        ])
+      }
+    >
+      ➕ Add
+    </button>
+
+    {/* Stakeholders */}
+    <h3>Stakeholders</h3>
+    <div className={styles.tableWrapper}>
+      <table className={styles.softTable}>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Interest</th>
+            <th>Type</th>
+            <th>Strategy</th>
+            <th>Hierarchy</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {stakeholders.map((s, index) => (
+            <tr key={index}>
+              <td><input value={s.name} onChange={e => updateStakeholderField(index, 'name', e.target.value)} /></td>
+              <td><input value={s.role} onChange={e => updateStakeholderField(index, 'role', e.target.value)} /></td>
+              <td><input value={s.interest} onChange={e => updateStakeholderField(index, 'interest', e.target.value)} /></td>
+              <td>
+                <select value={s.stakeholderType} onChange={e => updateStakeholderField(index, 'stakeholderType', e.target.value as StakeholderType)}>
+                  <option value="DIRECT">Direct</option>
+                  <option value="INDIRECT">Indirect</option>
+                </select>
+              </td>
+              <td><input value={s.engagementStrategy} onChange={e => updateStakeholderField(index, 'engagementStrategy', e.target.value)} /></td>
+              <td>
+                <select value={s.hierarchyLevel} onChange={e => updateStakeholderField(index, 'hierarchyLevel', e.target.value as HierarchyLevel)}>
+                  <option value="LONG_TERM_IMPACT">Long-Term</option>
+                  <option value="MID_TERM_IMPACT">Mid-Term</option>
+                  <option value="SHORT_TERM_IMPACT">Short-Term</option>
+                </select>
+              </td>
+              <td>
+                <button onClick={() => deleteStakeholder(index)}>❌</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <button className={styles.plainBtn} onClick={addStakeholder}>➕ Add Stakeholder</button>
+
+    {/* Final Buttons */}
+    <div className={styles.buttonRow}>
+      <button className={styles.saveBtn} onClick={saveAll}>Save</button>
+      <button className={styles.editBtn}>Edit Diagram</button>
+      <button className={styles.editBtn}>Edit Matrix</button>
+    </div>
+  </div>
+);
 }

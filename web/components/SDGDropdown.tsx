@@ -32,7 +32,7 @@ const SDGDropdown: React.FC<Props> = ({ allTargets, selectedTargetIds, onChange 
               checked={selectedTargetIds.includes(target.id)}
               onChange={() => toggle(target.id)}
             />
-            {target.code} - {target.title}
+            {target.code} 
           </label>
         </div>
       ))}

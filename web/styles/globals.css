@@ -64,3 +64,108 @@ body {
   border-radius: 999px;
   font-weight: 600;
 }
+/* ---------- OQI Colors (tweak as you like) ---------- */
+:root {
+  --nav-solid-bg: #111730; /* OQI navy */
+  --footer-bg: #111730;
+  --nav-link: #ffffff;
+  --nav-link-hover: #B7E3FF;
+  --accent: #2B78A0;
+}
+
+
+/* ---------- Transparent / Solid Navbar ---------- */
+.navbar {
+  position: fixed;            /* sit on top of hero */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  z-index: 20;
+  transition: background-color .25s ease, box-shadow .25s ease;
+  background: transparent;    /* transparent by default */
+}
+.navbar.solid {
+  background: var(--nav-solid-bg); /* becomes solid on scroll */
+  box-shadow: 0 4px 18px rgba(0,0,0,.18);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-left, .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: var(--nav-link);
+}
+.nav-logo img { height: 28px; }
+
+.nav-link {
+  color: var(--nav-link);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+.nav-link:hover { color: var(--nav-link-hover); }
+
+/* mobile menu */
+.nav-mobile {
+  display: none;
+}
+@media (max-width: 900px){
+  .nav-desktop { display: none; }
+  .nav-mobile  { display: block; }
+  .mobile-menu {
+    position: absolute; top: 64px; left: 0; right: 0;
+    background: var(--nav-solid-bg);
+    padding: 8px 12px 12px;
+  }
+  .mobile-menu a { display: block; padding: 10px 6px; }
+}
+
+/* ---------- Hero (fixed background + gradient overlay) ---------- */
+.hero {
+  background:
+    linear-gradient(rgba(18, 0, 43, 0.5), rgba(6, 33, 64, 0.5)),
+    url('/images/hero-oqi-bg.jpg') center/cover no-repeat;
+  background-attachment: fixed;
+  min-height: 400px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #fff;
+  padding: 96px 16px 40px;
+}
+
+.hero h1 { font-size: 2.4rem; margin: 0 0 8px; }
+.hero p  { font-size: 1.1rem; margin: 0; }
+
+/* optional “Access Tool” pill (can reuse elsewhere) */
+.btn-pill {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--accent);
+  color: #fff;
+}
+.btn-pill:hover { filter: brightness(1.05); }
+
+/* content spacing following a fixed navbar + hero */
+.section { padding: 56px 16px; }

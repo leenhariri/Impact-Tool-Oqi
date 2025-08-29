@@ -1,82 +1,104 @@
+/* === Global Layout === */
 .container {
-  padding: 2rem;
-  font-family: sans-serif;
+  padding: 3rem 4rem;
+  font-family: 'Segoe UI', sans-serif;
   background-color: white;
   min-height: 100vh;
 }
 
 .instructions {
-  background-color: #f1f1f1;
-  padding: 1rem;
-  border-left: 4px solid #999;
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-left: 5px solid #111730;
   margin-bottom: 2rem;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.instructions h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 .dashboard {
   display: flex;
-  gap: 3rem;
+  gap: 2rem;
   justify-content: space-between;
 }
 
 .left, .right {
   flex: 1;
   background-color: #fafafa;
-  padding: 1.5rem;
-  border-radius: 12px;
+  padding: 1rem;
+  border-radius: 16px;
 }
 
 .left h3, .right h3 {
-  background-color: #875694;
+  background-color: #111730;
   color: white;
-  padding: 0.7rem 1rem;
-  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
   margin-bottom: 1rem;
+  font-size: 1.2rem;
 }
 
 .projectBox {
-  border: 1px solid #999;
-  border-radius: 6px;
-  padding: 0.8rem 1rem;
-  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
   transition: background 0.2s ease;
+  font-size: 0.95rem;
 }
 
 .projectBox:hover {
-  background-color: #eee;
+  background-color: #f2f2f2;
 }
 
 .arrow {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }
 
 .right textarea,
 .right input {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 1rem;
+  padding: 8px;
+  margin-bottom: 0.8rem;
   border-radius: 6px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 0.95rem;
 }
 
 .right button {
-  padding: 10px 20px;
-  background-color: #875694;
+  padding: 8px 18px;
+  background-color: #111730;
   color: white;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 0.95rem;
   border: none;
   border-radius: 999px;
   cursor: pointer;
 }
 
+
+.right button:hover {
+  background-color: #693e75;
+  transform: scale(1.03);
+}
+
+/* === Error Text === */
 .error {
   color: red;
   margin-top: 1rem;
+  font-size: 14px;
 }
+
+/* === Modal === */
 .modalBackdrop {
   position: fixed;
   top: 0;
@@ -92,67 +114,38 @@
 
 .modalContent {
   background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 400px;
-  max-width: 90%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  width: 500px;
+  max-width: 95%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-.modalButton {
-  margin-top: 1rem;
-  background-color: #875694;
-  color: white;
-  padding: 10px 20px;
-  font-weight: bold;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.modalButton:hover {
-  background-color: #693e75;
-}
-.deleteButton {
-  margin-top: 1rem;
-  background-color: #875694;
-  color: white;
-  padding: 10px 20px;
-  font-weight: bold;
-  border: none;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  margin-left: 1rem;
-}
-
-.deleteButton:hover {
-  background-color: #693e75;
-}
 .modalInput {
   width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  padding: 12px;
+  font-size: 15px;
+  margin: 0.8rem 0;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  border-radius: 6px;
 }
 
-.saveButton {
-  background-color: #875694;
+/* === Modal Buttons === */
+.modalButton, .deleteButton, .saveButton {
+  padding: 12px 24px;
+  background-color: #111730;
   color: white;
-  padding: 10px 20px;
   font-weight: bold;
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, transform 0.2s;
+  font-size: 15px;
 }
 
+.modalButton:hover,
+.deleteButton:hover,
 .saveButton:hover {
   background-color: #693e75;
+  transform: scale(1.03);
 }
-
