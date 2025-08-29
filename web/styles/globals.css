@@ -1,0 +1,66 @@
+@import url('https://www.w3schools.com/w3css/5/w3.css');
+@import url('https://www.w3schools.com/lib/w3-theme-blue-grey.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+}
+.hero-image {
+  background-image: url('/images/oqi-banner.jpg'); /* Path to your image */
+  background-size: cover;             /* Makes image cover the whole section */
+  background-position: center;        /* Centers the image */
+  background-attachment: fixed;       /* Keeps it fixed on scroll */
+  height: 400px;                      /* Set height of hero */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.hero-text {
+  background-color: rgba(0, 0, 0, 0.4); /* Slight dark overlay for better contrast */
+  padding: 20px 40px;
+  border-radius: 10px;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.hero-text h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+/* Partners strip */
+.partners-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.partners-logos {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 16px 0 24px;
+}
+.partner-logo {
+  height: 48px;          /* tweak as you like */
+  max-width: 180px;
+  object-fit: contain;
+  filter: none;          /* keep colors */
+}
+.access-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+}
