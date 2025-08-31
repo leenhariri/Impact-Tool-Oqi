@@ -99,12 +99,17 @@ r.get("/", requireAuth, async (req, res) => {
       },
     },
     include: {
-      members: true,
+      members: {
+        include: {
+          user: true, // ✅ this now works
+        },
+      },
     },
   });
 
   res.json({ projects });
 });
+
 
 r.get("/:id", requireAuth, async (req, res) => {
   const userId = req.user!.uid;

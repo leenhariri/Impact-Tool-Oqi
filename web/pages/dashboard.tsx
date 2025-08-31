@@ -20,12 +20,14 @@ useEffect(() => {
   if (selectedProject) {
     setEditTitle(selectedProject.title);
     setEditDesc(selectedProject.description || "");
-    setEditCollaborators(
-      selectedProject.members
-        .filter((m: any) => m.role !== "OWNER")
-        .map((m: any) => m.userId) // use `user.email` if you store it
-        .join(", ")
-    );
+setEditCollaborators(
+  selectedProject.members
+    .filter((m: any) => m.role !== "OWNER")
+    .map((m: any) => m.user?.email)
+    .filter(Boolean) // remove nulls in case a user relation is missing
+    .join(", ")
+);
+
   }
 }, [selectedProject]);
 
@@ -168,7 +170,8 @@ useEffect(() => {
       <ul>
         {selectedProject.members.map((m: any) => (
           <li key={m.id || m.userId}>
-            {m.role} - {m.userId}
+            {m.role} - {m.user?.email || m.user?.name}
+
           </li>
         ))}
       </ul>
