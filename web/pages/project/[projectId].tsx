@@ -377,6 +377,8 @@ for (let i = 0; i < stakeholders.length; i++) {
 
 
     alert('Saved successfully');
+    router.reload();
+
   };
 const addRisk = () => {
   setRisks(prev => [
@@ -441,14 +443,55 @@ return (
       <table className={styles.softTable}>
         <thead>
           <tr>
-            <th>Hierarchy</th>
-            <th>Result </th>
-            <th>Indicator</th>
-            <th>Indicator Definition</th>
-            <th>Means of Measurement</th>
-            <th>Baseline</th>
-            <th>SDG</th>
-            <th>SDG Target</th>
+                        <th className={styles.tooltipHeader}>
+  Score <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+      specify the objective 
+               level here
+  </span>
+</th>
+                        <th className={styles.tooltipHeader}>
+  Result <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    outline the defined result statements here
+  </span>
+</th>
+                        <th className={styles.tooltipHeader}>
+  Indicator <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    Describe what will be measured to show progress toward the result
+  </span>
+</th>
+                        <th className={styles.tooltipHeader}>
+  Indicator Definition <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    explain clearly what the indicator means and how it will be calculated
+  </span>
+</th>
+                        <th className={styles.tooltipHeader}>
+  Means of Measurement <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    state how or by what method, source, or tool the data will be measured
+  </span>
+</th>
+                        <th className={styles.tooltipHeader}>
+  Baseline <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    state the starting point/status on a particular result before your solution - cite references
+  </span>
+</th>
+                        <th className={styles.tooltipHeader}>
+  SDG <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    choose the SDG
+  </span>
+</th>
+                        <th className={styles.tooltipHeader}>
+  SDG Target <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    choose the corresponding SDG Targets
+  </span>
+</th>
             <th></th>
           </tr>
         </thead>
@@ -540,8 +583,19 @@ return (
           <table className={styles.softTable}>
             <thead>
               <tr>
-                <th>Risk</th>
-                <th>Scale </th>
+                <th className={styles.tooltipHeader}>
+  Risk 
+  {/* <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    Indicate the risks 
+  </span> */}
+</th>
+                <th className={styles.tooltipHeader}>
+  Scale <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    Indicate to which scale(s) these risks apply
+  </span>
+</th>
                 <th></th>
               </tr>
             </thead>
@@ -589,8 +643,20 @@ return (
           <table className={styles.softTable}>
             <thead>
               <tr>
-                <th>Type</th>
-                <th>Text</th>
+                <th className={styles.tooltipHeader}>
+  Action/ Assumption
+   {/* <span style={{ color: "#ffffffff" }}>🛈</span> */}
+  {/* <span className={styles.tooltipText}>
+    choose action/ assumption
+  </span> */}
+</th>
+                <th className={styles.tooltipHeader}>
+  Description 
+  {/* <span style={{ color: "#ffffffff" }}>🛈</span> */}
+  {/* <span className={styles.tooltipText}>
+    choose the corresponding SDG Targets
+  </span> */}
+</th>
                 <th></th>
               </tr>
             </thead>
@@ -658,12 +724,44 @@ return (
       <table className={styles.softTable}>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th>Interest</th>
-            <th>Type</th>
-            <th>Strategy</th>
-            <th>Scale</th>
+                                    <th className={styles.tooltipHeader}>
+  Stakeholder <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    Who are the people to be involved directly or indirectly in the implementation
+
+  </span>
+</th>
+                                    <th className={styles.tooltipHeader}>
+  Role <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    specify their role
+  </span>
+</th>
+                                    <th className={styles.tooltipHeader}>
+Interest <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    What is their benefit
+
+  </span>
+</th>
+                                    <th className={styles.tooltipHeader}>
+  Stakeholder Type <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    Indicate whether they are direct or indirect stakeholders
+  </span>
+</th>
+                                    <th className={styles.tooltipHeader}>
+Engagement Strategy<span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+   How will they be mobilised/convinced to be involved?
+  </span>
+</th>
+            <th className={styles.tooltipHeader}>
+Scale<span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+   Indicate which scale they are related to
+  </span>
+</th>
             <th></th>
           </tr>
         </thead>
