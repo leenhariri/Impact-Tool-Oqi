@@ -22,16 +22,16 @@ export default function Navbar() {
           <Link href="/" className="nav-logo">
             {/* optional logo image */}
             <img src="/images/oqi-logo.png" alt="OQI" />
-            <span>Open Quantum Institute</span>
+            {/* <span>Open Quantum Institute</span> */}
           </Link>
 
           {/* Desktop links */}
           <nav className="nav-desktop">
             <Link href="/about" className="nav-link">About</Link>
-            <Link href="/guide" className="nav-link">User Guide</Link>
+            <Link href="/user-guide" className="nav-link">User Guide</Link>
             <Link href="/resources" className="nav-link">Useful Resources</Link>
             {isLoggedIn && <Link href="/dashboard" className="nav-link">My Projects</Link>}
-            <Link href="/glossary" className="nav-link">Glossary</Link>
+            {/* <Link href="/glossary" className="nav-link">Glossary</Link> */}
             {isLoggedIn && <Link href="/dashboard" className="nav-link">Access Tool</Link>}
             {isLoggedIn
               ? <Link href="/logout" className="nav-link">Sign Out</Link>

@@ -13,11 +13,11 @@ export default function Home() {
 
       {/* Your content */}
       <section className="section w3-container w3-center">
-        <h2>add content here</h2>
+        <h6>This user guide has been created for the Open Quantum Institute (OQI), in partnership with the UN Beyond Lab and GESDA, in order to support the exploration of quantum computing use cases and anticipate their impact once deployed in the real-world on the United Nations Sustainable Development Goals (SDGs) and beyond.</h6>
         
       </section>
 
-      {/* Partners + Access Tool (from your earlier request) */}
+
       <section className="w3-container w3-padding-32">
         <div className="partners-wrap">
           <hr />
