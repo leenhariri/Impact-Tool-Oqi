@@ -293,35 +293,41 @@ const deleteAssumptionOrActivity = async (index: number) => {
 
   const saveAll = async () => {
     for (const [index, row] of impactRows.entries()) {
-      if (!row.id || row.id.startsWith('temp-')) {
-        const res = await fetch(`http://localhost:4000/impact-rows`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...row, projectId,orderIndex: index  })
-        });
-        const created = await res.json();
-        row.id = created.id;
-      } else {
-        await fetch(`http://localhost:4000/impact-rows/${row.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...row, orderIndex: index })
-        });
-      }
+let savedRowId = row.id;
 
-      const targetIds = sdgTargets[row.id || ''] || [];
-      const sdgId = selectedSDGs[row.id || ''];  // ✅ Get selected SDG
-      await fetch(`http://localhost:4000/impact-row-targets/${row.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-       body: JSON.stringify({
-  sdgTargetIds: targetIds,
-  projectId: projectId,
-  impactRowId: row.id,
-  sdgId 
-})
+if (!savedRowId || savedRowId.startsWith('temp-')) {
+  const res = await fetch(`http://localhost:4000/impact-rows`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...row, projectId, orderIndex: index })
+  });
 
-      });
+  const created = await res.json();
+  savedRowId = created.id;
+  impactRows[index].id = created.id; // 🔄 update locally
+} else {
+  await fetch(`http://localhost:4000/impact-rows/${savedRowId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...row, orderIndex: index })
+  });
+}
+
+// ✅ Now save SDG + SDG Target using correct ID
+const targetIds = sdgTargets[savedRowId] || [];
+const sdgId = selectedSDGs[savedRowId];
+
+await fetch(`http://localhost:4000/impact-row-targets/${savedRowId}`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    sdgTargetIds: targetIds,
+    projectId,
+    impactRowId: savedRowId,
+    sdgId
+  })
+});
+
     }
     for (const risk of risks) {
   if (!risk.id) {

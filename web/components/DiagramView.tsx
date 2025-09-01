@@ -195,7 +195,7 @@ const stakeholders: Stakeholder[] = await stakeholderRes.json();
           savedNodes.map((n: any) => [n.nodeId, { x: n.x, y: n.y }])
         );
 
-        const verticalSpacing = 90;
+        const verticalSpacing = 120;
         const horizontalSpacing = 260;
         const baseX = 300;
 
@@ -230,16 +230,30 @@ const stakeholders: Stakeholder[] = await stakeholderRes.json();
               x: baseX + i * horizontalSpacing,
               y: hierarchyYMap[level],
             }) as { x: number; y: number };
-let style = {};
+// let style = {};
+let style: React.CSSProperties = {
+  padding: "8px 12px",
+  fontSize: "13px",
+  fontWeight: "normal",
+  whiteSpace: "pre-wrap",
+  overflowWrap: "break-word",
+  display: "inline-block",
+  textAlign: "center",
+  minWidth: "120px",
+  maxWidth: "300px",
+};
+
+
 if (level === "LONG_TERM_IMPACT") {
-  style = { backgroundColor: "#a5c9ec", borderColor: "#003366" };
+  style = { ...style, backgroundColor: "#a5c9ec", borderColor: "#003366" };
 } else if (level === "MID_TERM_IMPACT") {
-  style = { backgroundColor: "#deafff", borderColor: "#663399" };
+  style = { ...style, backgroundColor: "#deafff", borderColor: "#663399" };
 } else if (level === "SHORT_TERM_IMPACT") {
-  style = { backgroundColor: "#f5d6ff", borderColor: "#cc66cc" };
+  style = { ...style, backgroundColor: "#f5d6ff", borderColor: "#cc66cc" };
 } else if (level === "OUTPUT") {
-  style = { backgroundColor: "#fbe1c8", borderColor: "#cc6600" };
+  style = { ...style, backgroundColor: "#fbe1c8", borderColor: "#cc6600" };
 }
+
 
             nodeList.push({
               id: nodeId,
@@ -292,6 +306,15 @@ risks.forEach((risk, i) => {
         backgroundColor: "#f8d7da",
         borderColor: "#721c24",
         color: "#721c24",
+        padding: "8px 12px",
+  fontSize: "13px",
+  fontWeight: "normal",
+  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
+  overflowWrap: "break-word",     // ✅ break long words
+  textAlign: "center",
+  display: "inline-block",        // ✅ keeps width flexible
+  maxWidth: "300px",              // ✅ optional: prevents super long lines
+  minWidth: "120px",              // ✅ optional: good minimum size
       },
     });
   });
@@ -357,6 +380,15 @@ risks.forEach((risk, i) => {
               backgroundColor: "#fff3cd",
               borderColor: "#856404",
               color: "#856404",
+              padding: "8px 12px",
+  fontSize: "13px",
+  fontWeight: "normal",
+  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
+  overflowWrap: "break-word",     // ✅ break long words
+  textAlign: "center",
+  display: "inline-block",        // ✅ keeps width flexible
+  maxWidth: "300px",              // ✅ optional: prevents super long lines
+  minWidth: "120px",              // ✅ optional: good minimum size
             },
           });
         });
@@ -379,6 +411,15 @@ risks.forEach((risk, i) => {
               backgroundColor: "#d4edda",
               borderColor: "#155724",
               color: "#155724",
+              padding: "8px 12px",
+  fontSize: "13px",
+  fontWeight: "normal",
+  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
+  overflowWrap: "break-word",     // ✅ break long words
+  textAlign: "center",
+  display: "inline-block",        // ✅ keeps width flexible
+  maxWidth: "300px",              // ✅ optional: prevents super long lines
+  minWidth: "120px",              // ✅ optional: good minimum size
             },
           });
         });
@@ -413,7 +454,7 @@ for (const level of hierarchyOrder) {
     const nodeId = `stakeholder-${s.id}`;
     
     const position = (nodePositionMap.get(nodeId) ?? {
-x: baseX + 600 + i * 200, // Push them further right, with even spacing
+x: baseX + 800 + i * 200, // Push them further right, with even spacing
 y: hierarchyYMap[level],
 
     }) as { x: number; y: number };
@@ -433,14 +474,23 @@ y: hierarchyYMap[level],
         backgroundColor: "#d4edda", // light green
         borderColor: "#14532d",     // dark green
         color: "#14532d",
-        borderWidth: 2,
-        borderStyle: borderStyle,
-        fontWeight: "bold",
-        fontSize: "12px",
-        borderRadius: "6px",
-        padding: "4px 8px",
-        whiteSpace: "pre-line",
-        textAlign: "center",
+        // borderWidth: 2,
+        // borderStyle: borderStyle,
+        // fontWeight: "bold",
+        // fontSize: "12px",
+        // borderRadius: "6px",
+        // padding: "4px 8px",
+        // whiteSpace: "pre-line",
+        // textAlign: "center",
+        padding: "8px 12px",
+  fontSize: "13px",
+  fontWeight: "normal",
+  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
+  overflowWrap: "break-word",     // ✅ break long words
+  textAlign: "center",
+  display: "inline-block",        // ✅ keeps width flexible
+  maxWidth: "300px",              // ✅ optional: prevents super long lines
+  minWidth: "120px",              // ✅ optional: good minimum size
       },
     });
 

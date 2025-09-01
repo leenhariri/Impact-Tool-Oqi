@@ -4,8 +4,9 @@ import Link from "next/link";
 export default function Navbar() {
   const [solid, setSolid] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // becomes solid after scrolling ~60px
+  // Detect scroll to make navbar solid
   useEffect(() => {
     const onScroll = () => setSolid(window.scrollY > 60);
     onScroll();
@@ -13,33 +14,50 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isLoggedIn = false; // TODO: replace with real auth state
+  // Check auth session
+  useEffect(() => {
+    fetch("http://localhost:4000/auth/me", { credentials: "include" })
+
+      .then((res) => res.ok ? res.json() : Promise.reject())
+      .then(() => setIsLoggedIn(true))
+      .catch(() => setIsLoggedIn(false));
+  }, []);
+
+  const handleLogout = async () => {
+await fetch("http://localhost:4000/auth/logout", {
+  method: "POST",
+  credentials: "include",
+});
+
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
 
   return (
     <header className={`navbar ${solid ? "solid" : ""}`}>
       <div className="nav-inner">
         <div className="nav-left">
           <Link href="/" className="nav-logo">
-            {/* optional logo image */}
             <img src="/images/oqi-logo.png" alt="OQI" />
-            {/* <span>Open Quantum Institute</span> */}
           </Link>
 
-          {/* Desktop links */}
+          {/* Desktop Nav */}
           <nav className="nav-desktop">
             <Link href="/about" className="nav-link">About</Link>
             <Link href="/user-guide" className="nav-link">User Guide</Link>
             <Link href="/resources" className="nav-link">Useful Resources</Link>
             {isLoggedIn && <Link href="/dashboard" className="nav-link">My Projects</Link>}
-            {/* <Link href="/glossary" className="nav-link">Glossary</Link> */}
             {isLoggedIn && <Link href="/dashboard" className="nav-link">Access Tool</Link>}
-            {isLoggedIn
-              ? <Link href="/logout" className="nav-link">Sign Out</Link>
-              : <Link href="/login" className="nav-link">Sign In</Link>}
+            {!isLoggedIn && <Link href="/login" className="nav-link">Sign In</Link>}
+            {isLoggedIn && (
+              <button onClick={handleLogout} className="nav-link" style={{ background: "none", border: "none", cursor: "pointer" }}>
+                Sign Out
+              </button>
+            )}
           </nav>
         </div>
 
-        {/* Mobile hamburger */}
+        {/* Mobile Hamburger */}
         <button
           className="nav-mobile nav-link"
           aria-label="Menu"
@@ -49,18 +67,28 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* Mobile Menu */}
       {mobileOpen && (
         <div className="mobile-menu">
           <Link href="/about" className="nav-link" onClick={() => setMobileOpen(false)}>About</Link>
-          <Link href="/guide" className="nav-link" onClick={() => setMobileOpen(false)}>User Guide</Link>
+          <Link href="/user-guide" className="nav-link" onClick={() => setMobileOpen(false)}>User Guide</Link>
           <Link href="/resources" className="nav-link" onClick={() => setMobileOpen(false)}>Useful Resources</Link>
           {isLoggedIn && <Link href="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>My Projects</Link>}
-          <Link href="/glossary" className="nav-link" onClick={() => setMobileOpen(false)}>Glossary</Link>
           {isLoggedIn && <Link href="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>Access Tool</Link>}
-          {isLoggedIn
-            ? <Link href="/logout" className="nav-link" onClick={() => setMobileOpen(false)}>Sign Out</Link>
-            : <Link href="/login" className="nav-link" onClick={() => setMobileOpen(false)}>Sign In</Link>}
+          <Link href="/glossary" className="nav-link" onClick={() => setMobileOpen(false)}>Glossary</Link>
+          {!isLoggedIn && <Link href="/login" className="nav-link" onClick={() => setMobileOpen(false)}>Sign In</Link>}
+          {isLoggedIn && (
+            <button
+              onClick={() => {
+                handleLogout();
+                setMobileOpen(false);
+              }}
+              className="nav-link"
+              style={{ background: "none", border: "none", cursor: "pointer" }}
+            >
+              Sign Out
+            </button>
+          )}
         </div>
       )}
     </header>

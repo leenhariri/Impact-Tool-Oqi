@@ -34,6 +34,7 @@ r.post("/logout", (_req, res) => { clearCookie(res); res.json({ ok: true }); });
 r.get("/me", (req, res) => {
   const token = req.cookies[COOKIE_NAME];
   const session = verifySession(token);
+  
   if (!session) return res.status(401).json({ error: "unauthorized" });
   res.json({ user: session });
 });
