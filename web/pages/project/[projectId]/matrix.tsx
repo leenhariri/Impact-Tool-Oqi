@@ -126,7 +126,7 @@ return (
       <h2 className="font-bold text-lg mb-2">Instructions</h2>
       <ol className="list-decimal list-inside text-sm">
         <li>Insert the corresponding number from the given legend into the matrix boxes to edit elements of the matrix.</li>
-        <li>Save your work once done.</li>
+        {/* <li>Save your work once done.</li> */}
         <li>Option to export as PDF.</li>
       </ol>
     </div>

@@ -439,6 +439,7 @@ return (
 
     {/* Impact Rows */}
     {/* <h3>Impact Rows</h3> */}
+    <h3> Indicator Matrix</h3>
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
         <thead>
@@ -579,6 +580,7 @@ return (
     <div className={styles.twoColumnSection}>
       {/* Risks */}
       <div className={styles.column}>
+        <h3> Risks Table</h3>
         <div className={styles.tableWrapper}>
           <table className={styles.softTable}>
             <thead>
@@ -639,6 +641,7 @@ return (
 
       {/* Assumptions & Activities */}
       <div className={styles.column}>
+        <h3> Assumptions & Activitis Table</h3>
         <div className={styles.tableWrapper}>
           <table className={styles.softTable}>
             <thead>
@@ -719,7 +722,9 @@ return (
     </div>
 
     {/* Stakeholders */}
-    {/* <h3>Stakeholders</h3> */}
+    <h3> Stakeholders Matrix</h3>
+   {/* <p className="text-[10px]">  Add the stakeholders responsible for each of the results</p> */}
+
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
         <thead>
