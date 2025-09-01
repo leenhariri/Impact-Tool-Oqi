@@ -18,6 +18,7 @@ import { useRef } from "react";
 import { ReactFlowProvider } from "reactflow";
 import { applyEdgeChanges } from "reactflow";
 import styles from "../styles/diagram.module.css"; 
+import Legend from "../components/Legend";
 type ImpactRow = {
   id: string;
   hierarchyLevel: string;
@@ -25,11 +26,17 @@ type ImpactRow = {
   orderIndex: number;
 };
 
+// type Risk = {
+//   id: string;
+//   hierarchyLevel: string;
+//   text: string;
+// };
 type Risk = {
   id: string;
-  hierarchyLevel: string;
   text: string;
+  hierarchies: { hierarchy: string }[]; // ✅ ADD THIS
 };
+
 
 type Activity = {
   id: string;
@@ -41,6 +48,17 @@ type Assumption = {
   id: string;
   text: string;
 };
+
+type Stakeholder = {
+  id: string;
+  name: string;
+  role: string;
+  interest: string;
+  stakeholderType: string;
+  engagementStrategy: string;
+  hierarchyLevel: string;
+};
+
 
 export default function DiagramView({ projectId }: { projectId: string }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -153,6 +171,7 @@ const exportAsPDF = async () => {
           assumptionRes,
           nodePosRes,
           edgeRes,
+          stakeholderRes,
         ] = await Promise.all([
           fetch(`http://localhost:4000/impact-rows/${projectId}`),
           fetch(`http://localhost:4000/risks/project/${projectId}`),
@@ -160,6 +179,8 @@ const exportAsPDF = async () => {
           fetch(`http://localhost:4000/assumptions/project/${projectId}`),
           fetch(`http://localhost:4000/diagram-nodes/${projectId}`),
           fetch(`http://localhost:4000/diagram-edges/${projectId}`),
+          fetch(`http://localhost:4000/stakeholders/${projectId}`),
+          
         ]);
 
         const impactRows: ImpactRow[] = await impactRes.json();
@@ -168,7 +189,7 @@ const exportAsPDF = async () => {
         const assumptions: Assumption[] = await assumptionRes.json();
         const savedNodes = await nodePosRes.json();
         const savedEdges = await edgeRes.json();
-
+const stakeholders: Stakeholder[] = await stakeholderRes.json();
         const nodeList: Node[] = [];
         const nodePositionMap = new Map(
           savedNodes.map((n: any) => [n.nodeId, { x: n.x, y: n.y }])
@@ -224,7 +245,8 @@ if (level === "LONG_TERM_IMPACT") {
               id: nodeId,
               type: "default",
               data: {
-                label: `${level.replace(/_/g, " ")}: ${row.resultStatement}`,
+                label: ` ${row.resultStatement}`,
+                // ${level.replace(/_/g, " ")}:
               },
               position,
               style
@@ -233,25 +255,49 @@ if (level === "LONG_TERM_IMPACT") {
         }
 
         // Risks
-        risks.forEach((risk, i) => {
-          const nodeId = `risk-${risk.id}`;
-          const position = (nodePositionMap.get(nodeId) ?? {
-            x: baseX - 350,
-            y: hierarchyYMap[risk.hierarchyLevel] ?? i * verticalSpacing,
-          }) as { x: number; y: number };
+        // risks.forEach((risk, i) => {
+        //   const nodeId = `risk-${risk.id}`;
+        //   const position = (nodePositionMap.get(nodeId) ?? {
+        //     x: baseX - 350,
+        //     y: hierarchyYMap[risk.hierarchyLevel] ?? i * verticalSpacing,
+        //   }) as { x: number; y: number };
 
-          nodeList.push({
-            id: nodeId,
-            type: "default",
-            data: { label: `Risk: ${risk.text}` },
-            position,
-            style: {
-              backgroundColor: "#f8d7da",
-              borderColor: "#721c24",
-              color: "#721c24",
-            },
-          });
-        });
+        //   nodeList.push({
+        //     id: nodeId,
+        //     type: "default",
+        //     data: { label: ` ${risk.text}` },
+        //     // Risk:
+        //     position,
+        //     style: {
+        //       backgroundColor: "#f8d7da",
+        //       borderColor: "#721c24",
+        //       color: "#721c24",
+        //     },
+        //   });
+        // });
+risks.forEach((risk, i) => {
+  (risk.hierarchies ?? []).forEach((h, j) => {
+    const nodeId = `risk-${risk.id}-${h.hierarchy}`;
+    const position = (nodePositionMap.get(nodeId) ?? {
+      x: baseX - 350,
+      y: hierarchyYMap[h.hierarchy] ?? (i + j) * verticalSpacing,
+    }) as { x: number; y: number };
+
+    nodeList.push({
+      id: nodeId,
+      type: "default",
+      data: { label: ` ${risk.text}` },
+      position,
+      style: {
+        backgroundColor: "#f8d7da",
+        borderColor: "#721c24",
+        color: "#721c24",
+      },
+    });
+  });
+});
+
+
         // Group risks by hierarchyLevel
 // const risksByHierarchy: Record<string, string[]> = {};
 // risks.forEach((risk) => {
@@ -304,7 +350,8 @@ if (level === "LONG_TERM_IMPACT") {
           nodeList.push({
             id: nodeId,
             type: "default",
-            data: { label: `Activity: ${activity.text}` },
+            data: { label: ` ${activity.text}` },
+            // Activity:
             position,
             style: {
               backgroundColor: "#fff3cd",
@@ -325,7 +372,8 @@ if (level === "LONG_TERM_IMPACT") {
           nodeList.push({
             id: nodeId,
             type: "default",
-            data: { label: `Assumption: ${assumption.text}` },
+            data: { label: ` ${assumption.text}` },
+            // Assumption:
             position,
             style: {
               backgroundColor: "#d4edda",
@@ -335,6 +383,7 @@ if (level === "LONG_TERM_IMPACT") {
           });
         });
 
+
         const edgeList: Edge[] = savedEdges.map((edge: any) => ({
           id: edge.id,
           source: edge.source,
@@ -343,6 +392,62 @@ if (level === "LONG_TERM_IMPACT") {
 
           style: { stroke: "#222", strokeWidth: 2 },
         }));
+// Stakeholders (Right of each hierarchy block)
+// Group stakeholders by hierarchyLevel
+const stakeholdersByHierarchy: Record<string, Stakeholder[]> = {};
+stakeholders.forEach((s) => {
+  if (!stakeholdersByHierarchy[s.hierarchyLevel]) {
+    stakeholdersByHierarchy[s.hierarchyLevel] = [];
+  }
+  stakeholdersByHierarchy[s.hierarchyLevel].push(s);
+});
+
+// 1. Find max X of existing nodes
+const maxX = Math.max(...nodeList.map((n) => n.position.x)) || baseX;
+
+// 2. Render stakeholders horizontally to the right of impact rows
+for (const level of hierarchyOrder) {
+  const group = stakeholdersByHierarchy[level] || [];
+
+  group.forEach((s, i) => {
+    const nodeId = `stakeholder-${s.id}`;
+    
+    const position = (nodePositionMap.get(nodeId) ?? {
+x: baseX + 600 + i * 200, // Push them further right, with even spacing
+y: hierarchyYMap[level],
+
+    }) as { x: number; y: number };
+
+    // Determine border style based on stakeholderType
+    const isDirect = s.stakeholderType === "DIRECT";
+    const borderStyle = isDirect ? "solid" : "dotted";
+
+    nodeList.push({
+      id: nodeId,
+      type: "default",
+      data: {
+        label: `Stakeholder:\n${s.name}`,
+      },
+      position,
+      style: {
+        backgroundColor: "#d4edda", // light green
+        borderColor: "#14532d",     // dark green
+        color: "#14532d",
+        borderWidth: 2,
+        borderStyle: borderStyle,
+        fontWeight: "bold",
+        fontSize: "12px",
+        borderRadius: "6px",
+        padding: "4px 8px",
+        whiteSpace: "pre-line",
+        textAlign: "center",
+      },
+    });
+
+    // ❌ Skip adding edge since you said "no arrows generated"
+  });
+}
+
 
         setNodes(nodeList);
         setEdges(edgeList);
@@ -410,13 +515,12 @@ return (
         <ol className="list-decimal list-inside text-sm">
           <li>Insert arrows between diagram boxes.</li>
           <li>To clear a single arrow, click on it then delete.</li>
-          <li>Save your work once done.</li>
+          {/* <li>Save your work once done.</li> */}
           <li>Option to export as PDF.</li>
         </ol>
       </div>
 
-      {/* Diagram Area */}
-      <div className={styles.diagramArea}>
+<div className={styles.diagramArea}>
         <div ref={diagramOnlyRef} className={styles.reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
@@ -430,7 +534,9 @@ return (
             zoomOnScroll
           >
             <Background />
+            
           </ReactFlow>
+           <Legend/>
         </div>
 
         <div className={styles.controlsWrapper}>
@@ -447,9 +553,9 @@ return (
           </button>
         </div>
         <div className={styles.rightButtons}>
-          <button onClick={resetNodePositions} className={styles.buttonPrimary}>
+          {/* <button onClick={resetNodePositions} className={styles.buttonPrimary}>
              Reset Positions
-          </button>
+          </button> */}
           <button
             onClick={() => window.location.href = `/project/${projectId}`}
             className={styles.buttonPrimary}

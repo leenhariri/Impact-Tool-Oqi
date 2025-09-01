@@ -106,6 +106,9 @@ export const getRisksForProject = async (req: Request, res: Response) => {
   try {
     const risks = await prisma.risk.findMany({
       where: { projectId },
+      include: {
+        hierarchies: true, // ✅ this ensures you get hierarchy levels
+      },
     });
     res.status(200).json(risks);
   } catch (error) {
@@ -113,3 +116,4 @@ export const getRisksForProject = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch risks for project' });
   }
 };
+
