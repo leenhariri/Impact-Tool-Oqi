@@ -48,7 +48,7 @@ await fetch("http://localhost:4000/auth/logout", {
             <Link href="/resources" className="nav-link">Useful Resources</Link>
             {isLoggedIn && <Link href="/dashboard" className="nav-link">My Projects</Link>}
             {isLoggedIn && <Link href="/dashboard" className="nav-link">Access Tool</Link>}
-            {!isLoggedIn && <Link href="/login" className="nav-link">Sign In</Link>}
+            {!isLoggedIn && <Link href="/login" className="nav-link">Access Tool</Link>}
             {isLoggedIn && (
               <button onClick={handleLogout} className="nav-link" style={{ background: "none", border: "none", cursor: "pointer" }}>
                 Sign Out

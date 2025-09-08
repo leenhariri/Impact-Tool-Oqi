@@ -93,7 +93,8 @@ export default function UserGuide() {
           <li>What are the risks that would deter the solution?</li>
         </ul>
 
-        <h2>SDG Interlinkage</h2>
+       <h2 id="sdg-interlinkage">SDG Interlinkage</h2>
+
         <p>The potential influence of a quantum computing use case on both system-wide SDG interactions and individual SDG targets can be assessed using the SDG cross-impact matrix and the related target influences...</p>
         <p>In completing the SDG Interlinkage Diagram (link), self-select SDG targets based on the primary SDG tackled by the quantum computing solution. Effective self-assessment requires a good understanding of the problem analysis addressed by the quantum computing solution outlined in the ToC framework - prior completion of the Impact Indicator Matrix (link) is thus needed. Please use the SDG targets and indicator global framework for reference.</p>
 

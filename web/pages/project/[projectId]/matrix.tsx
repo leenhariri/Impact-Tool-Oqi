@@ -50,6 +50,7 @@ export default function MatrixPage() {
         `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/sdg-targets`
       );
       setTargets(res.data);
+      return res; 
     };
 
     const fetchMatrix = async () => {
@@ -62,9 +63,31 @@ export default function MatrixPage() {
         entries[`${entry.sourceSdgTargetId}_${entry.targetSdgTargetId}`] = entry.score;
       });
       setMatrix(entries);
+      return res; 
     };
 
-    Promise.all([fetchTargets(), fetchMatrix()]).finally(() => setLoading(false));
+Promise.all([fetchTargets(), fetchMatrix()]).then(([targetsRes, matrixRes]) => {
+  const targetList: SDGTarget[] = targetsRes.data;
+  const matrixEntries: MatrixEntry[] = matrixRes.data;
+
+  // Build matrix map
+  const matrixMap: { [key: string]: number } = {};
+  matrixEntries.forEach((entry) => {
+    matrixMap[`${entry.sourceSdgTargetId}_${entry.targetSdgTargetId}`] = entry.score;
+  });
+  setMatrix(matrixMap);
+
+  // Sort by SDG code numerically
+  const sortedTargets = targetList.sort((a, b) => {
+    const [aMajor, aMinor] = a.code.split('.').map(Number);
+    const [bMajor, bMinor] = b.code.split('.').map(Number);
+    return aMajor !== bMajor ? aMajor - bMajor : aMinor - bMinor;
+  });
+
+  setTargets(sortedTargets);
+}).finally(() => setLoading(false));
+
+
   }, [projectId]);
 
   const updateEntry = async (sourceId: string, targetId: string, score: number) => {
@@ -130,6 +153,11 @@ return (
         <li>Option to export as PDF.</li>
       </ol>
     </div>
+<h2 className="text-lg font-semibold text-blue-600 hover:underline mb-4">
+  <a href="/user-guide#sdg-interlinkage" target="_blank" rel="noopener noreferrer">
+    About SDG Interlinkage
+  </a>
+</h2>
 
     {/* Matrix + Legend side-by-side */}
     <div className={styles.flexRow}>
@@ -186,13 +214,17 @@ return (
       <div className={styles.legendWrapper}>
         <h3 className="font-semibold text-md mb-2">Interaction Scale</h3>
         <ul className={styles.legendBox}>
-          <li><span style={{ backgroundColor: '#8B0000' }}></span> -3 Cancelling</li>
-          <li><span style={{ backgroundColor: '#DC143C' }}></span> -2 Counteracting</li>
-          <li><span style={{ backgroundColor: '#FF007F' }}></span> -1 Constraining</li>
-          <li><span style={{ backgroundColor: '#FFFFFF', border: '1px solid #ccc' }}></span> 0 Consistent</li>
-          <li><span style={{ backgroundColor: '#FFFF66' }}></span> +1 Enabling</li>
-          <li><span style={{ backgroundColor: '#90EE90' }}></span> +2 Reinforcing</li>
           <li><span style={{ backgroundColor: '#006400' }}></span> +3 Indivisible</li>
+                    <li><span style={{ backgroundColor: '#90EE90' }}></span> +2 Reinforcing</li>
+                    <li><span style={{ backgroundColor: '#FFFF66' }}></span> +1 Enabling</li>
+
+
+          <li><span style={{ backgroundColor: '#FFFFFF', border: '1px solid #ccc' }}></span> 0 Consistent</li>
+                    <li><span style={{ backgroundColor: '#FF007F' }}></span> -1 Constraining</li>
+                              <li><span style={{ backgroundColor: '#DC143C' }}></span> -2 Counteracting</li>
+          <li><span style={{ backgroundColor: '#8B0000' }}></span> -3 Cancelling</li>
+
+
         </ul>
       </div>
     </div>
@@ -220,6 +252,7 @@ return (
         </button>
       </div>
     </div>
+
   </div>
 );
 

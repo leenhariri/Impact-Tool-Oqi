@@ -249,7 +249,7 @@ if (level === "LONG_TERM_IMPACT") {
 } else if (level === "MID_TERM_IMPACT") {
   style = { ...style, backgroundColor: "#deafff", borderColor: "#663399" };
 } else if (level === "SHORT_TERM_IMPACT") {
-  style = { ...style, backgroundColor: "#f5d6ff", borderColor: "#cc66cc" };
+  style = { ...style, backgroundColor: "#e07d7dff", borderColor: "#a4494eff" };
 } else if (level === "OUTPUT") {
   style = { ...style, backgroundColor: "#fbe1c8", borderColor: "#cc6600" };
 }
@@ -362,7 +362,7 @@ risks.forEach((risk, i) => {
 
 
         // Activities
-        const outputY = hierarchyYMap["OUTPUT"] + 120;
+        const outputY = hierarchyYMap["OUTPUT"] + 180;
         activities.forEach((activity, i) => {
           const nodeId = `activity-${activity.id}`;
           const position = (nodePositionMap.get(nodeId) ?? {
@@ -377,9 +377,9 @@ risks.forEach((risk, i) => {
             // Activity:
             position,
             style: {
-              backgroundColor: "#fff3cd",
-              borderColor: "#856404",
-              color: "#856404",
+              backgroundColor: "#468c4cff",
+              borderColor: "#156e21ff",
+              color: "#0a5821ff",
               padding: "8px 12px",
   fontSize: "13px",
   fontWeight: "normal",
@@ -470,28 +470,23 @@ y: hierarchyYMap[level],
         label: `Stakeholder:\n${s.name}`,
       },
       position,
-      style: {
-        backgroundColor: "#d4edda", // light green
-        borderColor: "#14532d",     // dark green
-        color: "#14532d",
-        // borderWidth: 2,
-        // borderStyle: borderStyle,
-        // fontWeight: "bold",
-        // fontSize: "12px",
-        // borderRadius: "6px",
-        // padding: "4px 8px",
-        // whiteSpace: "pre-line",
-        // textAlign: "center",
-        padding: "8px 12px",
+style: {
+  backgroundColor: "#d4edda",
+  borderColor: "#14532d",
+  borderStyle: isDirect ? "solid" : "dashed", // ✅ easier to see
+  borderWidth: 2,                             // ✅ thicker
+  color: "#14532d",
+  padding: "8px 12px",
   fontSize: "13px",
   fontWeight: "normal",
-  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
-  overflowWrap: "break-word",     // ✅ break long words
+  whiteSpace: "pre-wrap",
+  overflowWrap: "break-word",
   textAlign: "center",
-  display: "inline-block",        // ✅ keeps width flexible
-  maxWidth: "300px",              // ✅ optional: prevents super long lines
-  minWidth: "120px",              // ✅ optional: good minimum size
-      },
+  display: "inline-block",
+  maxWidth: "300px",
+  minWidth: "120px",
+}
+,
     });
 
     // ❌ Skip adding edge since you said "no arrows generated"
@@ -565,7 +560,7 @@ return (
         <ol className="list-decimal list-inside text-sm">
           <li>Insert arrows between diagram boxes.</li>
           <li>To clear a single arrow, click on it then delete.</li>
-          {/* <li>Save your work once done.</li> */}
+          <li>Boxes are movable, you may drag them to rearrange the layout for better visibility.</li>
           <li>Option to export as PDF.</li>
         </ol>
       </div>
