@@ -21,6 +21,7 @@ interface MatrixEntry {
   sourceSdgTargetId: string;
   targetSdgTargetId: string;
   score: number;
+  rationale?: string;
 }
 
 const scoreColors: { [key: number]: string } = {
@@ -39,16 +40,18 @@ export default function MatrixPage() {
   const matrixRef = useRef<HTMLDivElement>(null);
 
   const [targets, setTargets] = useState<SDGTarget[]>([]);
-  const [matrix, setMatrix] = useState<{ [key: string]: number }>({});
+  const [matrix, setMatrix] = useState<{ [key: string]: MatrixEntry }>({});
   const [loading, setLoading] = useState(true);
-  // added modal state
-const [modalOpen, setModalOpen] = useState(false);
-const [selectedPair, setSelectedPair] = useState<{
-  source: SDGTarget;
-  target: SDGTarget;
-  currentScore: number;
-  rationale?: string;
-} | null>(null);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPair, setSelectedPair] = useState<{
+    source: SDGTarget;
+    target: SDGTarget;
+    currentScore: number;
+    rationale?: string;
+  } | null>(null);
+  const [tempScore, setTempScore] = useState<number>(0);
+  const [tempRationale, setTempRationale] = useState<string>("");
 
   useEffect(() => {
     if (!projectId) return;
@@ -58,56 +61,65 @@ const [selectedPair, setSelectedPair] = useState<{
         `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/sdg-targets`
       );
       setTargets(res.data);
-      return res; 
+      return res;
     };
 
     const fetchMatrix = async () => {
       const res = await axios.get<MatrixEntry[]>(
         `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`
       );
-      const saved: MatrixEntry[] = res.data;
-      const entries: { [key: string]: number } = {};
-      saved.forEach((entry) => {
-        entries[`${entry.sourceSdgTargetId}_${entry.targetSdgTargetId}`] = entry.score;
+      const entries: { [key: string]: MatrixEntry } = {};
+      res.data.forEach((entry) => {
+        const key = `${entry.sourceSdgTargetId}_${entry.targetSdgTargetId}`;
+        entries[key] = entry;
       });
       setMatrix(entries);
-      return res; 
+      return res;
     };
 
-Promise.all([fetchTargets(), fetchMatrix()]).then(([targetsRes, matrixRes]) => {
-  const targetList: SDGTarget[] = targetsRes.data;
-  const matrixEntries: MatrixEntry[] = matrixRes.data;
-
-  // Build matrix map
-  const matrixMap: { [key: string]: number } = {};
-  matrixEntries.forEach((entry) => {
-    matrixMap[`${entry.sourceSdgTargetId}_${entry.targetSdgTargetId}`] = entry.score;
-  });
-  setMatrix(matrixMap);
-
-  // Sort by SDG code numerically
-  const sortedTargets = targetList.sort((a, b) => {
-    const [aMajor, aMinor] = a.code.split('.').map(Number);
-    const [bMajor, bMinor] = b.code.split('.').map(Number);
-    return aMajor !== bMajor ? aMajor - bMajor : aMinor - bMinor;
-  });
-
-  setTargets(sortedTargets);
-}).finally(() => setLoading(false));
-
-
+    Promise.all([fetchTargets(), fetchMatrix()]).then(([targetsRes, matrixRes]) => {
+      const sortedTargets = targetsRes.data.sort((a, b) => {
+        const [aMajor, aMinor] = a.code.split('.').map(Number);
+        const [bMajor, bMinor] = b.code.split('.').map(Number);
+        return aMajor !== bMajor ? aMajor - bMajor : aMinor - bMinor;
+      });
+      setTargets(sortedTargets);
+    }).finally(() => setLoading(false));
   }, [projectId]);
 
-  const updateEntry = async (sourceId: string, targetId: string, score: number) => {
+  const updateEntry = async (sourceId: string, targetId: string, score: number, rationale?: string) => {
     const key = `${sourceId}_${targetId}`;
-    const updated = { ...matrix, [key]: score };
+    const updated = {
+      ...matrix,
+      [key]: { sourceSdgTargetId: sourceId, targetSdgTargetId: targetId, score, rationale }
+    };
     setMatrix(updated);
 
     await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`, {
       sourceSdgTargetId: sourceId,
       targetSdgTargetId: targetId,
       score,
+      rationale
     });
+  };
+
+  const openModal = (source: SDGTarget, target: SDGTarget, current: MatrixEntry) => {
+    setSelectedPair({
+      source,
+      target,
+      currentScore: current?.score ?? 0,
+      rationale: current?.rationale ?? ""
+    });
+    setTempScore(current?.score ?? 0);
+    setTempRationale(current?.rationale ?? "");
+    setModalOpen(true);
+  };
+
+  const handleModalSave = async () => {
+    if (selectedPair) {
+      await updateEntry(selectedPair.source.id, selectedPair.target.id, tempScore, tempRationale);
+    }
+    setModalOpen(false);
   };
 
   const exportMatrixAsPDF = async () => {
@@ -143,31 +155,23 @@ Promise.all([fetchTargets(), fetchMatrix()]).then(([targetsRes, matrixRes]) => {
   if (loading) return <div className="p-6 font-medium">Loading matrix...</div>;
 
   const rowSums = targets.map((source) =>
-    targets.reduce((sum, target) => sum + (matrix[`${source.id}_${target.id}`] ?? 0), 0)
+    targets.reduce((sum, target) => sum + (matrix[`${source.id}_${target.id}`]?.score ?? 0), 0)
   );
 
   const colSums = targets.map((target) =>
-    targets.reduce((sum, source) => sum + (matrix[`${source.id}_${target.id}`] ?? 0), 0)
+    targets.reduce((sum, source) => sum + (matrix[`${source.id}_${target.id}`]?.score ?? 0), 0)
   );
 
-return (
+  return (
   <div className={styles.container}>
-    {/* Instructions */}
     <div className={styles.instructions}>
       <h2 className="font-bold text-lg mb-2">Instructions</h2>
       <ol className="list-decimal list-inside text-sm">
-        <li>Insert the corresponding number from the given legend into the matrix boxes to edit elements of the matrix.</li>
-        {/* <li>Save your work once done.</li> */}
-        <li>Option to export as PDF.</li>
+        <li>Click a cell to select interaction score and rationale.</li>
+        <li>Diagonal cells are disabled.</li>
       </ol>
     </div>
-<h2 className="text-lg font-semibold text-blue-600 hover:underline mb-4">
-  <a href="/user-guide#sdg-interlinkage" target="_blank" rel="noopener noreferrer">
-    About SDG Interlinkage
-  </a>
-</h2>
 
-    {/* Matrix + Legend side-by-side */}
     <div className={styles.flexRow}>
       <div id="matrix-table-wrapper" className="w-full flex justify-center">
         <table className={styles.matrixTable}>
@@ -184,38 +188,35 @@ return (
             {targets.map((source, rowIndex) => (
               <tr key={source.id}>
                 <td className={styles.headerCell}>{source.code}</td>
-{targets.map((target) => {
-  const key = `${source.id}_${target.id}`;
-  const score = matrix[key] ?? 0;
-  const isDiagonal = source.id === target.id;
+                {targets.map((target) => {
+                  const key = `${source.id}_${target.id}`;
+                  const entry = matrix[key];
+                  const score = entry?.score ?? 0;
+                  const isDiagonal = source.id === target.id;
 
-  return (
-    <td
-      key={target.id}
-      className="border p-1 text-center"
-      style={{
-        backgroundColor: isDiagonal ? '#F5F5F5' : scoreColors[score] || '#FFF',
-        pointerEvents: isDiagonal ? 'none' : 'auto',
-        opacity: isDiagonal ? 0.6 : 1,
-      }}
-    >
-      <input
-        type="number"
-        min={-3}
-        max={3}
-        disabled={isDiagonal}
-        value={Number.isFinite(score) ? score : 0}
-        onChange={(e) => {
-          const val = parseInt(e.target.value);
-          const safeScore = Number.isFinite(val) ? val : 0;
-          updateEntry(source.id, target.id, safeScore);
-        }}
-        className={styles.inputCell}
-      />
-    </td>
-  );
-})}
-
+                  return (
+                    <td
+                      key={target.id}
+                      className="border p-1 text-center cursor-pointer"
+                      style={{
+                        backgroundColor: isDiagonal ? '#F5F5F5' : scoreColors[score] || '#FFF',
+                        pointerEvents: isDiagonal ? 'none' : 'auto',
+                        opacity: isDiagonal ? 0.6 : 1,
+                      }}
+                      onClick={() =>
+                        !isDiagonal &&
+                        openModal(source, target, entry || {
+                          sourceSdgTargetId: source.id,
+                          targetSdgTargetId: target.id,
+                          score: 0,
+                          rationale: '',
+                        })
+                      }
+                    >
+                      {score}
+                    </td>
+                  );
+                })}
                 <td className="bg-purple-200 p-2 font-semibold border text-center text-sm">{rowSums[rowIndex]}</td>
               </tr>
             ))}
@@ -230,50 +231,77 @@ return (
         </table>
       </div>
 
-      {/* Legend */}
       <div className={styles.legendWrapper}>
         <h3 className="font-semibold text-md mb-2">Interaction Scale</h3>
         <ul className={styles.legendBox}>
           <li><span style={{ backgroundColor: '#006400' }}></span> +3 Indivisible</li>
-                    <li><span style={{ backgroundColor: '#90EE90' }}></span> +2 Reinforcing</li>
-                    <li><span style={{ backgroundColor: '#FFFF66' }}></span> +1 Enabling</li>
-
-
+          <li><span style={{ backgroundColor: '#90EE90' }}></span> +2 Reinforcing</li>
+          <li><span style={{ backgroundColor: '#FFFF66' }}></span> +1 Enabling</li>
           <li><span style={{ backgroundColor: '#FFFFFF', border: '1px solid #ccc' }}></span> 0 Consistent</li>
-                    <li><span style={{ backgroundColor: '#FF007F' }}></span> -1 Constraining</li>
-                              <li><span style={{ backgroundColor: '#DC143C' }}></span> -2 Counteracting</li>
+          <li><span style={{ backgroundColor: '#FF007F' }}></span> -1 Constraining</li>
+          <li><span style={{ backgroundColor: '#DC143C' }}></span> -2 Counteracting</li>
           <li><span style={{ backgroundColor: '#8B0000' }}></span> -3 Cancelling</li>
-
-
         </ul>
       </div>
     </div>
 
-    {/* ✅ Export + Edit buttons row (scrolls naturally) */}
     <div className={styles.bottomButtonRow}>
       <div className={styles.leftButtons}>
         <button onClick={exportMatrixAsPDF} className={styles.buttonPrimary}>
           Export as PDF
         </button>
       </div>
-
       <div className={styles.rightButtons}>
-        <button
-          className={styles.buttonPrimary}
-          onClick={() => router.push(`/project/${projectId}`)}
-        >
+        <button onClick={() => router.push(`/project/${projectId}`)} className={styles.buttonPrimary}>
           Edit Table
         </button>
-        <button
-          className={styles.buttonPrimary}
-          onClick={() => router.push(`/project/${projectId}/diagram`)}
-        >
+        <button onClick={() => router.push(`/project/${projectId}/diagram`)} className={styles.buttonPrimary}>
           Edit Diagram
         </button>
       </div>
     </div>
 
+{modalOpen && selectedPair && (
+  <div
+    className={styles.modalOverlay}
+    onClick={() => setModalOpen(false)} // click outside = cancel
+  >
+    <div
+      className={styles.modalContent}
+      onClick={(e) => e.stopPropagation()} // prevent modal click from closing
+    >
+      <h3 className="text-lg font-semibold mb-3">Edit Interaction</h3>
+      <p className="mb-3 text-sm text-gray-600">
+        <strong>{selectedPair.source.code}</strong> → <strong>{selectedPair.target.code}</strong>
+      </p>
+
+      <label className="block text-sm font-medium mb-1">Score</label>
+      <select
+        value={tempScore}
+        onChange={(e) => setTempScore(parseInt(e.target.value))}
+        className="w-full p-2 border rounded mb-3"
+      >
+        {[-3, -2, -1, 0, 1, 2, 3].map((val) => (
+          <option key={val} value={val}>{val}</option>
+        ))}
+      </select>
+
+      <label className="block text-sm font-medium mb-1">Rationale</label>
+      <textarea
+        value={tempRationale}
+        onChange={(e) => setTempRationale(e.target.value)}
+        className="w-full p-2 border rounded h-24"
+      />
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
+        <button onClick={handleModalSave} className={styles.buttonPrimary}>Save</button>
+        <button onClick={() => setModalOpen(false)} className={styles.buttonPrimary}>Cancel</button>
+        
+      </div>
+    </div>
+  </div>
+)}
+
   </div>
 );
-
 }

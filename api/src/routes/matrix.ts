@@ -23,8 +23,8 @@ router.get("/:projectId/matrix", async (req, res) => {
 
 // POST (update or create entry)
 router.post("/:projectId/matrix", async (req, res) => {
-  const { projectId } = req.params;
-  const { sourceSdgTargetId, targetSdgTargetId, score } = req.body;
+const { projectId } = req.params;
+const { sourceSdgTargetId, targetSdgTargetId, score, rationale } = req.body;
 
   try {
     const entry = await prisma.matrixEntry.upsert({
@@ -35,13 +35,15 @@ router.post("/:projectId/matrix", async (req, res) => {
           targetSdgTargetId,
         },
       },
-      update: { score },
-      create: {
-        projectId,
-        sourceSdgTargetId,
-        targetSdgTargetId,
-        score,
-      },
+update: { score, rationale },
+create: {
+  projectId,
+  sourceSdgTargetId,
+  targetSdgTargetId,
+  score,
+  rationale,
+},
+
     });
 
     res.status(200).json(entry);

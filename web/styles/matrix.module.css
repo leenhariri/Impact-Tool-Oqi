@@ -172,3 +172,75 @@
   display: flex;
   gap: 1rem;
 }
+/* 🔹 Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 🔹 Modal Content Box */
+
+
+.modalContent h3 {
+  font-size: 18px;
+  margin-bottom: 1rem;
+}
+
+.modalContent label {
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.modalContent select,
+.modalContent textarea {
+  margin-bottom: 1rem;
+  font-size: 14px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modalContent textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modalContent .modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+
+
+.modalContent .modalButtons button:first-child {
+  background-color: #ccc;
+}
+
+.modalContent .modalButtons button {
+  @apply bg-gray-200 text-black font-medium px-4 py-2 rounded-md transition;
+}
+
+.modalContent .modalButtons button:last-child {
+  all: unset;
+}
