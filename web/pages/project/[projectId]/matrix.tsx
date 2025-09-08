@@ -41,6 +41,14 @@ export default function MatrixPage() {
   const [targets, setTargets] = useState<SDGTarget[]>([]);
   const [matrix, setMatrix] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true);
+  // added modal state
+const [modalOpen, setModalOpen] = useState(false);
+const [selectedPair, setSelectedPair] = useState<{
+  source: SDGTarget;
+  target: SDGTarget;
+  currentScore: number;
+  rationale?: string;
+} | null>(null);
 
   useEffect(() => {
     if (!projectId) return;
@@ -176,26 +184,38 @@ return (
             {targets.map((source, rowIndex) => (
               <tr key={source.id}>
                 <td className={styles.headerCell}>{source.code}</td>
-                {targets.map((target) => {
-                  const key = `${source.id}_${target.id}`;
-                  const score = matrix[key] ?? 0;
-                  return (
-                    <td key={target.id} className="border p-1 text-center" style={{ backgroundColor: scoreColors[score] || '#FFF' }}>
-                      <input
-                        type="number"
-                        min={-3}
-                        max={3}
-                        value={Number.isFinite(score) ? score : 0}
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value);
-                          const safeScore = Number.isFinite(val) ? val : 0;
-                          updateEntry(source.id, target.id, safeScore);
-                        }}
-                        className={styles.inputCell}
-                      />
-                    </td>
-                  );
-                })}
+{targets.map((target) => {
+  const key = `${source.id}_${target.id}`;
+  const score = matrix[key] ?? 0;
+  const isDiagonal = source.id === target.id;
+
+  return (
+    <td
+      key={target.id}
+      className="border p-1 text-center"
+      style={{
+        backgroundColor: isDiagonal ? '#F5F5F5' : scoreColors[score] || '#FFF',
+        pointerEvents: isDiagonal ? 'none' : 'auto',
+        opacity: isDiagonal ? 0.6 : 1,
+      }}
+    >
+      <input
+        type="number"
+        min={-3}
+        max={3}
+        disabled={isDiagonal}
+        value={Number.isFinite(score) ? score : 0}
+        onChange={(e) => {
+          const val = parseInt(e.target.value);
+          const safeScore = Number.isFinite(val) ? val : 0;
+          updateEntry(source.id, target.id, safeScore);
+        }}
+        className={styles.inputCell}
+      />
+    </td>
+  );
+})}
+
                 <td className="bg-purple-200 p-2 font-semibold border text-center text-sm">{rowSums[rowIndex]}</td>
               </tr>
             ))}

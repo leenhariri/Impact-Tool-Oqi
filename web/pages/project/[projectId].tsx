@@ -302,9 +302,26 @@ if (!savedRowId || savedRowId.startsWith('temp-')) {
     body: JSON.stringify({ ...row, projectId, orderIndex: index })
   });
 
-  const created = await res.json();
-  savedRowId = created.id;
-  impactRows[index].id = created.id; // 🔄 update locally
+const created = await res.json();
+const tempId = row.id!;
+savedRowId = created.id;
+impactRows[index].id = created.id;
+
+// 🔄 Update all references from temp ID to real ID
+if (tempId.startsWith('temp-')) {
+  // Update selectedSDGs
+  if (selectedSDGs[tempId] !== undefined) {
+    selectedSDGs[created.id] = selectedSDGs[tempId];
+    delete selectedSDGs[tempId];
+  }
+
+  // Update sdgTargets
+  if (sdgTargets[tempId] !== undefined) {
+    sdgTargets[created.id] = sdgTargets[tempId];
+    delete sdgTargets[tempId];
+  }
+}
+
 } else {
   await fetch(`http://localhost:4000/impact-rows/${savedRowId}`, {
     method: 'PUT',

@@ -76,12 +76,17 @@ export const replaceTargetsForRow = async (req: Request, res: Response) => {
 
   try {
     // Validate all targets
-    const validTargets = await prisma.sDGTarget.findMany({
-      where: {
-        id: { in: sdgTargetIds },
-        sdgId: Number(sdgId),
-      },
-    });
+// ✅ Safe validation
+const filters: any = {
+  id: { in: sdgTargetIds },
+};
+
+if (typeof sdgId === 'number') {
+  filters.sdgId = Number(sdgId);
+}
+
+const validTargets = await prisma.sDGTarget.findMany({ where: filters });
+
 
     if (validTargets.length !== sdgTargetIds.length) {
       return res.status(400).json({
