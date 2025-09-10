@@ -251,3 +251,55 @@
   opacity: 1;
 }
 
+/* === Rounded tables without breaking tooltips === */
+
+/* 1) Keep wrapper visible so tooltips can overflow */
+.tableWrapper {
+  /* keep your existing margin, etc. */
+  position: relative;          /* needed for the decorative frame below */
+  overflow: visible !important;/* ✅ critical: let tooltips escape */
+  padding: 0;                  /* optional: lets the table touch the frame */
+}
+
+/* 2) Draw a rounded frame behind the table (doesn't clip content) */
+.tableWrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 3) Ensure table sits above the decorative frame */
+.tableWrapper > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* 4) Make the table corners actually round */
+.softTable {
+  width: 100%;
+  border-collapse: separate; /* required for rounded corners */
+  border-spacing: 0;         /* remove gaps */
+  background-color: #fff;
+}
+
+/* Round TOP corners */
+.softTable thead tr:first-child th:first-child {
+  border-top-left-radius: 12px;
+}
+.softTable thead tr:first-child th:last-child {
+  border-top-right-radius: 12px;
+}
+
+/* Round BOTTOM corners */
+.softTable tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+.softTable tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}

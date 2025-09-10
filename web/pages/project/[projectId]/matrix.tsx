@@ -171,6 +171,11 @@ export default function MatrixPage() {
         <li>Diagonal cells are disabled.</li>
       </ol>
     </div>
+<h3 className="text-2xl font-bold underline text-blue-600 mb-4 cursor-pointer">
+  <a href="/user-guide#sdg-interlinkage" target="_blank" rel="noopener noreferrer">
+     SDG Interlinkage Matrix
+  </a>
+</h3>
 
     <div className={styles.flexRow}>
       <div id="matrix-table-wrapper" className="w-full flex justify-center">
@@ -281,7 +286,7 @@ export default function MatrixPage() {
         onChange={(e) => setTempScore(parseInt(e.target.value))}
         className="w-full p-2 border rounded mb-3"
       >
-        {[-3, -2, -1, 0, 1, 2, 3].map((val) => (
+        {[3,2,1,0,-1,-2,-3].map((val) => (
           <option key={val} value={val}>{val}</option>
         ))}
       </select>
@@ -294,7 +299,7 @@ export default function MatrixPage() {
       />
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
-        <button onClick={handleModalSave} className={styles.buttonPrimary}>Save</button>
+                <button onClick={handleModalSave} className={styles.buttonPrimary}>Save</button>
         <button onClick={() => setModalOpen(false)} className={styles.buttonPrimary}>Cancel</button>
         
       </div>
