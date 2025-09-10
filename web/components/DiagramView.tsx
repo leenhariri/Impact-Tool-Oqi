@@ -268,55 +268,78 @@ if (level === "LONG_TERM_IMPACT") {
           });
         }
 
-        // Risks
-        // risks.forEach((risk, i) => {
-        //   const nodeId = `risk-${risk.id}`;
-        //   const position = (nodePositionMap.get(nodeId) ?? {
-        //     x: baseX - 350,
-        //     y: hierarchyYMap[risk.hierarchyLevel] ?? i * verticalSpacing,
-        //   }) as { x: number; y: number };
 
-        //   nodeList.push({
-        //     id: nodeId,
-        //     type: "default",
-        //     data: { label: ` ${risk.text}` },
-        //     // Risk:
-        //     position,
-        //     style: {
-        //       backgroundColor: "#f8d7da",
-        //       borderColor: "#721c24",
-        //       color: "#721c24",
-        //     },
-        //   });
-        // });
-risks.forEach((risk, i) => {
-  (risk.hierarchies ?? []).forEach((h, j) => {
-    const nodeId = `risk-${risk.id}-${h.hierarchy}`;
-    const position = (nodePositionMap.get(nodeId) ?? {
-      x: baseX - 350,
-      y: hierarchyYMap[h.hierarchy] ?? (i + j) * verticalSpacing,
-    }) as { x: number; y: number };
+// risks.forEach((risk, i) => {
+//   (risk.hierarchies ?? []).forEach((h, j) => {
+//     const nodeId = `risk-${risk.id}-${h.hierarchy}`;
+//     const position = (nodePositionMap.get(nodeId) ?? {
+//       x: baseX - 350,
+//       y: hierarchyYMap[h.hierarchy] ?? (i + j) * verticalSpacing,
+//     }) as { x: number; y: number };
 
-    nodeList.push({
-      id: nodeId,
-      type: "default",
-      data: { label: ` ${risk.text}` },
-      position,
-      style: {
-        backgroundColor: "#f8d7da",
-        borderColor: "#721c24",
-        color: "#721c24",
-        padding: "8px 12px",
-  fontSize: "13px",
-  fontWeight: "normal",
-  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
-  overflowWrap: "break-word",     // ✅ break long words
-  textAlign: "center",
-  display: "inline-block",        // ✅ keeps width flexible
-  maxWidth: "300px",              // ✅ optional: prevents super long lines
-  minWidth: "120px",              // ✅ optional: good minimum size
-      },
-    });
+//     nodeList.push({
+//       id: nodeId,
+//       type: "default",
+//       data: { label: ` ${risk.text}` },
+//       position,
+//       style: {
+//         backgroundColor: "#f8d7da",
+//         borderColor: "#721c24",
+//         color: "#721c24",
+//         padding: "8px 12px",
+//   fontSize: "13px",
+//   fontWeight: "normal",
+//   whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
+//   overflowWrap: "break-word",     // ✅ break long words
+//   textAlign: "center",
+//   display: "inline-block",        // ✅ keeps width flexible
+//   maxWidth: "300px",              // ✅ optional: prevents super long lines
+//   minWidth: "120px",              // ✅ optional: good minimum size
+//       },
+//     });
+//   });
+// });
+// Group all risks per hierarchy
+const risksByHierarchy: Record<string, string[]> = {};
+
+risks.forEach((risk) => {
+  (risk.hierarchies ?? []).forEach((h) => {
+    if (!risksByHierarchy[h.hierarchy]) {
+      risksByHierarchy[h.hierarchy] = [];
+    }
+    risksByHierarchy[h.hierarchy].push(risk.text);
+  });
+});
+Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
+  const nodeId = `risk-${hierarchy}`;
+const position = (nodePositionMap.get(nodeId) ?? {
+  x: baseX - 350,
+  y: hierarchyYMap[hierarchy] ?? 0,
+}) as { x: number; y: number };
+
+
+  const risksText = riskList
+    .map((risk, i) => `${i + 1}. ${risk}`)
+    .join("\n");
+
+  nodeList.push({
+    id: nodeId,
+    type: "default",
+    data: { label: risksText },
+    position,
+    style: {
+      backgroundColor: "#f8d7da",
+      borderColor: "#721c24",
+      color: "#721c24",
+      padding: "10px",
+      fontSize: "13px",
+      whiteSpace: "pre-wrap",
+      overflowWrap: "break-word",
+      textAlign: "left",
+      display: "inline-block",
+      maxWidth: "300px",
+      minWidth: "140px",
+    },
   });
 });
 

@@ -664,7 +664,7 @@ return (
 
       {/* Assumptions & Activities */}
       <div className={styles.column}>
-        <h3> Assumptions & Activitis Table</h3>
+        <h3> Assumptions & Actions Table</h3>
         <div className={styles.tableWrapper}>
           <table className={styles.softTable}>
             <thead>
