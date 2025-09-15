@@ -54,28 +54,46 @@ export default function MatrixPage() {
   const [tempRationale, setTempRationale] = useState<string>("");
 
   useEffect(() => {
-    if (!projectId) return;
+    if (!process.env.NEXT_PUBLIC_API_BASE) {
+  console.error("API base URL is not defined.");
+  return;
+}
 
-    const fetchTargets = async () => {
-      const res = await axios.get<SDGTarget[]>(
-        `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/sdg-targets`
-      );
-      setTargets(res.data);
-      return res;
-    };
+    if (!projectId || typeof projectId !== 'string') return;
 
-    const fetchMatrix = async () => {
-      const res = await axios.get<MatrixEntry[]>(
-        `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`
-      );
-      const entries: { [key: string]: MatrixEntry } = {};
-      res.data.forEach((entry) => {
-        const key = `${entry.sourceSdgTargetId}_${entry.targetSdgTargetId}`;
-        entries[key] = entry;
-      });
-      setMatrix(entries);
-      return res;
-    };
+
+const fetchTargets = async () => {
+  try {
+    const res = await axios.get<SDGTarget[]>(
+      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/sdg-targets`
+    );
+    setTargets(res.data);
+    return res;
+  } catch (error) {
+    console.error("Failed to fetch SDG targets:", error);
+    alert("Failed to load SDG targets.");
+  }
+};
+
+
+const fetchMatrix = async () => {
+  try {
+    const res = await axios.get<MatrixEntry[]>(
+      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`
+    );
+    const entries: { [key: string]: MatrixEntry } = {};
+    res.data.forEach((entry) => {
+      const key = `${entry.sourceSdgTargetId}_${entry.targetSdgTargetId}`;
+      entries[key] = entry;
+    });
+    setMatrix(entries);
+    return res;
+  } catch (error) {
+    console.error("Failed to fetch matrix data:", error);
+    alert("Failed to load SDG matrix.");
+  }
+};
+
 
     Promise.all([fetchTargets(), fetchMatrix()]).then(([targetsRes, matrixRes]) => {
       const sortedTargets = targetsRes.data.sort((a, b) => {
@@ -87,21 +105,27 @@ export default function MatrixPage() {
     }).finally(() => setLoading(false));
   }, [projectId]);
 
-  const updateEntry = async (sourceId: string, targetId: string, score: number, rationale?: string) => {
-    const key = `${sourceId}_${targetId}`;
-    const updated = {
-      ...matrix,
-      [key]: { sourceSdgTargetId: sourceId, targetSdgTargetId: targetId, score, rationale }
-    };
-    setMatrix(updated);
+const updateEntry = async (sourceId: string, targetId: string, score: number, rationale?: string) => {
+  const key = `${sourceId}_${targetId}`;
+  const updated = {
+    ...matrix,
+    [key]: { sourceSdgTargetId: sourceId, targetSdgTargetId: targetId, score, rationale }
+  };
+  setMatrix(updated);
 
+  try {
     await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`, {
       sourceSdgTargetId: sourceId,
       targetSdgTargetId: targetId,
       score,
       rationale
     });
-  };
+  } catch (error) {
+    console.error("Failed to update matrix entry:", error);
+    alert("Error saving matrix entry.");
+  }
+};
+
 
   const openModal = (source: SDGTarget, target: SDGTarget, current: MatrixEntry) => {
     setSelectedPair({
@@ -116,16 +140,21 @@ export default function MatrixPage() {
   };
 
   const handleModalSave = async () => {
-    if (selectedPair) {
-      await updateEntry(selectedPair.source.id, selectedPair.target.id, tempScore, tempRationale);
-    }
+if (selectedPair && tempRationale.trim() !== "") {
+  await updateEntry(selectedPair.source.id, selectedPair.target.id, tempScore, tempRationale);
+}
+
     setModalOpen(false);
   };
 
-  const exportMatrixAsPDF = async () => {
-    const input = document.getElementById('matrix-table-wrapper');
-    if (!input) return;
+const exportMatrixAsPDF = async () => {
+  const input = document.getElementById('matrix-table-wrapper');
+  if (!input) {
+    alert("Matrix element not found.");
+    return;
+  }
 
+  try {
     const canvas = await html2canvas(input, { scale: 2 });
     const imgData = canvas.toDataURL('image/png');
 
@@ -150,7 +179,12 @@ export default function MatrixPage() {
 
     pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
     pdf.save('sdg-matrix.pdf');
-  };
+  } catch (error) {
+    console.error("Failed to export PDF:", error);
+    alert("Could not export PDF. Please try again.");
+  }
+};
+
 
   if (loading) return <div className="p-6 font-medium">Loading matrix...</div>;
 

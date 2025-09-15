@@ -69,6 +69,7 @@ const resetNodePositions = () => {
   const horizontalSpacing = 260;
   const baseX = 300;
 
+
   const levelToY: Record<string, number> = {};
   const hierarchyOrder = [
     "LONG_TERM_IMPACT",
@@ -160,8 +161,16 @@ const exportAsPDF = async () => {
       x: node.position.x,
       y: node.position.y,
     }));
+const [error, setError] = useState<string>(''); // ✅ Error state
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
 
   useEffect(() => {
+    if (!projectId || typeof projectId !== 'string') {
+  setError('Invalid or missing project ID.');
+  return;
+}
+const controller = new AbortController();
+
     const fetchAllData = async () => {
       try {
         const [
@@ -173,13 +182,13 @@ const exportAsPDF = async () => {
           edgeRes,
           stakeholderRes,
         ] = await Promise.all([
-          fetch(`http://localhost:4000/impact-rows/${projectId}`),
-          fetch(`http://localhost:4000/risks/project/${projectId}`),
-          fetch(`http://localhost:4000/activities/project/${projectId}`),
-          fetch(`http://localhost:4000/assumptions/project/${projectId}`),
-          fetch(`http://localhost:4000/diagram-nodes/${projectId}`),
-          fetch(`http://localhost:4000/diagram-edges/${projectId}`),
-          fetch(`http://localhost:4000/stakeholders/${projectId}`),
+ fetch(`http://localhost:4000/impact-rows/${projectId}`, { signal: controller.signal }),
+        fetch(`http://localhost:4000/risks/project/${projectId}`, { signal: controller.signal }),
+        fetch(`http://localhost:4000/activities/project/${projectId}`, { signal: controller.signal }),
+        fetch(`http://localhost:4000/assumptions/project/${projectId}`, { signal: controller.signal }),
+        fetch(`http://localhost:4000/diagram-nodes/${projectId}`, { signal: controller.signal }),
+        fetch(`http://localhost:4000/diagram-edges/${projectId}`, { signal: controller.signal }),
+        fetch(`http://localhost:4000/stakeholders/${projectId}`, { signal: controller.signal }),
           
         ]);
 
@@ -269,39 +278,7 @@ if (level === "LONG_TERM_IMPACT") {
         }
 
 
-// risks.forEach((risk, i) => {
-//   (risk.hierarchies ?? []).forEach((h, j) => {
-//     const nodeId = `risk-${risk.id}-${h.hierarchy}`;
-//     const position = (nodePositionMap.get(nodeId) ?? {
-//       x: baseX - 350,
-//       y: hierarchyYMap[h.hierarchy] ?? (i + j) * verticalSpacing,
-//     }) as { x: number; y: number };
 
-//     nodeList.push({
-//       id: nodeId,
-//       type: "default",
-//       data: { label: ` ${risk.text}` },
-//       position,
-//       style: {
-//         backgroundColor: "#f8d7da",
-//         borderColor: "#721c24",
-//         color: "#721c24",
-//         padding: "8px 12px",
-//   fontSize: "13px",
-//   fontWeight: "normal",
-//   whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
-//   overflowWrap: "break-word",     // ✅ break long words
-//   textAlign: "center",
-//   display: "inline-block",        // ✅ keeps width flexible
-//   maxWidth: "300px",              // ✅ optional: prevents super long lines
-//   minWidth: "120px",              // ✅ optional: good minimum size
-//       },
-//     });
-//   });
-// });
-// Group all risks per hierarchy
-// 🔁 Group risks per hierarchy
-// 🔁 Group risks by hierarchy
 const risksByHierarchy: Record<string, string[]> = {};
 risks.forEach((risk) => {
   (risk.hierarchies ?? []).forEach((h) => {
@@ -385,48 +362,7 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
 
 
 
-// Group risks by hierarchy level
 
-
-
-        // Group risks by hierarchyLevel
-// const risksByHierarchy: Record<string, string[]> = {};
-// risks.forEach((risk) => {
-//   const level = risk.hierarchyLevel;
-//   if (!risksByHierarchy[level]) risksByHierarchy[level] = [];
-//   risksByHierarchy[level].push(risk.text);
-// });
-
-// Create nodes for risks
-// Object.entries(risksByHierarchy).forEach(([level, riskTexts], i) => {
-//   riskTexts.forEach((text, j) => {
-//     const nodeId = `risk-${level}-${j}`;
-//           const position = (nodePositionMap.get(nodeId) ?? {
-//             x: baseX,
-//             y: hierarchyOrder.length * verticalSpacing + 120 + i * 80,
-//           }) as { x: number; y: number };
-
-//     nodeList.push({
-//       id: nodeId,
-//       type: "default",
-//       data: { label: `Risk: ${text}` },
-//       position, // ✅ XYPosition: { x: number, y: number }
-//       style: {
-//         backgroundColor: "#f8d7da", // soft red like your mockup
-//         borderColor: "#a94442",
-//         color: "#a94442",
-//         fontWeight: "bold",
-//         borderRadius: "6px",
-//         padding: "4px 8px",
-//         fontSize: "13px",
-//         width: 140,
-//         textAlign: "center",
-//       },
-//     });
-//   });
-// });
-
-// Group risks by hierarchyLevel
 
 
         // Activities
@@ -587,6 +523,9 @@ style: {
     };
 
     fetchAllData();
+  //     return () => {
+  //   if (controller) controller.abort();
+  // };
   }, [projectId]);
 
 const handleNodesChange: OnNodesChange = (changes) => {
@@ -713,6 +652,8 @@ return (
           </button>
         </div>
       </div>
+      {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
+
     </div>
   </ReactFlowProvider>
 );

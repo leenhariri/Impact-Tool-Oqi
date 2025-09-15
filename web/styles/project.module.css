@@ -374,3 +374,11 @@
   margin: 2.5rem 0;
   opacity: 0.5;
 }
+.errorBox {
+  background-color: #ffe0e0;
+  color: #a80000;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}

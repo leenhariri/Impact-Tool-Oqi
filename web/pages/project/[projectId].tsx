@@ -58,6 +58,10 @@ interface AssumptionOrActivity {
 export default function ProjectDetailPage() {
   const router = useRouter();
   const { projectId } = router.query;
+if (!projectId || typeof projectId !== "string") {
+  return <div>Error: Invalid project ID.</div>;
+}
+
 
   const [impactRows, setImpactRows] = useState<ImpactRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,8 +103,11 @@ useEffect(() => {
 }, [editingField]);
 
 useEffect(() => {
-  if (!projectId) return;
-
+  if (!projectId || typeof projectId !== 'string') {
+setError('Invalid or missing project ID.'); // ✅ Validation check
+return;
+}
+const controller = new AbortController();
   const fetchStakeholders = async () => {
     try {
       const res = await fetch(`http://localhost:4000/stakeholders/${projectId}`);
@@ -113,6 +120,7 @@ useEffect(() => {
   }
 
   fetchStakeholders();
+  return () => controller.abort();
 }, [projectId])
 const updateStakeholderField = (
   index: number,
@@ -151,11 +159,15 @@ const deleteStakeholder = async (index: number) => {
 };
 
   useEffect(() => {
-    if (!projectId) return;
-
+    if (!projectId || typeof projectId !== 'string') {
+setError('Invalid or missing project ID.'); // ✅ Validation check
+return;
+}
+const controller = new AbortController();
     const fetchRows = async () => {
       try {
         const res = await fetch(`http://localhost:4000/impact-rows/${projectId}`);
+        
         const data = await res.json();
         setImpactRows(data);
 
@@ -170,6 +182,7 @@ sdgMap[row.id] = row.targets?.[0]?.sdg?.id || null;
 
         setSdgTargets(targetMap);
         setSelectedSDGs(sdgMap);
+        
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -178,9 +191,14 @@ sdgMap[row.id] = row.targets?.[0]?.sdg?.id || null;
     };
 
     fetchRows();
+    return () => controller.abort();
   }, [projectId]);
 useEffect(() => {
-  if (!projectId) return;
+  if (!projectId || typeof projectId !== 'string') {
+setError('Invalid or missing project ID.'); // ✅ Validation check
+return;
+}
+const controller = new AbortController();
 
 const fetchRisks = async () => {
   try {
@@ -204,6 +222,7 @@ const fetchRisks = async () => {
 
 
   fetchRisks();
+  return () => controller.abort();
 }, [projectId]);
 const fetchAssumptionsAndActivities = async () => {
   try {
@@ -228,8 +247,13 @@ const fetchAssumptionsAndActivities = async () => {
 };
 
 useEffect(() => {
-  if (!projectId) return;
+  if (!projectId || typeof projectId !== 'string') {
+setError('Invalid or missing project ID.'); // ✅ Validation check
+return;
+}
+const controller = new AbortController();
   fetchAssumptionsAndActivities();
+  return () => controller.abort();
 }, [projectId]);
 
 
