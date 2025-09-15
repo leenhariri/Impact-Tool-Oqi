@@ -1,7 +1,7 @@
 // pages/project/[projectId].tsx
 
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState ,useRef} from 'react';
 import styles from '../../styles/project.module.css';
 import SDGDropdown from '../../components/SDGDropdown';
 import HierarchyDropdown from '../../components/HierarchyDropdown';
@@ -69,6 +69,34 @@ export default function ProjectDetailPage() {
 const [risks, setRisks] = useState<Risk[]>([])
 const [assumptionsAndActivities, setAssumptionsAndActivities] = useState<AssumptionOrActivity[]>([]);
 const [stakeholders, setStakeholders] = useState<Stakeholder[]>([])
+// State for editing a specific cell
+const [editingField, setEditingField] = useState<{
+  section: 'impact' | 'risk' | 'assumption' | 'stakeholder';
+  index: number;
+  field: string;
+  value: string;
+  anchorRect: DOMRect | null;
+} | null>(null);
+
+const popupRef = useRef<HTMLDivElement | null>(null);
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      popupRef.current &&
+      !popupRef.current.contains(event.target as Node)
+    ) {
+      setEditingField(null);
+    }
+  };
+
+  if (editingField) {
+    document.addEventListener('mousedown', handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, [editingField]);
 
 useEffect(() => {
   if (!projectId) return;
@@ -449,6 +477,7 @@ const deleteRisk = async (index: number) => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
+
 return (
   <div className={styles.container}>
 
@@ -544,10 +573,23 @@ return (
     {/* <option value="ACTIVITY">Activity</option> */}
   </select>
 ) : (
-  <input
-    value={row[field]}
-    onChange={(e) => handleRowChange(index, field, e.target.value)}
-  />
+<input
+  value={row[field]}
+  readOnly
+  onClick={(e) => {
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+setEditingField({
+  section: 'impact',
+  index,
+  field,
+  value: row[field],
+  anchorRect: rect
+});
+
+  }}
+  className={styles.readonlyInput}
+/>
+
 )}
 
                 </td>
@@ -628,10 +670,22 @@ return (
               {risks.map((risk, index) => (
                 <tr key={index}>
                   <td>
-                    <input
-                      value={risk.text}
-                      onChange={(e) => handleRiskChange(index, 'text', e.target.value)}
-                    />
+<input
+  value={risk.text}
+  readOnly
+  onClick={(e) => {
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    setEditingField({
+      section: 'risk',
+      index,
+      field: 'text',
+      value: risk.text,
+      anchorRect: rect,
+    });
+  }}
+  className={styles.readonlyInput}
+/>
+
                   </td>
 <td>
   <HierarchyDropdown
@@ -703,14 +757,22 @@ return (
                     </select>
                   </td>
                   <td>
-                    <input
-                      value={item.text}
-                      onChange={(e) => {
-                        const updated = [...assumptionsAndActivities];
-                        updated[index].text = e.target.value;
-                        setAssumptionsAndActivities(updated);
-                      }}
-                    />
+<input
+  value={item.text}
+  readOnly
+  onClick={(e) => {
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    setEditingField({
+      section: 'assumption',
+      index,
+      field: 'text',
+      value: item.text,
+      anchorRect: rect,
+    });
+  }}
+  className={styles.readonlyInput}
+/>
+
                   </td>
                   <td>
                     <button
@@ -793,64 +855,109 @@ Scale<span style={{ color: "#ffffffff" }}>🛈</span>
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          {stakeholders.map((s, index) => (
-            <tr key={index}>
-              <td>
-                <input
-                  value={s.name}
-                  onChange={(e) => updateStakeholderField(index, 'name', e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={s.role}
-                  onChange={(e) => updateStakeholderField(index, 'role', e.target.value)}
-                />
-              </td>
-              <td>
-                <input
-                  value={s.interest}
-                  onChange={(e) => updateStakeholderField(index, 'interest', e.target.value)}
-                />
-              </td>
-              <td>
-                <select
-                  value={s.stakeholderType}
-                  onChange={(e) =>
-                    updateStakeholderField(index, 'stakeholderType', e.target.value as StakeholderType)
-                  }
-                >
-                  <option value="DIRECT">Direct</option>
-                  <option value="INDIRECT">Indirect</option>
-                </select>
-              </td>
-              <td>
-                <input
-                  value={s.engagementStrategy}
-                  onChange={(e) => updateStakeholderField(index, 'engagementStrategy', e.target.value)}
-                />
-              </td>
-              <td>
-                <select
-                  value={s.hierarchyLevel}
-                  onChange={(e) =>
-                    updateStakeholderField(index, 'hierarchyLevel', e.target.value as HierarchyLevel)
-                  }
-                >
-                  <option value="LONG_TERM_IMPACT">Long-Term</option>
-                  <option value="MID_TERM_IMPACT">Mid-Term</option>
-                  <option value="SHORT_TERM_IMPACT">Short-Term</option>
-                </select>
-              </td>
-              <td>
-                <button className={styles.iconButton} onClick={() => deleteStakeholder(index)}>
-                  ×
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+<tbody>
+  {stakeholders.map((s, index) => (
+    <tr key={index}>
+      <td>
+        <input
+          value={s.name}
+          readOnly
+          onClick={(e) => {
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            setEditingField({
+              section: 'stakeholder',
+              index,
+              field: 'name',
+              value: s.name,
+              anchorRect: rect,
+            });
+          }}
+          className={styles.readonlyInput}
+        />
+      </td>
+      <td>
+        <input
+          value={s.role}
+          readOnly
+          onClick={(e) => {
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            setEditingField({
+              section: 'stakeholder',
+              index,
+              field: 'role',
+              value: s.role,
+              anchorRect: rect,
+            });
+          }}
+          className={styles.readonlyInput}
+        />
+      </td>
+      <td>
+        <input
+          value={s.interest}
+          readOnly
+          onClick={(e) => {
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            setEditingField({
+              section: 'stakeholder',
+              index,
+              field: 'interest',
+              value: s.interest,
+              anchorRect: rect,
+            });
+          }}
+          className={styles.readonlyInput}
+        />
+      </td>
+      <td>
+        <select
+          value={s.stakeholderType}
+          onChange={(e) =>
+            updateStakeholderField(index, 'stakeholderType', e.target.value as StakeholderType)
+          }
+        >
+          <option value="DIRECT">Direct</option>
+          <option value="INDIRECT">Indirect</option>
+        </select>
+      </td>
+      <td>
+        <input
+          value={s.engagementStrategy}
+          readOnly
+          onClick={(e) => {
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            setEditingField({
+              section: 'stakeholder',
+              index,
+              field: 'engagementStrategy',
+              value: s.engagementStrategy,
+              anchorRect: rect,
+            });
+          }}
+          className={styles.readonlyInput}
+        />
+      </td>
+      <td>
+        <select
+          value={s.hierarchyLevel}
+          onChange={(e) =>
+            updateStakeholderField(index, 'hierarchyLevel', e.target.value as HierarchyLevel)
+          }
+        >
+          <option value="LONG_TERM_IMPACT">Long-Term</option>
+          <option value="MID_TERM_IMPACT">Mid-Term</option>
+          <option value="SHORT_TERM_IMPACT">Short-Term</option>
+        </select>
+      </td>
+      <td>
+        <button className={styles.iconButton} onClick={() => deleteStakeholder(index)}>
+          ×
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
       </table>
     </div>
     <div className={styles.tableActions}>
@@ -878,6 +985,52 @@ Scale<span style={{ color: "#ffffffff" }}>🛈</span>
     Edit Matrix
   </button>
     </div>
+{editingField && editingField.anchorRect && (
+  <div
+     ref={popupRef}
+    className={styles.popupEditor}
+  style={{
+    top: editingField.anchorRect.top + window.scrollY,
+    left:
+      editingField.anchorRect.right + 340 > window.innerWidth
+        ? editingField.anchorRect.left - 340
+        : editingField.anchorRect.right + 10,
+    position: 'absolute',
+    zIndex: 1000,
+  }}
+
+  >
+    <textarea
+      value={editingField.value}
+      onChange={(e) =>
+        setEditingField({ ...editingField, value: e.target.value })
+      }
+    />
+    <div className={styles.popupActions}>
+      <button
+        onClick={() => {
+          const { section, index, field, value } = editingField;
+          if (section === 'impact') {
+            handleRowChange(index, field as keyof ImpactRow, value);
+          } else if (section === 'risk') {
+            handleRiskChange(index, field as keyof Risk, value);
+          } else if (section === 'assumption') {
+            const updated = [...assumptionsAndActivities];
+            updated[index].text = value;
+            setAssumptionsAndActivities(updated);
+          } else if (section === 'stakeholder') {
+            updateStakeholderField(index, field as keyof Stakeholder, value);
+          }
+          setEditingField(null);
+        }}
+      >
+        Save
+      </button>
+      <button onClick={() => setEditingField(null)}>Cancel</button>
+    </div>
+  </div>
+)}
+
   </div>
 );
 }

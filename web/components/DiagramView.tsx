@@ -342,6 +342,8 @@ const position = (nodePositionMap.get(nodeId) ?? {
     },
   });
 });
+// Group risks by hierarchy level
+
 
 
         // Group risks by hierarchyLevel

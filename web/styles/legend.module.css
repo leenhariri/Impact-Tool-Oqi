@@ -1,0 +1,59 @@
+.legend {
+  /* keep it small + clean */
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 8px 10px;
+  background: transparent;   /* change to #f8fafb for a soft box */
+  border: 0;                 /* change to 1px solid #e5e7eb if you want a box */
+  box-shadow: none;
+  width: 240px;              /* small width so it doesn’t grow vertically */
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.list {
+  list-style: none;          /* avoid huge bullets */
+  margin: 0;
+  padding: 0;
+  display: grid;             /* two columns = half the height */
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+}
+
+/* each row */
+.list li {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* color square */
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-right: 6px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* lines for stakeholders */
+.lineSolid,
+.lineDotted {
+  width: 18px;
+  height: 0;
+  margin-right: 6px;
+  flex: 0 0 auto;
+  border-top-width: 3px;
+  border-top-style: solid;
+  border-top-color: #0f5c2f;
+}
+
+.lineDotted {
+  border-top-style: dotted;
+}
