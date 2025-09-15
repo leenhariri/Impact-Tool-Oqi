@@ -11,21 +11,39 @@ export const getDiagramNodes = async (req: Request, res: Response) => {
 };
 
 export const saveDiagramNodes = async (req: Request, res: Response) => {
-  const { projectId, nodes } = req.body;
+  try {
+    const { projectId, nodes } = req.body;
 
-  // Clear existing
-  await prisma.diagramNode.deleteMany({ where: { projectId } });
+    if (!projectId || !Array.isArray(nodes)) {
+      return res.status(400).json({ error: "Missing projectId or nodes" });
+    }
 
-  // Create new
-  const created = await prisma.diagramNode.createMany({
-    data: nodes.map((node: any) => ({
-      id: node.id,
-      nodeId: node.nodeId,
-      projectId,
-      x: node.x,
-      y: node.y,
-    })),
-  });
+    // Step 1: Ensure all node IDs are unique
+    const uniqueNodes = Object.values(
+      nodes.reduce((acc: Record<string, any>, node: any) => {
+        acc[node.id] = node; // last one wins if duplicates
+        return acc;
+      }, {})
+    );
 
-  res.json(created);
+    // Step 2: Delete all old diagram nodes for this project
+    await prisma.diagramNode.deleteMany({ where: { projectId } });
+
+    // Step 3: Create new nodes
+    const created = await prisma.diagramNode.createMany({
+      data: uniqueNodes.map((node: any) => ({
+        id: node.id,             // must be unique
+        nodeId: node.nodeId,     // optional display id
+        projectId,
+        x: node.x,
+        y: node.y,
+      })),
+      skipDuplicates: false, // this will throw if any id duplicates remain
+    });
+
+    return res.json(created);
+  } catch (error: any) {
+    console.error("Error saving diagram nodes:", error);
+    return res.status(500).json({ error: "Failed to save diagram nodes" });
+  }
 };
