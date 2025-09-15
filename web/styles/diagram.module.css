@@ -45,7 +45,7 @@
   border-radius: 10px;
   border: 1px solid #ddd;
   margin-bottom: 1rem;
-  overflow: hidden;
+  overflow: visible;    
 }
 
 .reactFlowWrapper {
@@ -54,6 +54,7 @@
   position: relative; /* ✅ Keep it relative so it fills parent */
   z-index: 0;
   display: inline-block; 
+  overflow: visible;
 }
 
 
@@ -183,4 +184,10 @@
   height: 10px;
   border-radius: 3px;
   display: inline-block;
+}
+.react-flow__controls {
+  top: 10px !important;      /* Move to top */
+  bottom: auto !important;   /* Override default bottom */
+  left: 10px !important;     /* Adjust horizontal position */
+  z-index: 10;
 }

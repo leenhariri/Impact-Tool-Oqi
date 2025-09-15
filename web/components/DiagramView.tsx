@@ -195,7 +195,7 @@ const stakeholders: Stakeholder[] = await stakeholderRes.json();
           savedNodes.map((n: any) => [n.nodeId, { x: n.x, y: n.y }])
         );
 
-        const verticalSpacing = 120;
+        const verticalSpacing = 150;
         const horizontalSpacing = 260;
         const baseX = 300;
 
@@ -300,8 +300,9 @@ if (level === "LONG_TERM_IMPACT") {
 //   });
 // });
 // Group all risks per hierarchy
+// 🔁 Group risks per hierarchy
+// 🔁 Group risks by hierarchy
 const risksByHierarchy: Record<string, string[]> = {};
-
 risks.forEach((risk) => {
   (risk.hierarchies ?? []).forEach((h) => {
     if (!risksByHierarchy[h.hierarchy]) {
@@ -310,22 +311,60 @@ risks.forEach((risk) => {
     risksByHierarchy[h.hierarchy].push(risk.text);
   });
 });
+
+// 📦 Render vertically stacked red risk boxes (one per hierarchy, positioned top to bottom)
+const riskBoxBaseX = baseX - 350;
+let accumulatedY = 0;
+const verticalPadding = 30;
+const baseRiskY = -50; // top margin
+
 Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
   const nodeId = `risk-${hierarchy}`;
-const position = (nodePositionMap.get(nodeId) ?? {
-  x: baseX - 350,
-  y: hierarchyYMap[hierarchy] ?? 0,
-}) as { x: number; y: number };
+  const y = hierarchyYMap[hierarchy] ?? 0;
 
+  const width = Math.max(320, riskList.length * 170); // dynamically set width
+  const riskBoxOffset = 60;
 
-  const risksText = riskList
-    .map((risk, i) => `${i + 1}. ${risk}`)
-    .join("\n");
+  const position = (nodePositionMap.get(nodeId) ?? {
+    x: baseX - width - riskBoxOffset, // ✅ shift left of impact row
+    y,
+  }) as { x: number; y: number };
+
+  const combinedText = (
+    <div style={{
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "flex-start",
+      alignItems: "stretch",
+      gap: "12px",
+      flexWrap: "nowrap",
+      whiteSpace: "normal",
+    }}>
+      {riskList.map((risk, i) => (
+        <div key={i} style={{
+          backgroundColor: "#f8d7da",
+          border: "1px solid #721c24",
+          color: "#721c24",
+          padding: "6px 8px",
+          borderRadius: "6px",
+          fontSize: "12px",
+          minWidth: "140px",
+          maxWidth: "180px",
+          whiteSpace: "normal",
+          wordBreak: "break-word",
+          display: "inline-block",
+          textAlign: "left",
+        }}>
+          <b>{i + 1}.</b> {risk}
+        </div>
+      ))}
+    </div>
+  );
 
   nodeList.push({
     id: nodeId,
     type: "default",
-    data: { label: risksText },
+    data: { label: combinedText, hierarchyLevel: hierarchy },
     position,
     style: {
       backgroundColor: "#f8d7da",
@@ -333,15 +372,19 @@ const position = (nodePositionMap.get(nodeId) ?? {
       color: "#721c24",
       padding: "10px",
       fontSize: "13px",
-      whiteSpace: "pre-wrap",
-      overflowWrap: "break-word",
+      whiteSpace: "normal",
       textAlign: "left",
       display: "inline-block",
-      maxWidth: "300px",
-      minWidth: "140px",
+      minWidth: `${width}px`,
+      maxWidth: `${width}px`,
     },
   });
 });
+
+
+
+
+
 // Group risks by hierarchy level
 
 
@@ -387,7 +430,7 @@ const position = (nodePositionMap.get(nodeId) ?? {
 
 
         // Activities
-        const outputY = hierarchyYMap["OUTPUT"] + 180;
+        const outputY = hierarchyYMap["OUTPUT"] + 200;
         activities.forEach((activity, i) => {
           const nodeId = `activity-${activity.id}`;
           const position = (nodePositionMap.get(nodeId) ?? {
@@ -419,35 +462,51 @@ const position = (nodePositionMap.get(nodeId) ?? {
         });
 
         // Assumptions
-        assumptions.forEach((assumption, i) => {
-          const nodeId = `assumption-${assumption.id}`;
-          const position = (nodePositionMap.get(nodeId) ?? {
-            x: baseX,
-            y: hierarchyOrder.length * verticalSpacing + 120 + i * 80,
-          }) as { x: number; y: number };
+        if (assumptions.length > 0) {
+  const nodeId = "assumptions-box";
 
-          nodeList.push({
-            id: nodeId,
-            type: "default",
-            data: { label: ` ${assumption.text}` },
-            // Assumption:
-            position,
-            style: {
-              backgroundColor: "#d4edda",
-              borderColor: "#155724",
-              color: "#155724",
-              padding: "8px 12px",
-  fontSize: "13px",
-  fontWeight: "normal",
-  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
-  overflowWrap: "break-word",     // ✅ break long words
-  textAlign: "center",
-  display: "inline-block",        // ✅ keeps width flexible
-  maxWidth: "300px",              // ✅ optional: prevents super long lines
-  minWidth: "120px",              // ✅ optional: good minimum size
-            },
-          });
-        });
+  const position = (nodePositionMap.get(nodeId) ?? {
+    x: baseX,
+    y: hierarchyOrder.length * verticalSpacing + 180,
+  }) as { x: number; y: number };
+
+  const combinedText = (
+    <div
+      style={{
+        fontFamily: "Segoe UI, sans-serif",
+        fontSize: "14px",
+        lineHeight: 1.6,
+      }}
+    >
+      {assumptions.map((assumption, i) => (
+        <div key={i} style={{ marginBottom: "6px" }}>
+          <b>{i + 1}.</b> {assumption.text}
+        </div>
+      ))}
+    </div>
+  );
+
+  nodeList.push({
+    id: nodeId,
+    type: "default",
+    data: { label: combinedText },
+    position,
+    style: {
+      backgroundColor: "#d4edda",
+      border: "1px solid #155724",
+      color: "#155724",
+      padding: "12px 16px",
+      fontSize: "14px",
+      whiteSpace: "normal",
+      overflowWrap: "break-word",
+      textAlign: "left",
+      display: "inline-block",
+      width: "auto",
+      maxWidth: "100%",
+    },
+  });
+}
+
 
 
         const edgeList: Edge[] = savedEdges.map((edge: any) => ({
@@ -592,26 +651,30 @@ return (
 
 <div className={styles.diagramArea}>
         <div ref={diagramOnlyRef} className={styles.reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={handleNodesChange}
-            onEdgesChange={handleEdgesChange}
-            onConnect={onConnect}
-            fitView
-            fitViewOptions={{ padding: 0.2 }}
-            panOnScroll
-            zoomOnScroll
-          >
-            <Background />
-            
-          </ReactFlow>
+<ReactFlow
+  nodes={nodes}
+  edges={edges}
+  onNodesChange={handleNodesChange}
+  onEdgesChange={handleEdgesChange}
+  onConnect={onConnect}
+  fitView
+  fitViewOptions={{ padding: 0.2 }}
+  panOnScroll
+  zoomOnScroll
+  minZoom={0.05}
+  maxZoom={2}
+>
+  <Background />
+  <Controls />       
+  {/* <MiniMap />         */}
+</ReactFlow>
+
            <Legend/>
         </div>
 
         <div className={styles.controlsWrapper}>
-          <Controls />
-          <MiniMap />
+          {/* <Controls /> */}
+          {/* <MiniMap /> */}
         </div>
       </div>
 
