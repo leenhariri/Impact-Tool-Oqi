@@ -589,15 +589,25 @@ style: {
     fetchAllData();
   }, [projectId]);
 
-  const handleNodesChange: OnNodesChange = (changes) => {
-    onNodesChange(changes);
+const handleNodesChange: OnNodesChange = (changes) => {
+  onNodesChange(changes); // update state only
+};
+
+useEffect(() => {
+  if (!projectId || nodes.length === 0) return;
+
+  const timeout = setTimeout(() => {
     const updated = extractDiagramNodeData(nodes);
     fetch("http://localhost:4000/diagram-nodes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId, nodes: updated }),
     });
-  };
+  }, 300);
+
+  return () => clearTimeout(timeout);
+}, [nodes, projectId]);
+
 const handleEdgesChange = (changes: any) => {
   const updatedEdges = applyEdgeChanges(changes, edges);
   setEdges(updatedEdges);
