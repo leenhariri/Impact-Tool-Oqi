@@ -494,6 +494,7 @@ return (
     <h3> Indicator Matrix</h3>
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
+
         <thead>
           <tr>
                         <th className={styles.tooltipHeader}>
@@ -640,6 +641,8 @@ setEditingField({
         Add Row
       </button>
     </div>
+    <hr className={styles.horizontalDivider} />
+
 
     {/* Two-up: Risks + Assumptions */}
     <div className={styles.twoColumnSection}>
@@ -805,6 +808,7 @@ setEditingField({
         </div>
       </div>
     </div>
+<hr className={styles.horizontalDivider} />
 
     {/* Stakeholders */}
     <h3> Stakeholders Matrix</h3>

@@ -181,14 +181,23 @@
 }
 .twoColumnSection {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 2rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  padding: 0 0.25rem; /* ✅ matches padding of outer .container or parent wrapper */
 }
+
+
 
 .twoColumnSection .tableWrapper {
   overflow: visible;  /* ✅ allows the dropdown to escape */
   position: relative;
-  flex: 1;
+  /* flex: 1; */
+  flex: 1 1 0;
+  max-width: 100%;  
 }
 .addRowButton {
   display: inline-flex;
@@ -259,6 +268,7 @@
   position: relative;          /* needed for the decorative frame below */
   overflow: visible !important;/* ✅ critical: let tooltips escape */
   padding: 0;                  /* optional: lets the table touch the frame */
+  z-index: 1;  
 }
 
 /* 2) Draw a rounded frame behind the table (doesn't clip content) */
@@ -278,6 +288,7 @@
 .tableWrapper > * {
   position: relative;
   z-index: 1;
+  
 }
 
 /* 4) Make the table corners actually round */
@@ -355,4 +366,11 @@
 .readonlyInput {
   cursor: pointer;
   background-color: #fff;
+}
+
+.horizontalDivider {
+  width: 100%;
+  border-top: 1px dashed #717070;
+  margin: 2.5rem 0;
+  opacity: 0.5;
 }
