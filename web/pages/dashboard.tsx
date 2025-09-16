@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/dashboard.module.css";
+function sanitizeInput(value: string): string {
+  return value
+    .trim()
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/[<>]/g, '');
+}
 
 export default function Dashboard() {
   const router = useRouter();
@@ -64,8 +70,9 @@ setEditCollaborators(
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
-          description,
+          title: sanitizeInput(title),
+description: sanitizeInput(description),
+
           collaborators: collaborators
             .split(",")
             .map((email) => ({ email: email.trim(), role: "EDITOR" })),

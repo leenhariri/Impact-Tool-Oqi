@@ -191,13 +191,19 @@ const controller = new AbortController();
         fetch(`${API_BASE}/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
           
         ]);
-
+        if (!impactRes.ok) throw new Error("Failed to fetch impact rows");
         const impactRows: ImpactRow[] = await impactRes.json();
+        if (!riskRes.ok) throw new Error("Failed to fetch risks");
         const risks: Risk[] = await riskRes.json();
+        if (!activityRes.ok) throw new Error("Failed to fetch activities");
         const activities: Activity[] = await activityRes.json();
+         if (!assumptionRes.ok) throw new Error("Failed to fetch assumptions");
         const assumptions: Assumption[] = await assumptionRes.json();
+         if (!nodePosRes.ok) throw new Error("Failed to fetch nodes");
         const savedNodes = await nodePosRes.json();
+         if (!edgeRes.ok) throw new Error("Failed to fetch edges");
         const savedEdges = await edgeRes.json();
+         if (!stakeholderRes.ok) throw new Error("Failed to fetch stakeholders");
 const stakeholders: Stakeholder[] = await stakeholderRes.json();
         const nodeList: Node[] = [];
         const nodePositionMap = new Map(
@@ -517,15 +523,16 @@ style: {
         setNodes(nodeList);
         setEdges(edgeList);
         setLoading(false);
-      } catch (err) {
-        console.error("Failed to fetch diagram data", err);
-      }
+} catch (err) {
+  console.error("Failed to fetch diagram data", err);
+  setError("Failed to load diagram. Please try again later.");
+}
+
     };
 
     fetchAllData();
-  //     return () => {
-  //   if (controller) controller.abort();
-  // };
+
+
   }, [projectId]);
 
 const handleNodesChange: OnNodesChange = (changes) => {
@@ -542,7 +549,12 @@ useEffect(() => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId, nodes: updated }),
       credentials:'include'
-    });
+    }).then(res => {
+    if (!res.ok) throw new Error("Failed to save nodes");
+  })
+  .catch(err => {
+    console.error("node save error:", err);
+  });
   }, 300);
 
   return () => clearTimeout(timeout);
@@ -558,6 +570,11 @@ const handleEdgesChange = (changes: any) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectId, edges: updatedEdges }),
     credentials:'include'
+  }).then(res => {
+    if (!res.ok) throw new Error("Failed to save edges");
+  })
+  .catch(err => {
+    console.error("Edge save error:", err);
   });
 };
 
@@ -580,7 +597,12 @@ const handleEdgesChange = (changes: any) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectId, edges: updatedEdges }),
         credentials:'include'
-      });
+      }).then(res => {
+    if (!res.ok) throw new Error("Failed to save edges");
+  })
+  .catch(err => {
+    console.error("Edge save error:", err);
+  });
     },
     [edges, projectId]
   );

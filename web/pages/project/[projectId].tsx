@@ -5,6 +5,15 @@ import { useEffect, useState ,useRef} from 'react';
 import styles from '../../styles/project.module.css';
 import SDGDropdown from '../../components/SDGDropdown';
 import HierarchyDropdown from '../../components/HierarchyDropdown';
+import DOMPurify from 'dompurify'; // or your own sanitizeInput
+
+function sanitizeInput(value: string): string {
+  return value
+    .trim()
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+    .replace(/[<>]/g, '');
+}
+
 type StakeholderType = 'DIRECT' | 'INDIRECT';
 type HierarchyLevel = 'LONG_TERM_IMPACT' | 'MID_TERM_IMPACT' | 'SHORT_TERM_IMPACT';
 
@@ -113,6 +122,19 @@ const controller = new AbortController();
       const res = await fetch(`http://localhost:4000/stakeholders/${projectId}`,{credentials: 'include',});
       const data = await res.json();
       setStakeholders(data);
+      if (data.length === 0) {
+  setStakeholders([
+    {
+      name: '',
+      role: '',
+      interest: '',
+      stakeholderType: 'DIRECT',
+      engagementStrategy: '',
+      hierarchyLevel: 'LONG_TERM_IMPACT',
+    },
+  ]);
+}
+
     } catch (err) {
       // console.error("Failed to fetch stakeholders:", err);
       setStakeholders([]);
@@ -166,11 +188,28 @@ return;
 }
 const controller = new AbortController();
     const fetchRows = async () => {
+
       try {
         const res = await fetch(`http://localhost:4000/impact-rows/${projectId}`,{credentials: 'include',});
         
         const data = await res.json();
         setImpactRows(data);
+        if (data.length === 0) {
+  const newId = `temp-${Date.now()}`;
+  setImpactRows([
+    {
+      id: newId,
+      hierarchyLevel: '',
+      resultStatement: '',
+      indicator: '',
+      indicatorDefinition: '',
+      meansOfMeasurement: '',
+      baseline: '',
+    },
+  ]);
+  setSelectedSDGs({ [newId]: null });
+  setSdgTargets({ [newId]: [] });
+}
 
         const targetMap: { [rowId: string]: string[] } = {};
         const sdgMap: { [rowId: string]: number | null } = {};
@@ -214,6 +253,15 @@ const fetchRisks = async () => {
     }));
 
     setRisks(formatted);
+    if (formatted.length === 0) {
+  setRisks([
+    {
+      text: '',
+      hierarchyLevels: [],
+    },
+  ]);
+}
+
   } catch (err) {
     // console.error("Failed to fetch risks:", err);
     setRisks([]);
@@ -241,6 +289,15 @@ const fetchAssumptionsAndActivities = async () => {
     ];
 
     setAssumptionsAndActivities(merged);
+    if (merged.length === 0) {
+  setAssumptionsAndActivities([
+    {
+      type: 'ASSUMPTION',
+      text: '',
+    },
+  ]);
+}
+
   } catch (err) {
     // console.error("Failed to fetch assumptions/activities:", err);
     setAssumptionsAndActivities([]);
@@ -354,7 +411,17 @@ if (!savedRowId || savedRowId.startsWith('temp-')) {
   const res = await fetch(`http://localhost:4000/impact-rows`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...row, projectId, orderIndex: index }),
+    body: JSON.stringify({
+  hierarchyLevel: sanitizeInput(row.hierarchyLevel),
+  resultStatement: sanitizeInput(row.resultStatement),
+  indicator: sanitizeInput(row.indicator),
+  indicatorDefinition: sanitizeInput(row.indicatorDefinition),
+  meansOfMeasurement: sanitizeInput(row.meansOfMeasurement),
+  baseline: sanitizeInput(row.baseline),
+  projectId,
+  orderIndex: index
+}),
+
     credentials: 'include',
   });
 
@@ -416,7 +483,12 @@ await fetch(`http://localhost:4000/impact-row-targets/${savedRowId}`, {
     await fetch(`http://localhost:4000/risks/${risk.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(risk),
+      body: JSON.stringify({
+  text: sanitizeInput(risk.text),
+  hierarchyLevels: risk.hierarchyLevels,
+  projectId
+}),
+
       
   credentials: 'include',
 
@@ -432,7 +504,8 @@ for (let i = 0; i < assumptionsAndActivities.length; i++) {
   const res = await fetch(url, {
     method,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text: item.text, projectId }),
+    body: JSON.stringify({ text: sanitizeInput(item.text), projectId }),
+
     
   credentials: 'include',
 
@@ -453,7 +526,16 @@ for (let i = 0; i < stakeholders.length; i++) {
   const res = await fetch(url, {
     method,
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...s, projectId }),
+    body: JSON.stringify({
+  name: sanitizeInput(s.name),
+  role: sanitizeInput(s.role),
+  interest: sanitizeInput(s.interest),
+  stakeholderType: s.stakeholderType,
+  engagementStrategy: sanitizeInput(s.engagementStrategy),
+  hierarchyLevel: s.hierarchyLevel,
+  projectId
+}),
+
     
   credentials: 'include',
 

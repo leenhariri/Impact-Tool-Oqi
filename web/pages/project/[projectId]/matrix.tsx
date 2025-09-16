@@ -71,7 +71,8 @@ const fetchTargets = async () => {
     return res;
   } catch (error) {
     // console.error("Failed to fetch SDG targets:", error);
-    alert("Failed to load SDG targets.");
+    alert("Something went wrong while loading targets. Please refresh or try again.");
+
   }
 };
 
@@ -169,7 +170,7 @@ await updateEntry(
   selectedPair.source.id,
   selectedPair.target.id,
   tempScore,
-  tempRationale // this can be empty now
+  tempRationale?.trim() // this can be empty now
 );
 
 
