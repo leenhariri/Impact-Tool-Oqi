@@ -6,7 +6,8 @@ const prisma = new PrismaClient();
 
 // 🔹 GET all matrix entries for a project
 export const getMatrixForProject = async (req: Request, res: Response) => {
-  const { projectId } = req.params;
+  const projectId = req.body.projectId || req.params.projectId;
+
 
   try {
     const entries = await prisma.matrixEntry.findMany({

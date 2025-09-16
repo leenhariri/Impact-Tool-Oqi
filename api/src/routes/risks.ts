@@ -7,7 +7,7 @@ import {
   deleteRisk,
   getRisksForProject
 } from '../controllers/risk.controller'
-
+import requireAuth from '../../middleware/requireAuth';
 const router = Router()
 
 router.post('/', createRisk)

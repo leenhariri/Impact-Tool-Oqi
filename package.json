@@ -25,10 +25,14 @@
   "homepage": "https://github.com/leenhariri/Impact-Tool-Oqi#readme",
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/express-rate-limit": "^5.1.3",
+    "@types/helmet": "^0.0.48",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/uuid": "^10.0.0"
   },
   "dependencies": {
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.2",
     "react-select": "^5.10.2",

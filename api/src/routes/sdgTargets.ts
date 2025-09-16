@@ -1,11 +1,11 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-
+import requireAuth from '../../middleware/requireAuth';
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // // GET /sdg-targets
-router.get("/", async (_req, res) => {
+router.get("/", requireAuth,async (_req, res) => {
   try {
     const targets = await prisma.sDGTarget.findMany({
       orderBy: { code: 'asc' }, // optional
@@ -17,7 +17,7 @@ router.get("/", async (_req, res) => {
   }
 });
 // GET /api/project/:projectId/sdg-targets
-router.get("/project/:projectId/sdg-targets", async (req, res) => {
+router.get("/project/:projectId/sdg-targets", requireAuth, async (req, res) => {
 const { projectId } = req.params;
 
 

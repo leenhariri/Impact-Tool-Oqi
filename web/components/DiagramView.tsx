@@ -182,13 +182,13 @@ const controller = new AbortController();
           edgeRes,
           stakeholderRes,
         ] = await Promise.all([
- fetch(`http://localhost:4000/impact-rows/${projectId}`, { signal: controller.signal }),
-        fetch(`http://localhost:4000/risks/project/${projectId}`, { signal: controller.signal }),
-        fetch(`http://localhost:4000/activities/project/${projectId}`, { signal: controller.signal }),
-        fetch(`http://localhost:4000/assumptions/project/${projectId}`, { signal: controller.signal }),
-        fetch(`http://localhost:4000/diagram-nodes/${projectId}`, { signal: controller.signal }),
-        fetch(`http://localhost:4000/diagram-edges/${projectId}`, { signal: controller.signal }),
-        fetch(`http://localhost:4000/stakeholders/${projectId}`, { signal: controller.signal }),
+ fetch(`http://localhost:4000/impact-rows/${projectId}`, { signal: controller.signal ,credentials: 'include'}),
+        fetch(`http://localhost:4000/risks/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`http://localhost:4000/activities/project/${projectId}`, { signal: controller.signal,credentials: 'include' }),
+        fetch(`http://localhost:4000/assumptions/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`http://localhost:4000/diagram-nodes/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`http://localhost:4000/diagram-edges/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`http://localhost:4000/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
           
         ]);
 
@@ -541,6 +541,7 @@ useEffect(() => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId, nodes: updated }),
+      credentials:'include'
     });
   }, 300);
 
@@ -556,6 +557,7 @@ const handleEdgesChange = (changes: any) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectId, edges: updatedEdges }),
+    credentials:'include'
   });
 };
 
@@ -577,6 +579,7 @@ const handleEdgesChange = (changes: any) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectId, edges: updatedEdges }),
+        credentials:'include'
       });
     },
     [edges, projectId]

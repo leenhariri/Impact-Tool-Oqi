@@ -110,7 +110,7 @@ return;
 const controller = new AbortController();
   const fetchStakeholders = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/stakeholders/${projectId}`);
+      const res = await fetch(`http://localhost:4000/stakeholders/${projectId}`,{credentials: 'include',});
       const data = await res.json();
       setStakeholders(data);
     } catch (err) {
@@ -150,7 +150,8 @@ const deleteStakeholder = async (index: number) => {
   const s = stakeholders[index];
   if (s.id) {
     await fetch(`http://localhost:4000/stakeholders/${s.id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      credentials: 'include',
     });
   }
   const updated = [...stakeholders];
@@ -166,7 +167,7 @@ return;
 const controller = new AbortController();
     const fetchRows = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/impact-rows/${projectId}`);
+        const res = await fetch(`http://localhost:4000/impact-rows/${projectId}`,{credentials: 'include',});
         
         const data = await res.json();
         setImpactRows(data);
@@ -202,7 +203,7 @@ const controller = new AbortController();
 
 const fetchRisks = async () => {
   try {
-    const res = await fetch(`http://localhost:4000/risks?projectId=${projectId}`);
+    const res = await fetch(`http://localhost:4000/risks?projectId=${projectId}`,{credentials: 'include',});
     const data = await res.json();
 
     // Transform DB data to match frontend Risk interface
@@ -227,8 +228,8 @@ const fetchRisks = async () => {
 const fetchAssumptionsAndActivities = async () => {
   try {
     const [assumptionRes, activityRes] = await Promise.all([
-      fetch(`http://localhost:4000/assumptions/${projectId}`),
-      fetch(`http://localhost:4000/activities/${projectId}`)
+      fetch(`http://localhost:4000/assumptions/${projectId}`,{credentials: 'include',}),
+      fetch(`http://localhost:4000/activities/${projectId}`,{credentials: 'include'})
     ]);
 
     const assumptions = await assumptionRes.json();
@@ -260,7 +261,7 @@ const controller = new AbortController();
   useEffect(() => {
     const fetchTargets = async () => {
       try {
-        const res = await fetch('http://localhost:4000/sdg-targets');
+        const res = await fetch('http://localhost:4000/sdg-targets',{credentials: 'include',});
         const data = await res.json();
 
         if (Array.isArray(data)) {
@@ -279,7 +280,7 @@ const controller = new AbortController();
 
     const fetchSDGs = async () => {
       try {
-        const res = await fetch('http://localhost:4000/sdgs');
+        const res = await fetch('http://localhost:4000/sdgs',{credentials: 'include',});
         const data = await res.json();
         setAllSDGs(data);
       } catch (error) {
@@ -302,6 +303,7 @@ const deleteAssumptionOrActivity = async (index: number) => {
   if (item.id) {
     await fetch(`http://localhost:4000/${item.type === 'ASSUMPTION' ? 'assumptions' : 'activities'}/${item.id}`, {
       method: 'DELETE',
+      credentials: 'include',
     });
   }
   const updated = [...assumptionsAndActivities];
@@ -331,7 +333,8 @@ const deleteAssumptionOrActivity = async (index: number) => {
     const row = impactRows[index];
     if (row.id && !row.id.startsWith('temp-')) {
       await fetch(`http://localhost:4000/impact-rows/${row.id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        credentials: 'include',
       });
     }
     const newRows = [...impactRows];
@@ -351,7 +354,8 @@ if (!savedRowId || savedRowId.startsWith('temp-')) {
   const res = await fetch(`http://localhost:4000/impact-rows`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...row, projectId, orderIndex: index })
+    body: JSON.stringify({ ...row, projectId, orderIndex: index }),
+    credentials: 'include',
   });
 
 const created = await res.json();
@@ -378,7 +382,8 @@ if (tempId.startsWith('temp-')) {
   await fetch(`http://localhost:4000/impact-rows/${savedRowId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...row, orderIndex: index })
+    body: JSON.stringify({ ...row, orderIndex: index }),
+    credentials: 'include',
   });
 }
 
@@ -388,6 +393,7 @@ const sdgId = selectedSDGs[savedRowId];
 
 await fetch(`http://localhost:4000/impact-row-targets/${savedRowId}`, {
   method: 'PUT',
+  credentials: 'include',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
     sdgTargetIds: targetIds,
@@ -403,13 +409,17 @@ await fetch(`http://localhost:4000/impact-row-targets/${savedRowId}`, {
     await fetch(`http://localhost:4000/risks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...risk, projectId })
+      body: JSON.stringify({ ...risk, projectId }),
+      credentials: 'include',
     });
   } else {
     await fetch(`http://localhost:4000/risks/${risk.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(risk)
+      body: JSON.stringify(risk),
+      
+  credentials: 'include',
+
     });
   }
 }
@@ -423,6 +433,9 @@ for (let i = 0; i < assumptionsAndActivities.length; i++) {
     method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text: item.text, projectId }),
+    
+  credentials: 'include',
+
   });
 
   if (!item.id) {
@@ -441,6 +454,9 @@ for (let i = 0; i < stakeholders.length; i++) {
     method,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...s, projectId }),
+    
+  credentials: 'include',
+
   });
 
   if (!s.id) {
@@ -490,7 +506,11 @@ const deleteRisk = async (index: number) => {
   const r = risks[index]
   if (r.id) {
     await fetch(`http://localhost:4000/risks/${r.id}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      
+  credentials: 'include',
+
+      
     })
   }
   const updated = [...risks]

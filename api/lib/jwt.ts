@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-dotenv.config();
+import { env } from "../src/config/validateEnv";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-export const COOKIE_NAME = process.env.COOKIE_NAME || "oqi_session";
+const JWT_SECRET = env.JWT_SECRET;
+export const COOKIE_NAME = env.COOKIE_NAME;
+const isProd = process.env.NODE_ENV === "production";
 
 export function signSession(payload: object) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
@@ -12,7 +12,7 @@ export function verify(token: string) { return jwt.verify(token, JWT_SECRET) as 
 
 export function setCookie(res: any, token: string) {
   res.cookie(COOKIE_NAME, token, {
-    httpOnly: true, secure: false, sameSite: "lax", path: "/",
+    httpOnly: true, secure: isProd,sameSite: isProd ? "none" : "lax", path: "/",
   });
 }
 export function verifySession(token: string) {

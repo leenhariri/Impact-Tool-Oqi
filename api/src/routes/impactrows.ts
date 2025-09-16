@@ -5,12 +5,12 @@ import {
   updateImpactRow,
   deleteImpactRow,
 } from '../controllers/impactrow.controller'
-
+import requireAuth from '../../middleware/requireAuth';
 const router = Router()
 
-router.post('/', createImpactRow)
-router.get('/:projectId', getImpactRows)
-router.put('/:id', updateImpactRow)
-router.delete('/:id', deleteImpactRow)
+router.post('/',requireAuth, createImpactRow)
+router.get('/:projectId', requireAuth,getImpactRows)
+router.put('/:id', requireAuth,updateImpactRow)
+router.delete('/:id', requireAuth,deleteImpactRow)
 
 export default router

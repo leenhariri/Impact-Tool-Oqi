@@ -65,7 +65,7 @@ export default function MatrixPage() {
 const fetchTargets = async () => {
   try {
     const res = await axios.get<SDGTarget[]>(
-      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/sdg-targets`
+      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/sdg-targets`, { withCredentials: true } 
     );
     setTargets(res.data);
     return res;
@@ -79,7 +79,7 @@ const fetchTargets = async () => {
 const fetchMatrix = async () => {
   try {
     const res = await axios.get<MatrixEntry[]>(
-      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`
+      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`, { withCredentials: true } 
     );
     const entries: { [key: string]: MatrixEntry } = {};
     res.data.forEach((entry) => {
@@ -113,17 +113,24 @@ const updateEntry = async (sourceId: string, targetId: string, score: number, ra
   };
   setMatrix(updated);
 
-  try {
-    await axios.post(`${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`, {
+try {
+  const res = await axios.post(
+    `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`,
+    {
+      projectId,
       sourceSdgTargetId: sourceId,
       targetSdgTargetId: targetId,
       score,
       rationale
-    });
-  } catch (error) {
-    console.error("Failed to update matrix entry:", error);
-    alert("Error saving matrix entry.");
-  }
+    },
+    { withCredentials: true }
+  );
+  console.log("🟢 Matrix entry saved:", res.data);
+} catch (error: any) {
+  console.error("🔴 Matrix entry save failed:", error.response?.data || error.message);
+}
+
+
 };
 
 
@@ -139,13 +146,36 @@ const updateEntry = async (sourceId: string, targetId: string, score: number, ra
     setModalOpen(true);
   };
 
-  const handleModalSave = async () => {
-if (selectedPair && tempRationale.trim() !== "") {
-  await updateEntry(selectedPair.source.id, selectedPair.target.id, tempScore, tempRationale);
-}
+const handleModalSave = async () => {
+  console.log("💾 Save button clicked");
+  if (!projectId || typeof projectId !== "string") {
+    console.warn("⚠️ No projectId, skipping save");
+    return;
+  }
 
-    setModalOpen(false);
-  };
+  if (!selectedPair) {
+    console.warn("⚠️ No selected pair, skipping save");
+    return;
+  }
+
+  console.log("📤 Proceeding to save", {
+    source: selectedPair.source.id,
+    target: selectedPair.target.id,
+    score: tempScore,
+    rationale: tempRationale,
+  });
+
+await updateEntry(
+  selectedPair.source.id,
+  selectedPair.target.id,
+  tempScore,
+  tempRationale // this can be empty now
+);
+
+
+  setModalOpen(false);
+};
+
 
 const exportMatrixAsPDF = async () => {
   const input = document.getElementById('matrix-table-wrapper');
