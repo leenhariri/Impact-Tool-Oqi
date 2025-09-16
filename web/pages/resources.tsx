@@ -1,21 +1,26 @@
 import Head from 'next/head'
 import React from "react";
+
 export default function UsefulResources() {
   return (
     <>
+      <Head>
+        <title>Useful Resources</title>
+        <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet" />
+      </Head>
+
       <div className="hero">
         <div className="hero-text">
-          <h1>Useful Resources</h1>
-          <p>Explore key references and tools to deepen your understanding of impact design, SDGs, and responsible innovation.</p>
+          <h1 className="arvo-title">Useful Resources</h1>
+          <p className="arvo-subtext">Explore key references and tools to deepen your understanding of impact design, SDGs, and responsible innovation.</p>
         </div>
       </div>
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px', lineHeight: '1.8', fontFamily: 'Inter, sans-serif' }}>
-        
 
-        <h2>Impact Design</h2>
+      <div className="resources-container">
+        <h2 className="arvo-section">Impact Design</h2>
         <ul>
           <li>
-            United Nations Sustainable Development Group. (2017). <em>Theory of change: UNDAF companion guidance</em>. 
+            United Nations Sustainable Development Group. (2017). <em>Theory of change: UNDAF companion guidance</em>.
             <br /><a href="https://unsdg.un.org/resources/theory-change-undaf-companion-guidance" target="_blank">https://unsdg.un.org/resources/theory-change-undaf-companion-guidance</a>
           </li>
           <li>
@@ -48,14 +53,14 @@ export default function UsefulResources() {
           </li>
         </ul>
 
-        <h2>SDG Interlinkages</h2>
+        <h2 className="arvo-section">SDG Interlinkages</h2>
         <ul>
           <li>
             United Nations. (n.d.). <em>The 17 goals</em>. United Nations Sustainable Development Goals.
             <br /><a href="https://sdgs.un.org/goals" target="_blank">https://sdgs.un.org/goals</a>
           </li>
           <li>
-            United Nations Statistics Division. (n.d.). <em>Global indicator framework for the Sustainable Development Goals and targets of the 2030 Agenda for Sustainable Development (after 2025 review)</em>.
+            United Nations Statistics Division. (n.d.). <em>Global indicator framework...</em>
             <br /><a href="https://unstats.un.org/sdgs/indicators/Global-Indicator-Framework-after-2025-review-English.pdf" target="_blank">https://unstats.un.org/sdgs/indicators/Global-Indicator-Framework-after-2025-review-English.pdf</a>
           </li>
           <li>
@@ -63,15 +68,15 @@ export default function UsefulResources() {
             <br /><a href="https://unstats.un.org/UNSDWebsite/Publications/PublicationsCatalogue/" target="_blank">https://unstats.un.org/UNSDWebsite/Publications/PublicationsCatalogue/</a>
           </li>
           <li>
-            Weitz, N., Carlsen, H., Nilsson, M., & Skånberg, K. (2018). <em>Towards systemic and contextual priority setting for implementing the 2030 Agenda</em>. Sustainability Science, 13(2), 531–548.
+            Weitz, N., et al. (2018). <em>Towards systemic and contextual priority setting...</em>
             <br /><a href="https://doi.org/10.1007/s11625-017-0470-0" target="_blank">https://doi.org/10.1007/s11625-017-0470-0</a>
           </li>
           <li>
-            Luttikhuis, N., & Wiebe, K. S. (2023). <em>Analyzing SDG interlinkages: Identifying trade-offs and synergies for a responsible innovation</em>. Sustainability Science, 18, 1813–1831.
+            Luttikhuis, N., & Wiebe, K. S. (2023). <em>Analyzing SDG interlinkages...</em>
             <br /><a href="https://doi.org/10.1007/s11625-023-01336-x" target="_blank">https://doi.org/10.1007/s11625-023-01336-x</a>
           </li>
           <li>
-            European Commission, Joint Research Centre. (n.d.). <em>EnablingSDGs. KnowSDGs Platform</em>.
+            European Commission, JRC. (n.d.). <em>EnablingSDGs. KnowSDGs Platform</em>.
             <br /><a href="https://knowsdgs.jrc.ec.europa.eu/enablingsdgs" target="_blank">https://knowsdgs.jrc.ec.europa.eu/enablingsdgs</a>
           </li>
           <li>
@@ -79,18 +84,64 @@ export default function UsefulResources() {
           </li>
         </ul>
 
-        <h2>Other Relevant References</h2>
+        <h2 className="arvo-section">Other Relevant References</h2>
         <ul>
           <li>
-            UNFCCC Clean Development Mechanisms Tools:
+            UNFCCC CDM Tools:
             <br /><a href="https://cdm.unfccc.int/Reference/tools/index.html" target="_blank">https://cdm.unfccc.int/Reference/tools/index.html</a>
           </li>
           <li>
-            UNFCCC Clean Development Mechanisms Methodologies:
+            UNFCCC CDM Methodologies:
             <br /><a href="https://cdm.unfccc.int/methodologies/index.html" target="_blank">https://cdm.unfccc.int/methodologies/index.html</a>
           </li>
         </ul>
       </div>
+
+      <style jsx>{`
+        .arvo-title {
+          font-family: 'Arvo', serif;
+          font-size: 28px;
+          font-weight: bold;
+          margin-top: 40px;
+          margin-bottom: 10px;
+          text-align: center;
+        }
+
+        .arvo-subtext {
+          font-family: 'Inter', sans-serif;
+          font-size: 16px;
+          text-align: center;
+          max-width: 600px;
+          margin: 0 auto;
+          line-height: 1.6;
+        }
+
+        .arvo-section {
+          font-family: 'Arvo', serif;
+          font-size: 22px;
+          font-weight: 600;
+          margin-top: 24px;
+          margin-bottom: 10px;
+        }
+
+        .resources-container {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 40px 20px;
+          font-family: 'Inter', sans-serif;
+          font-size: 16px;
+          line-height: 1.8;
+        }
+
+        ul {
+          padding-left: 20px;
+        }
+
+        a {
+          color: #0070f3;
+          text-decoration: underline;
+        }
+      `}</style>
     </>
-  )
+  );
 }

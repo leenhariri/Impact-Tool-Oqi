@@ -57,11 +57,17 @@ body {
   padding: 16px 0 24px;
 }
 .partner-logo {
-  height: 48px;          /* tweak as you like */
-  max-width: 180px;
-  object-fit: contain;
-  filter: none;          /* keep colors */
+  width: 180px;        /* 🔁 Adjust this width as needed */
+  height: auto;        /* 🔒 Maintain aspect ratio */
+  object-fit: contain; /* ✅ Ensures logos don’t stretch */
+  margin: 0 16px;      /* 🧩 Adds spacing between logos */
+  transition: transform 0.2s ease-in-out;
 }
+
+.partner-logo:hover {
+  transform: scale(1.05); /* Optional hover effect */
+}
+
 .access-btn {
   display: inline-block;
   padding: 12px 28px;
@@ -156,8 +162,8 @@ body {
   padding: 96px 16px 40px;
 }
 
-.hero h1 { font-size: 2.4rem; margin: 0 0 8px; }
-.hero p  { font-size: 1.1rem; margin: 0; }
+.hero h1 { font-family: 'Roboto Slab', 'Georgia', serif; font-size: 2.4rem; margin: 0 0 8px; }
+.hero p  {  font-family: 'Roboto Slab', 'Georgia', serif; font-size: 1.1rem; margin: 0; }
 
 /* optional “Access Tool” pill (can reuse elsewhere) */
 .btn-pill {
@@ -173,3 +179,22 @@ body {
 
 /* content spacing following a fixed navbar + hero */
 .section { padding: 56px 16px; }
+.arvo {
+  font-family: 'Arvo', serif !important;
+}
+
+.arvo-title {
+  font-family: 'Arvo', serif !important;
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+
+.arvo-section {
+  font-family: 'Arvo', serif;
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 24px;   /* reduced from 40px */
+  margin-bottom: 10px; /* reduced from 15px */
+}

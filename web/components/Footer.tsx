@@ -1,13 +1,75 @@
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: "var(--footer-bg)", color: "#fff", padding: "40px 0", textAlign: "center" }}>
-      <h4>Follow Us</h4>
-      <div style={{ display: "flex", justifyContent: "center", gap: "16px", marginBottom: "16px" }}>
-        <a className="w3-button w3-large w3-teal" href="#"><i className="fa fa-facebook"></i></a>
-        <a className="w3-button w3-large w3-teal" href="#"><i className="fa fa-twitter"></i></a>
-        <a className="w3-button w3-large w3-teal" href="#"><i className="fa fa-instagram"></i></a>
+    <footer
+      style={{
+        backgroundColor: "var(--footer-bg)",
+        color: "#fff",
+        padding: "40px 0",
+        textAlign: "center",
+      }}
+    >
+      {/* Logo */}
+      <div style={{ marginBottom: "20px" }}>
+        <img
+          src="/images/oqi-logo.png"
+          alt="OQI Logo"
+          style={{ height: "80px", marginBottom: "12px" }}
+        />
       </div>
-      <p>Powered by <a href="https://www.w3schools.com/w3css/" target="_blank" rel="noreferrer">w3.css</a></p>
+
+      {/* Buttons */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "16px",
+          marginTop: "12px",
+        }}
+      >
+        {/* Contact Us Button */}
+        <a
+          href="mailto:oqi.info@cern.ch"
+          style={{
+            background: "#2a335c", // lighter than footer bg
+            padding: "6px 16px",
+            borderRadius: "25px",
+            color: "#fff",
+            fontWeight: "500",
+            fontSize: "13px",
+            textDecoration: "none",
+            transition: "background 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#3a467a")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "#2a335c")}
+        >
+          Contact Us
+        </a>
+
+        {/* LinkedIn Button */}
+        <a
+          href="https://www.linkedin.com/company/open-quantum-institute/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            background: "#ddd", // light grey circle
+            width: "32px",
+            height: "32px",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "background 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.background = "#bbb")}
+          onMouseOut={(e) => (e.currentTarget.style.background = "#ddd")}
+        >
+          <i
+            className="fa fa-linkedin"
+            style={{ color: "var(--footer-bg)", fontSize: "18px" }}
+          ></i>
+        </a>
+      </div>
     </footer>
   );
 }
