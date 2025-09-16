@@ -25,7 +25,7 @@ r.post("/", requireAuth, async (req, res) => {
 
     if (!title) return res.status(400).json({ error: "Project title is required." });
 
-    console.log("Creating project for userId:", userId);
+    // console.log("Creating project for userId:", userId);
 
     // Prepare collaborators (excluding the owner)
     const collaboratorData = await Promise.all(
@@ -75,7 +75,7 @@ r.post("/", requireAuth, async (req, res) => {
 
     res.status(201).json(project);
   } catch (err) {
-    console.error("Error creating project:", err);
+    // console.error("Error creating project:", err);
     if (err instanceof Error) {
       res.status(500).json({ error: err.message });
     } else {
@@ -222,7 +222,7 @@ const full = await prisma.project.findUnique({
 });
     return res.json(full);
   } catch (err: any) {
-    console.error("Error updating project:", err);
+    // console.error("Error updating project:", err);
     return res.status(500).json({ error: err.message || "Server error" });
   }
 });

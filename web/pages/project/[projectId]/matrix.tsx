@@ -55,7 +55,7 @@ export default function MatrixPage() {
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_API_BASE) {
-  console.error("API base URL is not defined.");
+  // console.error("API base URL is not defined.");
   return;
 }
 
@@ -70,7 +70,7 @@ const fetchTargets = async () => {
     setTargets(res.data);
     return res;
   } catch (error) {
-    console.error("Failed to fetch SDG targets:", error);
+    // console.error("Failed to fetch SDG targets:", error);
     alert("Failed to load SDG targets.");
   }
 };
@@ -89,7 +89,7 @@ const fetchMatrix = async () => {
     setMatrix(entries);
     return res;
   } catch (error) {
-    console.error("Failed to fetch matrix data:", error);
+    // console.error("Failed to fetch matrix data:", error);
     alert("Failed to load SDG matrix.");
   }
 };
@@ -125,9 +125,9 @@ try {
     },
     { withCredentials: true }
   );
-  console.log("🟢 Matrix entry saved:", res.data);
+  // console.log("🟢 Matrix entry saved:", res.data);
 } catch (error: any) {
-  console.error("🔴 Matrix entry save failed:", error.response?.data || error.message);
+  // console.error("🔴 Matrix entry save failed:", error.response?.data || error.message);
 }
 
 
@@ -147,23 +147,23 @@ try {
   };
 
 const handleModalSave = async () => {
-  console.log("💾 Save button clicked");
+  // console.log("💾 Save button clicked");
   if (!projectId || typeof projectId !== "string") {
-    console.warn("⚠️ No projectId, skipping save");
+    // console.warn("⚠️ No projectId, skipping save");
     return;
   }
 
   if (!selectedPair) {
-    console.warn("⚠️ No selected pair, skipping save");
+    // console.warn("⚠️ No selected pair, skipping save");
     return;
   }
 
-  console.log("📤 Proceeding to save", {
-    source: selectedPair.source.id,
-    target: selectedPair.target.id,
-    score: tempScore,
-    rationale: tempRationale,
-  });
+  // console.log("📤 Proceeding to save", {
+  //   source: selectedPair.source.id,
+  //   target: selectedPair.target.id,
+  //   score: tempScore,
+  //   rationale: tempRationale,
+  // });
 
 await updateEntry(
   selectedPair.source.id,
@@ -210,7 +210,7 @@ const exportMatrixAsPDF = async () => {
     pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
     pdf.save('sdg-matrix.pdf');
   } catch (error) {
-    console.error("Failed to export PDF:", error);
+    // console.error("Failed to export PDF:", error);
     alert("Could not export PDF. Please try again.");
   }
 };

@@ -3,7 +3,7 @@ const COOKIE_NAME = process.env.COOKIE_NAME || "oqi_session";
 
 export default function requireAuth(req: any, res: any, next: any) {
   const token = req.cookies?.[COOKIE_NAME];
-  console.log("RequireAuth - Token:", token);
+
 
   if (!token) {
     console.log("No token found.");
@@ -12,7 +12,7 @@ export default function requireAuth(req: any, res: any, next: any) {
 
   try {
     const user = verify(token);
-    console.log("Verified user:", user);
+ 
     req.user = user;
     next();
   } catch (err) {

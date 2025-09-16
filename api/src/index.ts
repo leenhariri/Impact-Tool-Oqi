@@ -22,7 +22,7 @@ import matrixRoutes from "./routes/matrix";
 
 const app = express();
 
-// ✅ Security middlewares
+//  Security middlewares
 app.use(helmet());
 app.use(
   cors({
@@ -33,7 +33,7 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Routes
+//  Routes
 app.use("/auth", auth);
 app.use("/projects", projects);
 app.use("/risks", riskRoutes);
@@ -49,20 +49,20 @@ app.use("/diagram-edges", diagramEdges);
 app.use("/api/project", matrixRoutes);
 app.use("/api", sdgTargetsRoutes);
 
-// ✅ Health endpoint
+// Health endpoint
 app.get("/health", (_req: Request, res: Response) => res.json({ ok: true }));
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("Welcome to the API!");
 });
 
-// ✅ Global error handler
+// Global error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error(" Error:", err);
   res.status(err.status || 500).json({ error: "Internal server error" });
 });
 
-// ✅ CERN OpenShift requires port 8080
+//  CERN OpenShift requires port 8080
 const PORT = env.PORT || 4000;
 app.listen(PORT, () => console.log(`API running on :${PORT}`));
 

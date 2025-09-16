@@ -17,7 +17,7 @@ router.get("/:projectId/matrix",requireAuth, async (req, res) => {
 
     res.json(entries);
   } catch (err) {
-    console.error("Failed to fetch matrix entries:", err);
+    // console.error("Failed to fetch matrix entries:", err);
     res.status(500).json({ error: "Could not load matrix data" });
   }
 });
@@ -27,13 +27,13 @@ router.post("/:projectId/matrix", requireAuth, async (req, res) => {
   const { projectId } = req.params;
   const { sourceSdgTargetId, targetSdgTargetId, score, rationale } = req.body;
 
-  console.log("🟡 Incoming matrix POST", {
-    projectId,
-    sourceSdgTargetId,
-    targetSdgTargetId,
-    score,
-    rationale
-  });
+  // console.log("🟡 Incoming matrix POST", {
+  //   projectId,
+  //   sourceSdgTargetId,
+  //   targetSdgTargetId,
+  //   score,
+  //   rationale
+  // });
 
   try {
     const entry = await prisma.matrixEntry.upsert({
@@ -58,10 +58,10 @@ router.post("/:projectId/matrix", requireAuth, async (req, res) => {
       },
     });
 
-    console.log("🟢 Upsert success:", entry);
+    // console.log("🟢 Upsert success:", entry);
     res.status(200).json(entry);
   } catch (err: any) {
-    console.error("🔴 Upsert failed:", err);
+    // console.error("🔴 Upsert failed:", err);
     res.status(500).json({ error: "Could not update matrix", details: err.message });
   }
 });

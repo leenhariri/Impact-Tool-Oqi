@@ -28,7 +28,7 @@ export default function LoginPage() {
       }
 
       const data = await res.json();
-      console.log("Login success", data);
+      // console.log("Login success", data);
 
       router.push("/dashboard"); // ✅ redirect to a protected page (adjust if needed)
     } catch (err: any) {

@@ -6,7 +6,7 @@ import {
   deleteActivity,
   getActivitiesForProject,
 } from '../controllers/activity.controller';
-import requireAuth from '../../middleware/requireAuth'; // ✅ adjust path if needed
+import requireAuth from '../../middleware/requireAuth'; 
 
 const router = Router();
 

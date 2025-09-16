@@ -1,125 +1,146 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
-// ✅ CREATE (Add SDG + SDG Target)
-// ✅ Replace old mapping (if exists) before adding a new one
+// --- Validation Schemas ---
+const addTargetSchema = z.object({
+  projectId: z.string().uuid(),
+  impactRowId: z.string().uuid(),
+  sdgId: z.coerce.number(),
+  sdgTargetId: z.string().uuid(),
+});
+
+const replaceTargetsSchema = z.object({
+  projectId: z.string().uuid(),
+  sdgId: z.coerce.number(),
+  sdgTargetIds: z.array(z.string().uuid()),
+});
+
+// --- ADD SDG + SDG Target ---
 export const addSdgTarget = async (req: Request, res: Response) => {
-  const { projectId, impactRowId, sdgId, sdgTargetId } = req.body;
+  const parsed = addTargetSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid input', details: parsed.error.flatten() });
+  }
+
+  const { projectId, impactRowId, sdgId, sdgTargetId } = parsed.data;
 
   try {
-    // Delete existing mapping (if any)
-    await prisma.impactRowTarget.deleteMany({
-      where: { impactRowId }
-    });
+    await prisma.impactRowTarget.deleteMany({ where: { impactRowId } });
 
-    // Add new mapping
     const link = await prisma.impactRowTarget.create({
-      data: {
-        projectId,
-        impactRowId,
-        sdgId: Number(sdgId),
-        sdgTargetId,
-      },
+      data: { projectId, impactRowId, sdgId, sdgTargetId },
     });
 
-    res.status(201).json(link);
+    return res.status(201).json(link);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to update SDG target for this row' });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error in addSdgTarget:', error);
+    }
+    return res.status(500).json({ error: 'Failed to update SDG target for this row' });
   }
 };
 
-
-// ✅ READ (Get SDG + SDG Targets for a row)
+// --- GET SDG Targets for a row ---
 export const getTargetsForRow = async (req: Request, res: Response) => {
   const { impactRowId } = req.params;
+
+  if (!impactRowId || typeof impactRowId !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid impactRowId' });
+  }
 
   try {
     const targets = await prisma.impactRowTarget.findMany({
       where: { impactRowId },
       include: {
-        sdgTarget: {
-          include: {
-            sdg: true,
-          },
-        },
-        sdg: true, // ✅ include SDG directly as well
+        sdgTarget: { include: { sdg: true } },
+        sdg: true,
       },
     });
 
-    res.json(targets);
+    return res.json(targets);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to fetch SDG targets' });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error in getTargetsForRow:', error);
+    }
+    return res.status(500).json({ error: 'Failed to fetch SDG targets' });
   }
 };
 
-// ✅ DELETE
+// --- DELETE one SDG target link ---
 export const deleteTarget = async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  if (!id || typeof id !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid target ID' });
+  }
+
   try {
     await prisma.impactRowTarget.delete({ where: { id } });
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to delete target' });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error in deleteTarget:', error);
+    }
+    return res.status(500).json({ error: 'Failed to delete target' });
   }
 };
 
-// ✅ UPDATE (Replace all targets for a row with new SDG + SDG targets)
+// --- REPLACE all SDG Targets for a row ---
 export const replaceTargetsForRow = async (req: Request, res: Response) => {
   const { rowId } = req.params;
-  const { sdgTargetIds, sdgId, projectId } = req.body;
+
+  if (!rowId || typeof rowId !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid rowId' });
+  }
+
+  const parsed = replaceTargetsSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid input', details: parsed.error.flatten() });
+  }
+
+  const { sdgId, sdgTargetIds, projectId } = parsed.data;
 
   try {
-    // Validate all targets
-// ✅ Safe validation
-const filters: any = {
-  id: { in: sdgTargetIds },
-};
-
-if (typeof sdgId === 'number') {
-  filters.sdgId = Number(sdgId);
-}
-
-const validTargets = await prisma.sDGTarget.findMany({ where: filters });
-
+    // Validate existence of all target IDs under that SDG
+    const validTargets = await prisma.sDGTarget.findMany({
+      where: {
+        id: { in: sdgTargetIds },
+        sdgId,
+      },
+    });
 
     if (validTargets.length !== sdgTargetIds.length) {
       return res.status(400).json({
         error: 'Some SDG Target IDs do not belong to the provided SDG',
       });
     }
-if (!sdgTargetIds || sdgTargetIds.length === 0 || !sdgId) {
-  await prisma.impactRowTarget.deleteMany({ where: { impactRowId: rowId } });
-  return res.status(200).json([]); // return empty if all were removed
-}
 
-    // Replace logic
-    await prisma.impactRowTarget.deleteMany({
-      where: { impactRowId: rowId },
-    });
+    // If empty array, just delete and return
+    if (sdgTargetIds.length === 0) {
+      await prisma.impactRowTarget.deleteMany({ where: { impactRowId: rowId } });
+      return res.status(200).json([]);
+    }
 
+    // Delete existing targets
+    await prisma.impactRowTarget.deleteMany({ where: { impactRowId: rowId } });
+
+    // Add new ones
     const created = await Promise.all(
       sdgTargetIds.map((targetId: string) =>
         prisma.impactRowTarget.create({
-          data: {
-            projectId,
-            impactRowId: rowId,
-            sdgId: Number(sdgId),
-            sdgTargetId: targetId,
-          },
+          data: { projectId, impactRowId: rowId, sdgId, sdgTargetId: targetId },
         })
       )
     );
 
-    res.status(200).json(created);
+    return res.status(200).json(created);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to replace SDG targets' });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error in replaceTargetsForRow:', error);
+    }
+    return res.status(500).json({ error: 'Failed to replace SDG targets' });
   }
 };
-

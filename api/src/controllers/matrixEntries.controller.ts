@@ -1,13 +1,25 @@
-// 📁 /api/src/controllers/matrixEntries.controller.ts
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
+// --- Validation Schemas ---
+const upsertSchema = z.object({
+  projectId: z.string().uuid(),
+  sourceSdgTargetId: z.string().uuid(),
+  targetSdgTargetId: z.string().uuid(),
+  score: z.number().int().min(-3).max(3),
+  rationale: z.string().max(1000).optional(),
+});
+
 // 🔹 GET all matrix entries for a project
 export const getMatrixForProject = async (req: Request, res: Response) => {
-  const projectId = req.body.projectId || req.params.projectId;
+  const projectId = req.params.projectId || req.body.projectId;
 
+  if (!projectId || typeof projectId !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid projectId' });
+  }
 
   try {
     const entries = await prisma.matrixEntry.findMany({
@@ -18,16 +30,24 @@ export const getMatrixForProject = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(entries);
+    return res.status(200).json(entries);
   } catch (error) {
-    console.error('Failed to fetch matrix:', error);
-    res.status(500).json({ error: 'Failed to fetch matrix' });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Failed to fetch matrix:', error);
+    }
+    return res.status(500).json({ error: 'Failed to fetch matrix' });
   }
 };
 
 // 🔹 UPSERT (create or update) a matrix entry
 export const upsertMatrixEntry = async (req: Request, res: Response) => {
-  const { projectId, sourceSdgTargetId, targetSdgTargetId, score, rationale } = req.body;
+  const parsed = upsertSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({ error: 'Invalid input', details: parsed.error.flatten() });
+  }
+
+  const { projectId, sourceSdgTargetId, targetSdgTargetId, score, rationale } = parsed.data;
 
   try {
     const entry = await prisma.matrixEntry.upsert({
@@ -52,22 +72,30 @@ export const upsertMatrixEntry = async (req: Request, res: Response) => {
       },
     });
 
-    res.status(200).json(entry);
+    return res.status(200).json(entry);
   } catch (error) {
-    console.error('Failed to upsert matrix entry:', error);
-    res.status(500).json({ error: 'Failed to save entry' });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Failed to upsert matrix entry:', error);
+    }
+    return res.status(500).json({ error: 'Failed to save matrix entry' });
   }
 };
 
-// 🔹 DELETE all matrix entries for a project (optional)
+// 🔹 DELETE all matrix entries for a project
 export const clearMatrixForProject = async (req: Request, res: Response) => {
   const { projectId } = req.params;
 
+  if (!projectId || typeof projectId !== 'string') {
+    return res.status(400).json({ error: 'Missing or invalid projectId' });
+  }
+
   try {
     await prisma.matrixEntry.deleteMany({ where: { projectId } });
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
-    console.error('Failed to clear matrix:', error);
-    res.status(500).json({ error: 'Failed to clear matrix' });
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Failed to clear matrix:', error);
+    }
+    return res.status(500).json({ error: 'Failed to clear matrix entries' });
   }
 };

@@ -21,7 +21,7 @@ export const createStakeholder = async (req: Request, res: Response) => {
     })
     res.status(201).json(stakeholder)
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     res.status(500).json({ error: 'Failed to create stakeholder' })
   }
 }
@@ -36,7 +36,7 @@ export const getStakeholders = async (req: Request, res: Response) => {
     })
     res.json(stakeholders)
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     res.status(500).json({ error: 'Failed to fetch stakeholders' })
   }
 }
@@ -53,7 +53,7 @@ export const updateStakeholder = async (req: Request, res: Response) => {
     })
     res.json(updated)
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     res.status(500).json({ error: 'Failed to update stakeholder' })
   }
 }
@@ -68,7 +68,7 @@ export const deleteStakeholder = async (req: Request, res: Response) => {
     })
     res.status(204).send()
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     res.status(500).json({ error: 'Failed to delete stakeholder' })
   }
 }

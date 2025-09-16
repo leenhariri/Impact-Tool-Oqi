@@ -23,7 +23,7 @@ export const createRisk = async (req: Request, res: Response) => {
 
     res.status(201).json(newRisk)
   } catch (error) {
-    console.error(error)
+    // console.error(error)
     res.status(500).json({ error: 'Failed to create risk' })
   }
 }
@@ -112,7 +112,7 @@ export const getRisksForProject = async (req: Request, res: Response) => {
     });
     res.status(200).json(risks);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Failed to fetch risks for project' });
   }
 };

@@ -60,7 +60,7 @@ export const getImpactRows = async (req: Request, res: Response) => {
 
     res.json(rows);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ error: 'Failed to fetch impact rows' });
   }
 };
@@ -98,7 +98,7 @@ export const updateImpactRow = async (req: Request, res: Response) => {
 
     res.json(updated);
   } catch (error) {
-    console.error("UPDATE ERROR:", error);
+    // console.error("UPDATE ERROR:", error);
     res.status(500).json({ error: 'Failed to update row' });
   }
 };
@@ -121,7 +121,7 @@ export const deleteImpactRow = async (req: Request, res: Response) => {
 
     res.status(204).send()
   } catch (error) {
-    console.error('Failed to delete impact row:', error)
+    // console.error('Failed to delete impact row:', error)
     res.status(500).json({ error: 'Failed to delete row' })
   }
 }

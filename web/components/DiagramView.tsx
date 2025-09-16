@@ -182,13 +182,13 @@ const controller = new AbortController();
           edgeRes,
           stakeholderRes,
         ] = await Promise.all([
- fetch(`http://localhost:4000/impact-rows/${projectId}`, { signal: controller.signal ,credentials: 'include'}),
-        fetch(`http://localhost:4000/risks/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
-        fetch(`http://localhost:4000/activities/project/${projectId}`, { signal: controller.signal,credentials: 'include' }),
-        fetch(`http://localhost:4000/assumptions/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
-        fetch(`http://localhost:4000/diagram-nodes/${projectId}`, { signal: controller.signal,credentials: 'include', }),
-        fetch(`http://localhost:4000/diagram-edges/${projectId}`, { signal: controller.signal,credentials: 'include', }),
-        fetch(`http://localhost:4000/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+ fetch(`${API_BASE}/impact-rows/${projectId}`, { signal: controller.signal ,credentials: 'include'}),
+        fetch(`${API_BASE}/risks/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`${API_BASE}/activities/project/${projectId}`, { signal: controller.signal,credentials: 'include' }),
+        fetch(`${API_BASE}/assumptions/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`${API_BASE}/diagram-nodes/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`${API_BASE}/diagram-edges/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`${API_BASE}/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
           
         ]);
 
@@ -509,7 +509,7 @@ style: {
 ,
     });
 
-    // ❌ Skip adding edge since you said "no arrows generated"
+    
   });
 }
 
@@ -537,7 +537,7 @@ useEffect(() => {
 
   const timeout = setTimeout(() => {
     const updated = extractDiagramNodeData(nodes);
-    fetch("http://localhost:4000/diagram-nodes", {
+    fetch(`${API_BASE}/diagram-nodes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId, nodes: updated }),
@@ -553,7 +553,7 @@ const handleEdgesChange = (changes: any) => {
   setEdges(updatedEdges);
 
   // Save updated edges to backend
-  fetch("http://localhost:4000/diagram-edges", {
+  fetch(`${API_BASE}/diagram-edges`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectId, edges: updatedEdges }),
@@ -575,7 +575,7 @@ const handleEdgesChange = (changes: any) => {
       const updatedEdges = [...edges, newEdge];
       setEdges(updatedEdges);
 
-      fetch("http://localhost:4000/diagram-edges", {
+      fetch(`${API_BASE}/diagram-edges`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectId, edges: updatedEdges }),

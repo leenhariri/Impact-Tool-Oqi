@@ -251,7 +251,7 @@ setEditCollaborators(
                   setSelectedProject(null);
                 } catch (err) {
                   alert("Error deleting project.");
-                  console.error(err);
+                  // console.error(err);
                 }
               }}
               className={styles.deleteButton}

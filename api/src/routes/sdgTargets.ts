@@ -12,7 +12,7 @@ router.get("/", requireAuth,async (_req, res) => {
     });
     res.json({ targets });
   } catch (err) {
-    console.error("Error fetching SDG targets:", err);
+    // console.error("Error fetching SDG targets:", err);
     res.status(500).json({ error: "Failed to fetch SDG targets" });
   }
 });
@@ -36,7 +36,7 @@ include: { sdg: true },
 const targets = linkedTargets.map((entry) => entry.sdgTarget);
 res.json(targets);
 } catch (err) {
-console.error("Error fetching project SDG targets:", err);
+// console.error("Error fetching project SDG targets:", err);
 res.status(500).json({ error: "Failed to fetch project-specific targets" });
 }
 });

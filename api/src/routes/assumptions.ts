@@ -6,7 +6,7 @@ import {
   deleteAssumption,
   getAssumptionsForProject
 } from '../controllers/assumption.controller'
-import requireAuth from '../../middleware/requireAuth'; // ✅ adjust path if needed
+import requireAuth from '../../middleware/requireAuth'; 
 const router = express.Router()
 
 router.post('/', requireAuth,createAssumption)

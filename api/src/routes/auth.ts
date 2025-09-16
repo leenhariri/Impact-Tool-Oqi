@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import { signSession, setCookie, clearCookie , verifySession,COOKIE_NAME} from "../../lib/jwt";
-
+import { loginLimiter } from "../../middleware/rateLimiter";
 const prisma = new PrismaClient();
 const r = Router();
 
@@ -19,7 +19,7 @@ r.post("/register", async (req, res) => {
   res.json({ user: { id: user.id, email: user.email, name: user.name }});
 });
 
-r.post("/login", async (req, res) => {
+r.post("/login",loginLimiter, async (req, res) => {
   const { email, password } = Login.parse(req.body);
   const user = await prisma.user.findUnique({ where: { email }});
   if (!user || !user.passwordHash) return res.status(401).json({ error: "invalid credentials" });

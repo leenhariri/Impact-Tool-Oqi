@@ -114,7 +114,7 @@ const controller = new AbortController();
       const data = await res.json();
       setStakeholders(data);
     } catch (err) {
-      console.error("Failed to fetch stakeholders:", err);
+      // console.error("Failed to fetch stakeholders:", err);
       setStakeholders([]);
     }
   }
@@ -215,7 +215,7 @@ const fetchRisks = async () => {
 
     setRisks(formatted);
   } catch (err) {
-    console.error("Failed to fetch risks:", err);
+    // console.error("Failed to fetch risks:", err);
     setRisks([]);
   }
 }
@@ -242,7 +242,7 @@ const fetchAssumptionsAndActivities = async () => {
 
     setAssumptionsAndActivities(merged);
   } catch (err) {
-    console.error("Failed to fetch assumptions/activities:", err);
+    // console.error("Failed to fetch assumptions/activities:", err);
     setAssumptionsAndActivities([]);
   }
 };
@@ -269,11 +269,11 @@ const controller = new AbortController();
         } else if (Array.isArray(data.targets)) {
           setAllTargets(data.targets);
         } else {
-          console.error('Unexpected SDG target format', data);
+          // console.error('Unexpected SDG target format', data);
           setAllTargets([]);
         }
       } catch (error) {
-        console.error('Failed to load SDG targets:', error);
+        // console.error('Failed to load SDG targets:', error);
         setAllTargets([]);
       }
     };
@@ -284,7 +284,7 @@ const controller = new AbortController();
         const data = await res.json();
         setAllSDGs(data);
       } catch (error) {
-        console.error('Failed to load SDGs:', error);
+        // console.error('Failed to load SDGs:', error);
         setAllSDGs([]);
       }
     };
