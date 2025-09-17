@@ -10,5 +10,5 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "skipLibCheck": true
   },
-  "include": ["src/**/*"]             // ✅ Add this
+  "include": ["src/**/*", "lib"]             // ✅ Add this
 }
