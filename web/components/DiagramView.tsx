@@ -621,8 +621,9 @@ return (
         <ol className="list-decimal list-inside text-sm">
           <li>Insert arrows between diagram boxes.</li>
           <li>To clear a single arrow, click on it then delete.</li>
-          <li>Boxes are movable, you may drag them to rearrange the layout for better visibility.</li>
+          <li>Boxes are movable — when you drag and rearrange them, the layout will be saved automatically.</li>
           <li>Option to export as PDF.</li>
+          <li>Before exporting as PDF, make sure the diagram is centered on screen for best results.</li>
         </ol>
       </div>
 

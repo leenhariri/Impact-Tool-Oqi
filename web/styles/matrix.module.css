@@ -5,6 +5,8 @@
   background-color: #ffffff;
   min-height: 100vh;
   /* REMOVE position and overflow */
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 
@@ -17,12 +19,16 @@
   font-size: 16px;
   line-height: 1.6;
   border-radius: 0;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .instructions h2 {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1rem;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 /* 🔹 Matrix Table */

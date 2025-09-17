@@ -4,22 +4,30 @@
   font-family: 'Segoe UI', sans-serif;
   background-color: #ffffff;
   min-height: 100vh;
+  
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 /* 🔹 Instructions Box */
 .instructions {
   background-color: #f9f9f9;
-  padding: 1.5rem;
   border-left: 5px solid #111730;
   margin-bottom: 2rem;
+  padding: 1.5rem;
   font-size: 16px;
   line-height: 1.6;
+  border-radius: 0;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .instructions h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   margin-bottom: 1rem;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 /* 🔹 Table Wrapper */
@@ -124,6 +132,8 @@
   font-size: 20px;
   color: #111730;
   font-weight: 600;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 
@@ -171,6 +181,8 @@
   background: #fff;
   box-sizing: border-box;
   font-family: inherit;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 /* 🔹 Error Message */

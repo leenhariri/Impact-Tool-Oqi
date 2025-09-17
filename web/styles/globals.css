@@ -127,10 +127,14 @@ body {
 .nav-link {
   color: var(--nav-link);
   text-decoration: none;
-  font-weight: 600;
-  padding: 8px 10px;
-  border-radius: 8px;
+  font-family: 'Open Sans', sans-serif;  /* ✅ Match OQI site */
+  font-weight: 500;                      /* ✅ Slightly lighter for clean look */
+  font-size: 13px;                       /* ✅ Consistent readable size */
+  padding: 6px 12px;                     /* ✅ More balanced spacing */
+  border-radius: 6px;                    /* ✅ Slightly smaller radius */
+  transition: color 0.2s ease-in-out;    /* ✅ Smooth hover effect */
 }
+
 .nav-link:hover { color: var(--nav-link-hover); }
 
 /* mobile menu */

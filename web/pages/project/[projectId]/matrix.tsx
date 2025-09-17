@@ -233,7 +233,8 @@ const exportMatrixAsPDF = async () => {
       <h2 className="font-bold text-lg mb-2">Instructions</h2>
       <ol className="list-decimal list-inside text-sm">
         <li>Click a cell to select interaction score and rationale.</li>
-        <li>Diagonal cells are disabled.</li>
+        <li>Save the chosen score and explanation.</li>
+        <li>Option to export as pdf.</li>
       </ol>
     </div>
 <h3 className="text-2xl font-bold underline text-blue-600 mb-4 cursor-pointer">

@@ -608,11 +608,13 @@ return (
   <div className={styles.container}>
 
     <div className={styles.instructions}>
-      <h2>Instructions</h2>
-      <p>1. Fill in the tables</p>
-      <p>2. To add a row click +, to delete a row click ×</p>
-      <p>3. Save your work once done</p>
-      <p>4. Proceed to view Diagram/Matrix</p>
+      <h2 className="font-bold text-lg mb-2">Instructions</h2>
+      <ol className="list-decimal list-inside text-sm">      
+      <li>Fill in the tables.</li>
+      <li>Save each cell you fill.</li>
+      <li>Save your final work once done.</li>
+      <li>Proceed to view Diagram/Matrix.</li></ol>
+
     </div>
 
     {/* Impact Rows */}

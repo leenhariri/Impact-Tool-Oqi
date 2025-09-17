@@ -1,7 +1,8 @@
 /* === Global Layout === */
+
 .container {
   padding: 3rem 4rem;
-  font-family: 'Segoe UI', sans-serif;
+   font-family: 'Open Sans', sans-serif;
   background-color: white;
   min-height: 100vh;
 }
@@ -13,18 +14,23 @@
   margin-bottom: 2rem;
   font-size: 16px;
   line-height: 1.6;
+   font-family: 'Open Sans', sans-serif;
 }
 
 .instructions h2 {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 1rem;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .dashboard {
   display: flex;
   gap: 2rem;
   justify-content: space-between;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .left, .right {
@@ -32,6 +38,8 @@
   background-color: #fafafa;
   padding: 1rem;
   border-radius: 16px;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .left h3, .right h3 {
@@ -41,6 +49,8 @@
   border-radius: 12px;
   margin-bottom: 1rem;
   font-size: 1.2rem;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .projectBox {
@@ -54,6 +64,8 @@
   cursor: pointer;
   transition: background 0.2s ease;
   font-size: 0.95rem;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .projectBox:hover {
@@ -72,6 +84,8 @@
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 0.95rem;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .right button {
@@ -83,6 +97,8 @@
   border: none;
   border-radius: 999px;
   cursor: pointer;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 
@@ -141,6 +157,7 @@
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
   font-size: 15px;
+  
 }
 
 .modalButton:hover,
@@ -160,6 +177,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .modalContent {
@@ -171,6 +190,8 @@
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   max-height: 90vh;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .modalInput {
@@ -182,6 +203,8 @@
   border-radius: 12px;
   font-size: 0.95rem;
   resize: vertical;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 /* .modalButton {
@@ -214,3 +237,4 @@
 .deleteButton:hover {
   background-color: #c9302c;
 } */
+
