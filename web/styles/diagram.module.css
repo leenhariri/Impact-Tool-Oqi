@@ -193,7 +193,6 @@
 }
 
 /* Hide controls & legend ONLY when exporting */
-.exporting .react-flow__controls,
-.exporting .legend-container {
+.no-export {
   display: none !important;
 }

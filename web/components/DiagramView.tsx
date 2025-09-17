@@ -110,10 +110,13 @@ const exportAsPDF = async () => {
 
   const element = diagramOnlyRef.current;
 
-  // Temporarily resize to capture full content
+  // 🔴 Hide elements with class 'no-export'
+  const hiddenElements = element.querySelectorAll('.no-export');
+  hiddenElements.forEach(el => (el as HTMLElement).style.display = 'none');
+
+  // Resize for full export
   const scrollWidth = element.scrollWidth;
   const scrollHeight = element.scrollHeight;
-
   const originalStyle = element.getAttribute("style") || "";
   element.style.width = `${scrollWidth}px`;
   element.style.height = `${scrollHeight}px`;
@@ -128,10 +131,11 @@ const exportAsPDF = async () => {
     scale: 2,
   });
 
+  // ✅ Restore styles after export
   element.setAttribute("style", originalStyle);
+  hiddenElements.forEach(el => (el as HTMLElement).style.display = '');
 
   const imgData = canvas.toDataURL("image/png");
-
   const pdf = new jsPDF({
     orientation: "landscape",
     unit: "mm",
@@ -140,7 +144,6 @@ const exportAsPDF = async () => {
 
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-
   const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
   const imgWidth = canvas.width * ratio;
   const imgHeight = canvas.height * ratio;
@@ -480,7 +483,7 @@ for (const level of hierarchyOrder) {
     const nodeId = `stakeholder-${s.id}`;
     
     const position = (nodePositionMap.get(nodeId) ?? {
-x: baseX + 800 + i * 200, // Push them further right, with even spacing
+x: baseX + 1400 + i * 250, // Push them further right, with even spacing
 y: hierarchyYMap[level],
 
     }) as { x: number; y: number };
@@ -639,11 +642,14 @@ return (
   maxZoom={2}
 >
   <Background />
-  <Controls />       
+  <Controls className="no-export" />       
   {/* <MiniMap />         */}
 </ReactFlow>
 
-           <Legend/>
+          <div className="no-export">
+  <Legend />
+</div>
+
         </div>
 
         <div className={styles.controlsWrapper}>
