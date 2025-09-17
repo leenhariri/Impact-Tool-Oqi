@@ -39,7 +39,7 @@ setEditCollaborators(
 
 
   useEffect(() => {
-    fetch("http://localhost:4000/auth/me", {
+    fetch("http://localhost:8080/api/auth/me", {
       credentials: "include",
     })
       .then((res) => {
@@ -52,7 +52,7 @@ setEditCollaborators(
 
   useEffect(() => {
     if (user) {
-      fetch("http://localhost:4000/projects", {
+      fetch("http://localhost:8080/api/projects", {
         credentials: "include",
       })
         .then((res) => res.json())
@@ -65,7 +65,7 @@ setEditCollaborators(
     if (!title) return setError("Project title is required");
 
     try {
-      const response = await fetch("http://localhost:4000/projects", {
+      const response = await fetch("http://localhost:8080/api/projects", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -210,7 +210,7 @@ description: sanitizeInput(description),
                 className={styles.saveButton}
                 onClick={async () => {
                   try {
-                    const res = await fetch(`http://localhost:4000/projects/${selectedProject.id}`, {
+                    const res = await fetch(`http://localhost:8080/api/projects/${selectedProject.id}`, {
                       method: "PATCH",
                       credentials: "include",
                       headers: { "Content-Type": "application/json" },
@@ -245,7 +245,7 @@ description: sanitizeInput(description),
                 if (!confirm("Are you sure you want to delete this project?")) return;
 
                 try {
-                  const res = await fetch(`http://localhost:4000/projects/${selectedProject.id}`, {
+                  const res = await fetch(`http://localhost:8080/api/projects/${selectedProject.id}`, {
                     method: "DELETE",
                     credentials: "include",
                   });

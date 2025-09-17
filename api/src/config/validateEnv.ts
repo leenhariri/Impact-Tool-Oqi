@@ -1,3 +1,4 @@
+//api/src/config/validateEnv
 import { z } from "zod";
 import dotenv from "dotenv";
 
@@ -15,6 +16,7 @@ const envSchema = z.object({
       message: "PORT must be a valid number between 1 and 65535",
     })
     .optional(),
+    FRONTEND_URL: z.string().url(),
 });
 
 const parsed = envSchema.safeParse(process.env);

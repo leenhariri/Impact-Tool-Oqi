@@ -20,17 +20,18 @@ export default function LoginPage() {
     const safePassword = sanitize(password);
 
     try {
-      const res = await fetch("http://localhost:4000/auth/login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: safeEmail,
-          password: safePassword,
-        }),
-      });
+const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/login`, {
+  method: "POST",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    email: safeEmail,
+    password: safePassword,
+  }),
+});
+
 
       if (!res.ok) {
         const err = await res.json();

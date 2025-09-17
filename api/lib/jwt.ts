@@ -12,9 +12,14 @@ export function verify(token: string) { return jwt.verify(token, JWT_SECRET) as 
 
 export function setCookie(res: any, token: string) {
   res.cookie(COOKIE_NAME, token, {
-    httpOnly: true, secure: isProd,sameSite: isProd ? "none" : "lax", path: "/",
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    path: "/",
+    domain: isProd ? ".cern.ch" : undefined, // ✅ for SSO and consistent subdomain auth
   });
 }
+
 export function verifySession(token: string) {
   try {
     return jwt.verify(token, JWT_SECRET) as { uid: number; email: string };
@@ -23,5 +28,17 @@ export function verifySession(token: string) {
   }
 }
 export function clearCookie(res: any) {
-  res.clearCookie(COOKIE_NAME, { path: "/" });
+  // Always try clearing both with and without domain
+  res.clearCookie(COOKIE_NAME, {
+    path: "/",
+  });
+
+  if (isProd) {
+    res.clearCookie(COOKIE_NAME, {
+      path: "/",
+      domain: ".cern.ch",
+    });
+  }
 }
+
+

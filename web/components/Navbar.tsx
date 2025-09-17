@@ -19,7 +19,8 @@ export default function Navbar() {
 
   // Check auth session on load AND route change
   useEffect(() => {
-    fetch("http://localhost:4000/auth/me", { credentials: "include" })
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, { credentials: "include" })
+
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then(() => setIsLoggedIn(true))
       .catch(() => setIsLoggedIn(false))
@@ -27,10 +28,11 @@ export default function Navbar() {
   }, [router.asPath]); // ✅ recheck when route changes
 
   const handleLogout = async () => {
-    await fetch("http://localhost:4000/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
+  method: "POST",
+  credentials: "include",
+});
+
 
     setIsLoggedIn(false);
     window.location.href = "/";

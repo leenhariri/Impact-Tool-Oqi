@@ -165,7 +165,7 @@ const exportAsPDF = async () => {
       y: node.position.y,
     }));
 const [error, setError] = useState<string>(''); // ✅ Error state
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ;
 
   useEffect(() => {
     if (!projectId || typeof projectId !== 'string') {
@@ -185,13 +185,13 @@ const controller = new AbortController();
           edgeRes,
           stakeholderRes,
         ] = await Promise.all([
- fetch(`${API_BASE}/impact-rows/${projectId}`, { signal: controller.signal ,credentials: 'include'}),
-        fetch(`${API_BASE}/risks/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
-        fetch(`${API_BASE}/activities/project/${projectId}`, { signal: controller.signal,credentials: 'include' }),
-        fetch(`${API_BASE}/assumptions/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
-        fetch(`${API_BASE}/diagram-nodes/${projectId}`, { signal: controller.signal,credentials: 'include', }),
-        fetch(`${API_BASE}/diagram-edges/${projectId}`, { signal: controller.signal,credentials: 'include', }),
-        fetch(`${API_BASE}/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+ fetch(`${API_BASE}/api/impact-rows/${projectId}`, { signal: controller.signal ,credentials: 'include'}),
+        fetch(`${API_BASE}/api/risks/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`${API_BASE}/api/activities/project/${projectId}`, { signal: controller.signal,credentials: 'include' }),
+        fetch(`${API_BASE}/api/assumptions/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`${API_BASE}/api/diagram-nodes/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`${API_BASE}/api/diagram-edges/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`${API_BASE}/api/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
           
         ]);
         if (!impactRes.ok) throw new Error("Failed to fetch impact rows");
@@ -547,7 +547,7 @@ useEffect(() => {
 
   const timeout = setTimeout(() => {
     const updated = extractDiagramNodeData(nodes);
-    fetch(`${API_BASE}/diagram-nodes`, {
+    fetch(`${API_BASE}/api/diagram-nodes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId, nodes: updated }),
@@ -568,7 +568,7 @@ const handleEdgesChange = (changes: any) => {
   setEdges(updatedEdges);
 
   // Save updated edges to backend
-  fetch(`${API_BASE}/diagram-edges`, {
+  fetch(`${API_BASE}/api/diagram-edges`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectId, edges: updatedEdges }),
@@ -595,7 +595,7 @@ const handleEdgesChange = (changes: any) => {
       const updatedEdges = [...edges, newEdge];
       setEdges(updatedEdges);
 
-      fetch(`${API_BASE}/diagram-edges`, {
+      fetch(`${API_BASE}/api/diagram-edges`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectId, edges: updatedEdges }),
