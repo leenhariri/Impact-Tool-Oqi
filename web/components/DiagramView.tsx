@@ -19,6 +19,7 @@ import { ReactFlowProvider } from "reactflow";
 import { applyEdgeChanges } from "reactflow";
 import styles from "../styles/diagram.module.css"; 
 import Legend from "../components/Legend";
+import { useRouter } from 'next/router';
 type ImpactRow = {
   id: string;
   hierarchyLevel: string;
@@ -61,9 +62,12 @@ type Stakeholder = {
 
 
 export default function DiagramView({ projectId }: { projectId: string }) {
+  
+
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 const resetNodePositions = () => {
   const verticalSpacing = 110;
   const horizontalSpacing = 260;
@@ -670,14 +674,15 @@ return (
           {/* <button onClick={resetNodePositions} className={styles.buttonPrimary}>
              Reset Positions
           </button> */}
-          <button
-            onClick={() => window.location.href = `/project/${projectId}`}
+         <button
+  onClick={() => router.push(`/project/${projectId}`)}
+
             className={styles.buttonPrimary}
           >
             Edit Table
           </button>
           <button
-            onClick={() => window.location.href = `/project/${projectId}/matrix`}
+            onClick={() => router.push(`/project/${projectId}/matrix`)}
             className={styles.buttonPrimary}
           >
             Edit Matrix
