@@ -5,7 +5,7 @@ import {
   updateStakeholder,
   deleteStakeholder,
 } from '../controllers/stakeholder.controller'
-import requireAuth from '../../middleware/requireAuth';
+import requireAuth from '../middleware/requireAuth';
 const router = Router()
 
 router.post('/',requireAuth, createStakeholder)

@@ -1,7 +1,7 @@
 // api/src/routes/matrix.ts
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import requireAuth from '../../middleware/requireAuth';
+import requireAuth from '../middleware/requireAuth';
 const router = express.Router({ mergeParams: true }); // ✅ not default
 
 const prisma = new PrismaClient();

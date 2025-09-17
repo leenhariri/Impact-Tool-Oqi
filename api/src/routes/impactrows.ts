@@ -5,7 +5,7 @@ import {
   updateImpactRow,
   deleteImpactRow,
 } from '../controllers/impactrow.controller'
-import requireAuth from '../../middleware/requireAuth';
+import requireAuth from '../middleware/requireAuth';
 const router = Router()
 
 router.post('/',requireAuth, createImpactRow)

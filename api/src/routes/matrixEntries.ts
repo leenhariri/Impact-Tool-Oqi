@@ -6,7 +6,7 @@ import {
   upsertMatrixEntry,
   clearMatrixForProject,
 } from '../controllers/matrixEntries.controller';
-import requireAuth from '../../middleware/requireAuth';
+import requireAuth from '../middleware/requireAuth';
 const router = express.Router();
 
 router.get('/:projectId', requireAuth,getMatrixForProject);

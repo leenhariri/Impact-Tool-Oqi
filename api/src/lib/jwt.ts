@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { env } from "../src/config/validateEnv";
+import { env } from "../config/validateEnv";
 
 const JWT_SECRET = env.JWT_SECRET;
 export const COOKIE_NAME = env.COOKIE_NAME;

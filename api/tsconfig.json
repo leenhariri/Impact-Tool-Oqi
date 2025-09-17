@@ -6,8 +6,9 @@
     "esModuleInterop": true,
     "strict": true,
     "outDir": "./dist",
-    "rootDir": "./",
+    "rootDir": "./src",              // ✅ Change this line
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*"]             // ✅ Add this
 }

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
-import requireAuth from "../../middleware/requireAuth";
+import requireAuth from "../middleware/requireAuth";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
 import { Request, Response } from "express";
