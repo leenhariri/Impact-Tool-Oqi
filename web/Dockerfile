@@ -33,6 +33,6 @@ COPY --from=builder /app/styles ./styles
 RUN npm ci --omit=dev
 
 EXPOSE 3000
-
+HEALTHCHECK CMD curl --fail http://localhost:3000 || exit 1
 CMD ["npx", "next", "start", "-p", "3000", "-H", "0.0.0.0"]
 
