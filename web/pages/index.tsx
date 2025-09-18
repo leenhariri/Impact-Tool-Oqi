@@ -1,8 +1,27 @@
 import React from "react";
-import Link from "next/link";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleAccessClick = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, {
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        router.push("/dashboard");
+      } else {
+        router.push("/login");
+      }
+    } catch (err) {
+      console.error("Auth check failed:", err);
+      router.push("/login");
+    }
+  };
+
   return (
     <>
       <Head>
@@ -40,37 +59,38 @@ export default function Home() {
         <h2 className="arvo-section w3-center" style={{ marginBottom: 24 }}>
           Our Partners
         </h2>
-<div className="partners-logos">
-  <a
-    href="https://www.thebeyondlab.org/"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <img src="/images/beyond-lab.png" className="partner-logo" alt="Beyond Lab" />
-  </a>
 
-  <a
-    href="https://www.ungeneva.org/en/visit"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <img src="/images/un-geneva.png" className="partner-logo" alt="United Nations Geneva" />
-  </a>
+        <div className="partners-logos">
+          <a
+            href="https://www.thebeyondlab.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/images/beyond-lab.png" className="partner-logo" alt="Beyond Lab" />
+          </a>
 
-  <a
-    href="https://www.gesda.global/"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <img src="/images/gesda.png" className="partner-logo" alt="GESDA" />
-  </a>
-</div>
+          <a
+            href="https://www.ungeneva.org/en/visit"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/images/un-geneva.png" className="partner-logo" alt="United Nations Geneva" />
+          </a>
+
+          <a
+            href="https://www.gesda.global/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/images/gesda.png" className="partner-logo" alt="GESDA" />
+          </a>
+        </div>
 
         <hr />
         <div className="w3-center" style={{ marginTop: 32 }}>
-          <Link href="/dashboard" className="btn-pill">
+          <button onClick={handleAccessClick} className="btn-pill">
             Access Tool
-          </Link>
+          </button>
         </div>
       </section>
 
@@ -136,6 +156,8 @@ export default function Home() {
           font-family: 'Inter', sans-serif;
           text-decoration: none;
           transition: background 0.2s ease-in-out;
+          border: none;
+          cursor: pointer;
         }
 
         .btn-pill:hover {

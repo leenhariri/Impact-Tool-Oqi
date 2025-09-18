@@ -67,6 +67,8 @@ interface AssumptionOrActivity {
 export default function ProjectDetailPage() {
   const router = useRouter();
   const { projectId } = router.query;
+  const isInvalidId = !projectId || typeof projectId !== "string";
+
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 if (!projectId || typeof projectId !== "string") {
@@ -602,8 +604,10 @@ const deleteRisk = async (index: number) => {
   setRisks(updated)
 }
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+if (loading) return <p>Loading...</p>;
+if (isInvalidId) return <p style={{ color: 'red' }}>Invalid Project ID</p>;
+if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
 
 
 return (
