@@ -1,3 +1,4 @@
+version: '3.8'
 
 services:
   db:
@@ -6,7 +7,39 @@ services:
       POSTGRES_USER: oqi
       POSTGRES_PASSWORD: oqi
       POSTGRES_DB: oqi_dev
-    ports: ["5432:5432"]
-    volumes: ["dbdata:/var/lib/postgresql/data"]
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://oqi:oqi@db:5432/oqi_dev?schema=public
+      JWT_SECRET: your_secret_here
+      COOKIE_NAME: oqi_session
+      PORT: 8080
+      FRONTEND_URL: http://localhost:3000
+      DISABLE_SECURE_COOKIE: "true" 
+      DISABLE_COOKIE_DOMAIN: "true"
+    ports:
+      - "8080:8080"
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+
 volumes:
   dbdata:

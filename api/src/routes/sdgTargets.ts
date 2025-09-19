@@ -33,7 +33,8 @@ include: { sdg: true },
 });
 
 
-const targets = linkedTargets.map((entry) => entry.sdgTarget);
+const targets = linkedTargets.map((entry: any) => entry.sdgTarget);
+
 res.json(targets);
 } catch (err) {
 // console.error("Error fetching project SDG targets:", err);

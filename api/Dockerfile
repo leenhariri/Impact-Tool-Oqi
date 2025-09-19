@@ -1,44 +1,35 @@
-# ----------- STAGE 1: Build -------------
-FROM node:18-alpine AS builder
+# ---- Build Stage ----
+FROM node:20-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files and install deps
-COPY api/package*.json ./api/
-WORKDIR /app/api
+COPY api/package*.json ./
+COPY api/tsconfig.json ./
+COPY prisma ./prisma
+COPY api/src ./src
+COPY .env .env
+
 RUN npm install
 
-# Copy all source code (everything under src)
-COPY prisma /app/prisma
-COPY api/tsconfig.json ./
-COPY api/src ./src
+# Generate Prisma client (make sure schema is present)
+RUN npx prisma generate --schema=./prisma/schema.prisma
 
-# Generate Prisma client
-RUN npx prisma generate --schema=../prisma/schema.prisma
-
-# Build TypeScript
+# Compile TypeScript
 RUN npm run build
 
+# ---- Production Stage ----
+FROM node:20-alpine
 
-# ----------- STAGE 2: Runtime -------------
-FROM node:18-alpine
-
-# Set working directory
 WORKDIR /app
 
-# Copy built output from builder
-COPY --from=builder /app/api/dist ./dist
-COPY --from=builder /app/api/node_modules ./node_modules
-COPY --from=builder /app/api/package.json ./package.json
+# Copy compiled output and Prisma schema + client
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/.env .env
 
-# Set environment variables
 ENV NODE_ENV=production
-ENV PORT=8080
-
-# Expose port
 EXPOSE 8080
 
-# Start the app
 CMD ["node", "dist/index.js"]

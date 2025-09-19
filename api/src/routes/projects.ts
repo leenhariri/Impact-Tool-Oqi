@@ -4,7 +4,8 @@ import requireAuth from "../middleware/requireAuth";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
 import { Request, Response } from "express";
-import { ProjectRole } from "@prisma/client";
+import { ProjectRole } from "../constants/enums";
+
 
 type AuthenticatedRequest = Request & {
   user: {
@@ -122,7 +123,8 @@ r.get("/:id", requireAuth, async (req, res) => {
 
   if (!project) return res.status(404).json({ error: "Project not found" });
 
-  const isMember = project.members.some((m) => m.userId === userId);
+const isMember = project.members.some((m: any) => m.userId === userId);
+
   if (!isMember) return res.status(403).json({ error: "Forbidden" });
 
   res.json({ project });
