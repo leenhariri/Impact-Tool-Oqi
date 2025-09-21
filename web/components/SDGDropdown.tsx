@@ -57,7 +57,7 @@ const SDGDropdown: React.FC<Props> = ({ allTargets, selectedTargetIds, onChange 
 
   const renderLabel = () => {
     const count = selectedTargetIds.length;
-    return count === 0 ? "Select SDG Targets" : `${count} selected`;
+    return count === 0 ? "Target" : `${count} selected`;
   };
 
   return (

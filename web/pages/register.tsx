@@ -1,41 +1,48 @@
+// pages/register.tsx
 import { useState } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/login.module.css";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Basic frontend input sanitization
   const sanitize = (value: string): string =>
     value.trim().replace(/[<>"]/g, "");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     const safeEmail = sanitize(email);
+    const safeName = sanitize(name);
     const safePassword = sanitize(password);
 
-    try {
-const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/login`, {
-  method: "POST",
-  credentials: "include",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    email: safeEmail,
-    password: safePassword,
-  }),
-});
+    if (!safeEmail || !safeName || !safePassword) {
+      setError("All fields are required");
+      return;
+    }
 
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/register`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: safeEmail,
+          name: safeName,
+          password: safePassword,
+        }),
+      });
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err?.error || "Login failed");
+        throw new Error(err?.error || "Registration failed");
       }
 
       router.push("/dashboard");
@@ -59,15 +66,22 @@ const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/login`, {
             left: 0,
             right: 0,
             bottom: 0,
-            background:
-              "linear-gradient(rgba(17,23,48,0.5), rgba(17,23,48,0.5))",
+            background: "linear-gradient(rgba(17,23,48,0.5), rgba(17,23,48,0.5))",
           }}
         />
       </div>
 
       <div className={styles.formWrapper}>
-        <form onSubmit={handleLogin} className={styles.form}>
-          <h2 className={styles.title}>Login</h2>
+        <form onSubmit={handleRegister} className={styles.form}>
+          <h2 className={styles.title}>Register</h2>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={styles.input}
+            required
+          />
           <input
             type="email"
             placeholder="Email"
@@ -78,19 +92,13 @@ const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/login`, {
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Password (min 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={styles.input}
             required
           />
-          <button type="submit" className={styles.button}>Login</button>
-          <p style={{ fontSize: "12px", marginTop: "0.5rem", color: "#ccc" }}>
-  Don’t have an account?{" "}
-  <a href="/register" style={{ color: "#000000ff", textDecoration: "underline" }}>
-    Register here
-  </a>
-</p>
+          <button type="submit" className={styles.button}>Register</button>
           {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
         </form>
       </div>

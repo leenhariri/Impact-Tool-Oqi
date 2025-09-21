@@ -16,6 +16,8 @@ services:
     build:
       context: .
       dockerfile: api/Dockerfile
+      args:
+        DATABASE_URL: "postgresql://oqi:oqi@db:5432/oqi_dev"
     depends_on:
       - db
     environment:
@@ -26,8 +28,24 @@ services:
       FRONTEND_URL: http://localhost:3000
       DISABLE_SECURE_COOKIE: "true" 
       DISABLE_COOKIE_DOMAIN: "true"
+      NODE_ENV: development
     ports:
       - "8080:8080"
+  init:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+      args:
+        DATABASE_URL: "postgresql://oqi:oqi@db:5432/oqi_dev"
+    depends_on:
+      - db
+    command: >
+      sh -c "
+        npx prisma db push --schema=./prisma/schema.prisma &&
+        npm run seed
+      "
+    environment:
+      DATABASE_URL: postgresql://oqi:oqi@db:5432/oqi_dev
 
   web:
     build:

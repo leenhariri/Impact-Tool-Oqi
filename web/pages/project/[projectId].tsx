@@ -746,17 +746,20 @@ setEditingField({
                   ))}
                 </select>
               </td>
-              <td>
-                {selectedSDGs[row.id || ''] && (
-                  <SDGDropdown
-                    allTargets={allTargets.filter(
-                      (t) => t.sdgId === selectedSDGs[row.id || '']
-                    )}
-                    selectedTargetIds={sdgTargets[row.id || ''] || []}
-                    onChange={(ids) => handleTargetChange(row.id || '', ids)}
-                  />
-                )}
-              </td>
+              <td style={{ minHeight: '48px', verticalAlign: 'middle' }}>
+  {selectedSDGs[row.id || ''] ? (
+    <SDGDropdown 
+      allTargets={allTargets.filter(
+        (t) => t.sdgId === selectedSDGs[row.id || '']
+      )}
+      selectedTargetIds={sdgTargets[row.id || ''] || []}
+      onChange={(ids) => handleTargetChange(row.id || '', ids)}
+    />
+  ) : (
+    <div style={{ height: '38px' }}></div>  // Empty space to keep row height consistent
+  )}
+</td>
+
               <td>
                 <button className={styles.iconButton} onClick={() => deleteRow(index)}>
                   ×
