@@ -12,6 +12,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 
 const app = express();
+app.set("trust proxy", 1);
 
 async function startServer() {
   // ✅ Lazy import AFTER env is available

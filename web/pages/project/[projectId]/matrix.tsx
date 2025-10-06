@@ -237,12 +237,15 @@ const exportMatrixAsPDF = async () => {
         <li>Option to export as pdf.</li>
       </ol>
     </div>
-<h3 className="text-2xl font-bold underline text-blue-600 mb-4 cursor-pointer">
+<h3 className={styles.sectionTitle}>
   <a href="/user-guide#sdg-interlinkage" target="_blank" rel="noopener noreferrer">
      SDG Interlinkage Matrix
   </a>
 </h3>
 
+<p className={styles.note}>
+  Please refer to the section in the User Guide for full instructions
+</p>
     <div className={styles.flexRow}>
       <div id="matrix-table-wrapper" className="w-full flex justify-center">
         <table className={styles.matrixTable}>
@@ -324,7 +327,7 @@ const exportMatrixAsPDF = async () => {
       </div>
       <div className={styles.rightButtons}>
         <button onClick={() => router.push(`/project/${projectId}`)} className={styles.buttonPrimary}>
-          Edit Table
+          Edit Input
         </button>
         <button onClick={() => router.push(`/project/${projectId}/diagram`)} className={styles.buttonPrimary}>
           Edit Diagram

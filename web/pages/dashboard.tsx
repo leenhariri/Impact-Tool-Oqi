@@ -79,11 +79,27 @@ description: sanitizeInput(description),
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to create project");
+     
+
+if (!response.ok) {
+  const result = await response.json();
+
+  if (result.code === "P2002") {
+    setError("You already have a project with this title.");
+  } else if (result.missingEmails?.length) {
+    setError(`These collaborators were not found: ${result.missingEmails.join(", ")}`);
+  } else {
+    setError(result.error || "Failed to create project");
+  }
+  return;
+}
+
+
 
       const newProject = await response.json();
       setProjects((prev: any) => [...prev, newProject]);
 
+      setSelectedProject(newProject); 
       // Reset form
       setTitle("");
       setDescription("");
@@ -95,194 +111,242 @@ description: sanitizeInput(description),
 
   if (!user) return <p>Loading...</p>;
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.instructions}>
-        <h2>Instructions</h2>
-        <p>1. To view/edit an old project, click on it.</p>
-        <p>2. To create a new project, enter an optional description, a unique project title, and create</p>
+ return (
+  <div className={styles.container}>
+    <div className={styles.instructions}>
+      <h2 className="font-bold text-lg mb-2">Instructions</h2>
+      <ol className="list-decimal list-inside text-sm">
+        <li>Enter a unique project title, add an optional description, and click Create to start your new project.</li>
+        <li>Click to view/edit an existing project.</li>
+      </ol>
+    </div>
+
+    <div className={styles.dashboard}>
+      <div className={styles.left}>
+        <h3>Previous Projects</h3>
+{projects.length === 0 ? (
+  <div className={styles.emptyState}>
+    No projects yet — create one on the right.
+  </div>
+) : (
+  projects.map((p: any) => (
+    <div
+      key={p.id}
+      className={styles.projectBox}
+      onClick={() => setSelectedProject(p)}
+    >
+      <strong>{p.title}</strong>{p.description && ` : ${p.description}`}
+      <span className={styles.arrow}>→</span>
+    </div>
+  ))
+)}
+
       </div>
 
-      <div className={styles.dashboard}>
-        <div className={styles.left}>
-          <h3>Previous Projects</h3>
-          {projects.map((p: any) => (
-<div
-  key={p.id}
-  className={styles.projectBox}
-  onClick={() => setSelectedProject(p)}
->
-  <strong>{p.title}</strong>{p.description && ` : ${p.description}`}
-  <span className={styles.arrow}>→</span>
+      <div className={styles.right}>
+        <h3>New Project</h3>
+        <input
+          type="text"
+          placeholder="Project Title:"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <textarea
+          placeholder="Project Description (Optional):"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Invite Collaborators: (comma-separated emails)"
+          value={collaborators}
+          onChange={(e) => setCollaborators(e.target.value)}
+        />
+        <button onClick={handleCreate}>Create</button>
+        {error && <p className={styles.error}>{error}</p>}
+      </div>
+    </div>
+
+    {selectedProject && (
+      <div className={styles.modalBackdrop} onClick={() => {
+        setSelectedProject(null);
+        setIsEditing(false);
+      }}>
+        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+
+          {/* ICONS top-right */}
+          <div className={styles.modalHeaderIcons}>
+            {!isEditing && selectedProject.ownerUserId === user?.uid && (
+              <>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className={styles.iconButton}
+                  title="Edit Project"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    viewBox="0 0 16 16" className={styles.iconSvg}>
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                  </svg>
+                </button>
+
+                <button
+                  onClick={async () => {
+                    if (!confirm("Are you sure you want to delete this project?")) return;
+                    try {
+                      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`, {
+                        method: "DELETE",
+                        credentials: "include",
+                      });
+                      if (!res.ok) throw new Error("Failed to delete project");
+                      setProjects((prev) => prev.filter((p) => p.id !== selectedProject.id));
+                      setSelectedProject(null);
+                    } catch (err) {
+                      alert("Error deleting project.");
+                    }
+                  }}
+                  className={styles.iconButton}
+                  title="Delete Project"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    viewBox="0 0 16 16" className={styles.iconSvg}>
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Title */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label className={styles.modalLabel}>Title:</label>
+            {isEditing ? (
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className={styles.modalInput}
+              />
+            ) : (
+              <p className={styles.modalText}>{selectedProject.title}</p>
+            )}
+          </div>
+
+          {/* Description */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label className={styles.modalLabel}>Description:</label>
+            {isEditing ? (
+              <textarea
+                value={editDesc}
+                onChange={(e) => setEditDesc(e.target.value)}
+                className={styles.modalInput}
+                placeholder="Project Description"
+              />
+            ) : (
+              <p className={styles.modalText}>
+                {selectedProject.description || "No description"}
+              </p>
+            )}
+          </div>
+
+          {/* Members */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <label className={styles.modalLabel}>Members:</label>
+            <ul className={styles.modalMemberList}>
+              {selectedProject.members.map((m: any) => (
+                <li key={m.id || m.userId} className={styles.modalText}>
+                  {m.role} – {m.user?.email || m.user?.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Collaborators input */}
+          {isEditing && (
+            <div style={{ marginBottom: "1.5rem" }}>
+              <label className={styles.modalLabel}>
+                New Collaborators (comma-separated emails):
+              </label>
+              <input
+                type="text"
+                value={editCollaborators}
+                onChange={(e) => setEditCollaborators(e.target.value)}
+                className={styles.modalInput}
+              />
+            </div>
+          )}
+
+          {/* Bottom Buttons */}
+<div className={styles.modalActions}>
+  {isEditing ? (
+    <>
+      <button
+        className={styles.linkButton}
+        onClick={() => setIsEditing(false)}
+      >
+        Cancel
+      </button>
+      <button
+        className={styles.linkButton}
+        onClick={async () => {
+          try {
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`,
+              {
+                method: "PATCH",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title: editTitle,
+                  description: editDesc,
+                  collaborators: editCollaborators
+                    .split(",")
+                    .map((email) => ({ email: email.trim(), role: "EDITOR" })),
+                }),
+              }
+            );
+            const result = await res.json();
+            if (!res.ok) {
+              if (result.code === "P2002") {
+                alert("You already have a project with this title.");
+              } else if (result.missingEmails?.length) {
+                alert(
+                  `These collaborators were not found: ${result.missingEmails.join(", ")}`
+                );
+              } else {
+                alert(result.error || "Failed to update project");
+              }
+              return;
+            }
+            setSelectedProject(result);
+            setIsEditing(false);
+          } catch (err) {
+            alert("Failed to update project");
+          }
+        }}
+      >
+        Save Changes
+      </button>
+    </>
+  ) : (
+    <button
+      className={styles.linkButton}
+      onClick={() => {
+        setSelectedProject(null);
+        router.push(`/project/${selectedProject.id}`);
+      }}
+    >
+      Open Project →
+    </button>
+  )}
 </div>
 
 
-
-          ))}
-        </div>
-
-        <div className={styles.right}>
-          <h3>Create New Project</h3>
-          <textarea
-            placeholder="Project Description (Optional):"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Project Title:"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Invite Collaborators: (comma-separated emails)"
-            value={collaborators}
-            onChange={(e) => setCollaborators(e.target.value)}
-          />
-          <button onClick={handleCreate}>Create</button>
-          {error && <p className={styles.error}>{error}</p>}
         </div>
       </div>
-{selectedProject && (
-  <div className={styles.modalBackdrop} onClick={() => {
-    setSelectedProject(null);
-    setIsEditing(false); // reset editing mode
-  }}>
-    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-      <h2>
-        {isEditing ? (
-          <input
-            type="text"
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            className={styles.modalInput}
-          />
-        ) : (
-          selectedProject.title
-        )}
-      </h2>
-
-      {isEditing ? (
-        <textarea
-          value={editDesc}
-          onChange={(e) => setEditDesc(e.target.value)}
-          className={styles.modalInput}
-        />
-      ) : (
-        <p>{selectedProject.description || "No description"}</p>
-      )}
-
-      <h4>Members</h4>
-      <ul>
-        {selectedProject.members.map((m: any) => (
-          <li key={m.id || m.userId}>
-            {m.role} - {m.user?.email || m.user?.name}
-
-          </li>
-        ))}
-      </ul>
-
-      {isEditing && (
-        <>
-          <label>New Collaborators (comma-separated emails):</label>
-          <input
-            type="text"
-            value={editCollaborators}
-            onChange={(e) => setEditCollaborators(e.target.value)}
-            className={styles.modalInput}
-          />
-        </>
-      )}
-
-      <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem", flexWrap: "wrap" }}>
-        {selectedProject.ownerUserId === user?.uid && (
-          <>
-            <button
-              className={styles.modalButton}
-              onClick={() => setIsEditing(!isEditing)}
-            >
-              {isEditing ? "Cancel" : "Edit Project"}
-            </button>
-
-            {isEditing && (
-              <button
-                className={styles.saveButton}
-                onClick={async () => {
-                  try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`, {
-                      method: "PATCH",
-                      credentials: "include",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        title: editTitle,
-                        description: editDesc,
-                        collaborators: editCollaborators
-                          .split(",")
-                          .map((email) => ({ email: email.trim(), role: "EDITOR" })),
-                      }),
-                    });
-
-                    if (!res.ok) throw new Error("Failed to update project");
-
-                    const updated = await res.json();
-                    setProjects((prev) =>
-                      prev.map((p) => (p.id === updated.id ? updated : p))
-                    );
-                    setSelectedProject(updated);
-                    setIsEditing(false);
-                  } catch (err) {
-                    alert("Failed to update project");
-                  }
-                }}
-              >
-                Save Changes
-              </button>
-            )}
-
-            <button
-              onClick={async () => {
-                if (!confirm("Are you sure you want to delete this project?")) return;
-
-                try {
-                  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`, {
-                    method: "DELETE",
-                    credentials: "include",
-                  });
-
-                  if (!res.ok) throw new Error("Failed to delete project");
-
-                  setProjects((prev) =>
-                    prev.filter((p) => p.id !== selectedProject.id)
-                  );
-                  setSelectedProject(null);
-                } catch (err) {
-                  alert("Error deleting project.");
-                  // console.error(err);
-                }
-              }}
-              className={styles.deleteButton}
-            >
-              Delete Project
-            </button>
-          </>
-        )}
-
-        <button
-          className={styles.modalButton}
-          onClick={() => {
-            setSelectedProject(null);
-            router.push(`/project/${selectedProject.id}`);
-          }}
-        >
-          Open Full Project →
-        </button>
-      </div>
-    </div>
+    )}
   </div>
-)}
+);
 
-
-    </div>
-  );
 }

@@ -679,13 +679,13 @@ return (
 
             className={styles.buttonPrimary}
           >
-            Edit Table
+            Edit Input
           </button>
           <button
             onClick={() => router.push(`/project/${projectId}/matrix`)}
             className={styles.buttonPrimary}
           >
-            Edit Matrix
+            Edit SDG Interlinkage
           </button>
         </div>
       </div>

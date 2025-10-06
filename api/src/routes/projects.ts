@@ -1,11 +1,10 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client"; // ✅ Added Prisma import
 import requireAuth from "../middleware/requireAuth";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
 import { Request, Response } from "express";
 import { ProjectRole } from "../constants/enums";
-
 
 type AuthenticatedRequest = Request & {
   user: {
@@ -18,7 +17,6 @@ const prisma = new PrismaClient();
 const r = Router();
 r.use(requireAuth);
 
-
 r.post("/", requireAuth, async (req, res) => {
   try {
     const userId = req.user!.uid;
@@ -26,23 +24,24 @@ r.post("/", requireAuth, async (req, res) => {
 
     if (!title) return res.status(400).json({ error: "Project title is required." });
 
-    // console.log("Creating project for userId:", userId);
+    const failedEmails: string[] = [];
 
-    // Prepare collaborators (excluding the owner)
-    const collaboratorData = await Promise.all(
+    const collaboratorData = await Promise.allSettled(
       (collaborators ?? [])
-.filter((collab: { email: string; role: string }) =>
-  collab.email &&
-  collab.email.trim() !== "" &&
-  collab.email.toLowerCase().trim() !== req.user!.email?.trim().toLowerCase()
-)
-
+        .filter((collab: { email: string; role: string }) =>
+          collab.email &&
+          collab.email.trim() !== "" &&
+          collab.email.toLowerCase().trim() !== req.user!.email?.trim().toLowerCase()
+        )
         .map(async (collab: { email: string; role: string }) => {
           const user = await prisma.user.findUnique({
             where: { email: collab.email.trim().toLowerCase() },
           });
 
-          if (!user) throw new Error(`User with email "${collab.email}" not found`);
+          if (!user) {
+            failedEmails.push(collab.email.trim());
+            return null;
+          }
 
           return {
             userId: user.id,
@@ -52,7 +51,10 @@ r.post("/", requireAuth, async (req, res) => {
         })
     );
 
-    // Create the project and its members (owner + collaborators)
+    const validCollaborators = collaboratorData
+      .filter((r): r is PromiseFulfilledResult<any> => r.status === "fulfilled" && r.value)
+      .map((r) => r.value);
+
     const project = await prisma.project.create({
       data: {
         title,
@@ -67,28 +69,35 @@ r.post("/", requireAuth, async (req, res) => {
               role: "OWNER",
               addedByUserId: userId,
             },
-            ...collaboratorData,
+            ...validCollaborators,
           ],
         },
       },
-      include: { members: true },
+      include: {  members: {
+    include: { user: true }, 
+  } },
     });
 
-    res.status(201).json(project);
-  } catch (err) {
-    // console.error("Error creating project:", err);
-    if (err instanceof Error) {
-      res.status(500).json({ error: err.message });
-    } else {
-      res.status(500).json({ error: "Unknown server error" });
+    if (failedEmails.length > 0) {
+      return res.status(201).json({
+        ...project,
+        warning: "Some collaborators were not found.",
+        missingEmails: failedEmails,
+      });
     }
+
+    res.status(201).json(project);
+  } catch (err: any) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return res.status(400).json({
+        error: "You already have a project with this title.",
+        code: "P2002"
+      });
+    }
+
+    res.status(500).json({ error: err.message || "Unknown server error" });
   }
 });
-
-
-
-
-
 
 r.get("/", requireAuth, async (req, res) => {
   const userId = req.user!.uid;
@@ -102,7 +111,7 @@ r.get("/", requireAuth, async (req, res) => {
     include: {
       members: {
         include: {
-          user: true, // ✅ this now works
+          user: true,
         },
       },
     },
@@ -110,7 +119,6 @@ r.get("/", requireAuth, async (req, res) => {
 
   res.json({ projects });
 });
-
 
 r.get("/:id", requireAuth, async (req, res) => {
   const userId = req.user!.uid;
@@ -123,7 +131,7 @@ r.get("/:id", requireAuth, async (req, res) => {
 
   if (!project) return res.status(404).json({ error: "Project not found" });
 
-const isMember = project.members.some((m: any) => m.userId === userId);
+  const isMember = project.members.some((m: any) => m.userId === userId);
 
   if (!isMember) return res.status(403).json({ error: "Forbidden" });
 
@@ -150,29 +158,23 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
   const userId = req.user!.uid;
   const projectId = req.params.projectId.trim();
   const { title, description, collaborators } = req.body;
-// console.log("User ID:", userId);
-// console.log("Checking membership for:", { projectId, userId });
+
   try {
-    // Check if user is a project member with edit rights
     const membership = await prisma.projectMember.findUnique({
       where: {
         projectId_userId: { projectId, userId },
       },
     });
-// console.log("Membership result:", membership);
 
     if (!membership || !["OWNER", "EDITOR"].includes(membership.role)) {
       return res.status(403).json({ error: "Not authorized" });
     }
 
-
-    // Prevent updating with empty or undefined title/desc (optional safety)
     if (!title && !description && !collaborators) {
       return res.status(400).json({ error: "No data provided for update." });
     }
 
-    // Update project (only if title/desc provided)
-    const updatedProject = await prisma.project.update({
+    await prisma.project.update({
       where: { id: projectId },
       data: {
         ...(title && { title }),
@@ -182,9 +184,9 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
       },
     });
 
-    //  Collaborators update
+    const failedEmails: string[] = [];
+
     if (Array.isArray(collaborators)) {
-      // Remove all non-owner members (keep the OWNER intact)
       await prisma.projectMember.deleteMany({
         where: {
           projectId,
@@ -192,8 +194,7 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
         },
       });
 
-      // Add new collaborators
-      await Promise.all(
+      await Promise.allSettled(
         collaborators.map(async (collab: { email: string; role?: string }) => {
           if (!collab.email || collab.email.trim() === "") return;
 
@@ -202,7 +203,8 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
           });
 
           if (!user) {
-            throw new Error(`User with email "${collab.email}" not found`);
+            failedEmails.push(collab.email.trim());
+            return;
           }
 
           await prisma.projectMember.create({
@@ -210,23 +212,38 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
               userId: user.id,
               projectId,
               role: (collab.role as ProjectRole) || ProjectRole.EDITOR,
-
-
               addedByUserId: userId,
             },
           });
         })
       );
     }
-const full = await prisma.project.findUnique({
-  where: { id: projectId },
-  include: { members: true }, // ✅ include members
-});
+
+    const full = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: { members: true },
+    });
+
+    if (failedEmails.length > 0) {
+      return res.status(200).json({
+        ...full,
+        warning: "Some collaborators were not found.",
+        missingEmails: failedEmails,
+      });
+    }
+
     return res.json(full);
   } catch (err: any) {
-    // console.error("Error updating project:", err);
-    return res.status(500).json({ error: err.message || "Server error" });
+  if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+    return res.status(400).json({
+      error: "You already have a project with this title.",
+      code: "P2002"
+    });
   }
+
+  return res.status(500).json({ error: err.message || "Server error" });
+}
+
 });
 
 export default r;

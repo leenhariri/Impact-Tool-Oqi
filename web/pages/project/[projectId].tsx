@@ -408,6 +408,21 @@ const deleteAssumptionOrActivity = async (index: number) => {
   };
 
   const saveAll = async () => {
+      for (const row of impactRows) {
+    const rowId = row.id || '';
+    const sdg = selectedSDGs[rowId];
+    const targets = sdgTargets[rowId] || [];
+
+    if (
+      !row.hierarchyLevel.trim() ||  // Score
+      !row.resultStatement.trim() || // Result
+      !sdg ||                        // SDG
+      targets.length === 0           // SDG Targets
+    ) {
+      alert("Please fill in all mandatory fields: Score, Result, SDG, and SDG Target for each row.");
+      return;
+    }
+  }
     for (const [index, row] of impactRows.entries()) {
 let savedRowId = row.id;
 
@@ -615,67 +630,73 @@ return (
 
     <div className={styles.instructions}>
       <h2 className="font-bold text-lg mb-2">Instructions</h2>
-      <ol className="list-decimal list-inside text-sm">      
-      <li>Fill in the tables.</li>
-      <li>Save each cell you fill.</li>
-      <li>Save your final work once done.</li>
+      <ol className="list-decimal list-inside text-sm">   
+              <li>  Refer to <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+     User Guide for full instructions.
+  </a></li>   
+      <li>Fill in the tables below.</li>
+      <li>Save each cell once filled in.</li>
+
+      <li>Save final work once done.</li>
       <li>Proceed to view Diagram/Matrix.</li></ol>
 
     </div>
 
     {/* Impact Rows */}
     {/* <h3>Impact Rows</h3> */}
-    <h3> Indicator Matrix</h3>
+<h3 className={styles.sectionTitle}>Indicator Matrix</h3>
+<p className={styles.note}>
+  Please refer to the section in the User Guide for full instructions
+</p>
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
 
         <thead>
           <tr>
                         <th className={styles.tooltipHeader}>
-  Score <span style={{ color: "#ffffffff" }}>🛈</span>
+  Score <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
-      specify the objective 
-               level here
+      specify the objective level 
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  Result <span style={{ color: "#ffffffff" }}>🛈</span>
+  Result Level<span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
     outline the defined result statements here
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  Indicator <span style={{ color: "#ffffffff" }}>🛈</span>
+  Indicator <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     Describe what will be measured to show progress toward the result
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  Indicator Definition <span style={{ color: "#ffffffff" }}>🛈</span>
+  Indicator Definition <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     explain clearly what the indicator means and how it will be calculated
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  Means of Measurement <span style={{ color: "#ffffffff" }}>🛈</span>
+  Means of Measurement <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     state how or by what method, source, or tool the data will be measured
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  Baseline <span style={{ color: "#ffffffff" }}>🛈</span>
+  Baseline <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     state the starting point/status on a particular result before your solution - cite references
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  SDG <span style={{ color: "#ffffffff" }}>🛈</span>
+  SDG <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
     choose the SDG
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  SDG Target <span style={{ color: "#ffffffff" }}>🛈</span>
+  SDG Target <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
     choose the corresponding SDG Targets
   </span>
@@ -798,7 +819,7 @@ setEditingField({
   </span> */}
 </th>
                 <th className={styles.tooltipHeader}>
-  Scale <span style={{ color: "#ffffffff" }}>🛈</span>
+  Scale <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     Indicate to which scale(s) these risks apply
   </span>
@@ -956,39 +977,39 @@ setEditingField({
         <thead>
           <tr>
                                     <th className={styles.tooltipHeader}>
-  Stakeholder <span style={{ color: "#ffffffff" }}>🛈</span>
+  Stakeholder <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     Who are the people to be involved directly or indirectly in the implementation
 
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
-  Role <span style={{ color: "#ffffffff" }}>🛈</span>
+  Role <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     specify their role
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
-Interest <span style={{ color: "#ffffffff" }}>🛈</span>
+Interest <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     What is their benefit
 
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
-  Stakeholder Type <span style={{ color: "#ffffffff" }}>🛈</span>
+  Stakeholder Type <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     Indicate whether they are direct or indirect stakeholders
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
-Engagement Strategy<span style={{ color: "#ffffffff" }}>🛈</span>
+Engagement Strategy<span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
    How will they be mobilised/convinced to be involved?
   </span>
 </th>
             <th className={styles.tooltipHeader}>
-Scale<span style={{ color: "#ffffffff" }}>🛈</span>
+Scale<span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
    Indicate which scale they are related to
   </span>
@@ -1123,7 +1144,7 @@ Scale<span style={{ color: "#ffffffff" }}>🛈</span>
     className={styles.editBtn}
     onClick={() => router.push(`/project/${projectId}/matrix`)}
   >
-    Edit Matrix
+    Edit SDG Interlinkage
   </button>
     </div>
 {editingField && editingField.anchorRect && (

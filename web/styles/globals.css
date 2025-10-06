@@ -74,7 +74,7 @@ body {
   border-radius: 999px;
   font-weight: 600;
 }
-/* ---------- OQI Colors (tweak as you like) ---------- */
+/* ---------- OQI Colors---------- */
 :root {
   --nav-solid-bg: #111730; /* OQI navy */
   --footer-bg: #111730;
@@ -95,7 +95,8 @@ body {
   align-items: center;
   z-index: 20;
   transition: background-color .25s ease, box-shadow .25s ease;
-  background: transparent;    /* transparent by default */
+  background: #111730;      
+  backdrop-filter: blur(10px);           
 }
 .navbar.solid {
   background: var(--nav-solid-bg); /* becomes solid on scroll */
@@ -122,17 +123,17 @@ body {
   font-weight: 700;
   color: var(--nav-link);
 }
-.nav-logo img { height: 28px; }
+.nav-logo img { height: 38px; }
 
 .nav-link {
   color: var(--nav-link);
   text-decoration: none;
-  font-family: 'Open Sans', sans-serif;  /* ✅ Match OQI site */
-  font-weight: 500;                      /* ✅ Slightly lighter for clean look */
-  font-size: 13px;                       /* ✅ Consistent readable size */
-  padding: 6px 12px;                     /* ✅ More balanced spacing */
-  border-radius: 6px;                    /* ✅ Slightly smaller radius */
-  transition: color 0.2s ease-in-out;    /* ✅ Smooth hover effect */
+  font-family: 'Open Sans', sans-serif;  
+  font-weight: 500;                      
+  font-size: 13px;                       
+  padding: 6px 12px;                     
+  border-radius: 6px;                    
+  transition: color 0.2s ease-in-out;    
 }
 
 .nav-link:hover { color: var(--nav-link-hover); }
@@ -201,4 +202,40 @@ body {
   font-weight: 600;
   margin-top: 24px;   /* reduced from 40px */
   margin-bottom: 10px; /* reduced from 15px */
+}
+
+.modalText {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  color: #444; /* Dark grey */
+  line-height: 1.4;
+}
+
+.modalDescription i {
+  font-style: normal; /* removes italic from <i> */
+}
+
+.table-container {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.indicators-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.indicators-table th,
+.indicators-table td {
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+.indicators-table th {
+  background: #f3f3f3;
+  font-weight: bold;
+  text-align: left;
 }

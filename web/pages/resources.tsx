@@ -17,7 +17,7 @@ export default function UsefulResources() {
       </div>
 
       <div className="resources-container">
-        <h2 className="arvo-section">Impact Design</h2>
+        <h2 className="arvo-section">Resources on Measuring Impact</h2>
         <ul>
           <li>
             United Nations Sustainable Development Group. (2017). <em>Theory of change: UNDAF companion guidance</em>.

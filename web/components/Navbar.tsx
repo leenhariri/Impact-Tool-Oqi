@@ -54,7 +54,7 @@ await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
 
             {!checking && isLoggedIn && (
               <>
-                <Link href="/dashboard" className="nav-link">My Projects</Link>
+                {/* <Link href="/dashboard" className="nav-link">My Projects</Link> */}
                 <Link href="/dashboard" className="nav-link">Access Tool</Link>
               </>
             )}
@@ -94,7 +94,7 @@ await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
 
           {!checking && isLoggedIn && (
             <>
-              <Link href="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>My Projects</Link>
+              {/* <Link href="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>My Projects</Link> */}
               <Link href="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>Access Tool</Link>
             </>
           )}

@@ -4,17 +4,23 @@ export default function Footer() {
       style={{
         backgroundColor: "var(--footer-bg)",
         color: "#fff",
-        padding: "40px 0",
+        padding: "40px 0 20px",
         textAlign: "center",
       }}
     >
       {/* Logo */}
       <div style={{ marginBottom: "20px" }}>
-        <img
-          src="/images/oqi-logo.png"
-          alt="OQI Logo"
-          style={{ height: "80px", marginBottom: "12px" }}
-        />
+        <a
+          href="https://open-quantum-institute.cern/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="/images/oqi-logo.png"
+            alt="OQI Logo"
+            style={{ height: "80px", marginBottom: "12px", cursor: "pointer" }}
+          />
+        </a>
       </div>
 
       {/* Buttons */}
@@ -25,13 +31,14 @@ export default function Footer() {
           alignItems: "center",
           gap: "16px",
           marginTop: "12px",
+          marginBottom: "40px",
         }}
       >
         {/* Contact Us Button */}
         <a
           href="mailto:oqi.info@cern.ch"
           style={{
-            background: "#2a335c", // lighter than footer bg
+            background: "#2a335c",
             padding: "6px 16px",
             borderRadius: "25px",
             color: "#fff",
@@ -52,7 +59,7 @@ export default function Footer() {
           target="_blank"
           rel="noopener noreferrer"
           style={{
-            background: "#ddd", // light grey circle
+            background: "#ddd",
             width: "32px",
             height: "32px",
             borderRadius: "50%",
@@ -68,6 +75,50 @@ export default function Footer() {
             className="fa fa-linkedin"
             style={{ color: "var(--footer-bg)", fontSize: "18px" }}
           ></i>
+        </a>
+      </div>
+
+      {/* Partner Logos */}
+      <div
+        style={{
+          display: "flex",
+          gap: "32px",
+          alignItems: "center",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          marginBottom: "24px",
+        }}
+      >
+        <img src="/images/cern-logo.png" alt="CERN" style={{ height: "42px" }} />
+        <img src="/images/gesda-logo.png" alt="GESDA" style={{ height: "42px" }} />
+        <img src="/images/ubs-logo.png" alt="UBS" style={{ height: "42px" }} />
+        <img
+          src="/images/quantum-logo.png"
+          alt="Quantum Science"
+          style={{ height: "42px" }}
+        />
+      </div>
+
+      {/* Footer Text */}
+      <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto" }}>
+        <p style={{ marginBottom: "6px", fontSize: "14px", opacity: 0.8 }}>
+          © 2025 | Open Quantum Institute
+        </p>
+        <p style={{ marginBottom: "6px", fontSize: "14px", opacity: 0.8 }}>
+          For media inquiries and access to our branding guidelines, please{" "}
+          <a
+            href="mailto:oqi.info@cern.ch"
+            style={{ color: "#fff", textDecoration: "underline" }}
+          >
+            contact us
+          </a>.
+        </p>
+        <a
+        // fix reference here
+          href="/https://open-quantum-institute.cern/wp-content/uploads/2025/01/Open-Quantum-Institute-Privacy-Policy.docx-1.pdf"
+          style={{ color: "#fff", textDecoration: "underline", fontSize: "14px" }}
+        >
+          Privacy Policy
         </a>
       </div>
     </footer>

@@ -250,3 +250,18 @@
 .modalContent .modalButtons button:last-child {
   all: unset;
 }
+.sectionTitle {
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: #0c0c2c; /* dark navy/black */
+  margin-bottom: 0.2rem; /* reduce gap below title */
+}
+
+.note {
+  font-weight: normal;
+  font-size: 0.9rem;
+  color: #525252; /* purple */
+  margin-top: 0; 
+  margin-bottom: 0.8rem; /* tighter gap before table */
+  line-height: 1.3; /* improve readability */
+}

@@ -9,6 +9,10 @@ const isProd = process.env.NODE_ENV === "production";
 const disableSecure = env.DISABLE_SECURE_COOKIE === "true";
 const disableDomain = env.DISABLE_COOKIE_DOMAIN === "true";
 
+const domain = !disableDomain && isProd
+  ? new URL(env.FRONTEND_URL).hostname
+  : undefined;
+
 export function signSession(payload: object) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 }
@@ -16,16 +20,27 @@ export function signSession(payload: object) {
 export function verify(token: string) {
   return jwt.verify(token, JWT_SECRET) as any;
 }
-
+// for testing
 export function setCookie(res: any, token: string) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
     secure: !disableSecure && isProd,
     sameSite: isProd ? "none" : "lax",
     path: "/",
-    domain: !disableDomain && isProd ? ".cern.ch" : undefined,
+    domain, // dynamically set based on env
   });
 }
+// for production
+// export function setCookie(res: any, token: string) {
+//   res.cookie(COOKIE_NAME, token, {
+//     httpOnly: true,
+//     secure: true,
+//     sameSite: "none",
+//     path: "/",
+//     domain: ".app.cern.ch", // dynamically set based on env
+//   });
+// }
+
 
 export function verifySession(token: string) {
   try {
@@ -40,10 +55,10 @@ export function clearCookie(res: any) {
     path: "/",
   });
 
-  if (isProd && !disableDomain) {
+  if (domain) {
     res.clearCookie(COOKIE_NAME, {
       path: "/",
-      domain: ".cern.ch",
+      domain,
     });
   }
 }

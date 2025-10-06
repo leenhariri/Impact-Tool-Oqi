@@ -1,20 +1,24 @@
 /* === Global Layout === */
 
 .container {
-  padding: 3rem 4rem;
-   font-family: 'Open Sans', sans-serif;
-  background-color: white;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
   min-height: 100vh;
-}
+  
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
 
+}
 .instructions {
   background-color: #f9f9f9;
-  padding: 1.5rem;
   border-left: 5px solid #111730;
   margin-bottom: 2rem;
+  padding: 1.5rem;
   font-size: 16px;
   line-height: 1.6;
-   font-family: 'Open Sans', sans-serif;
+  border-radius: 0;
+  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+
 }
 
 .instructions h2 {
@@ -39,22 +43,22 @@
   padding: 1rem;
   border-radius: 16px;
   font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
-
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
 }
 
 .left h3, .right h3 {
-  background-color: #111730;
-  color: white;
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
-  margin-bottom: 1rem;
+  background: none;              
+  color: #111730;
   font-size: 1.2rem;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
-
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #111730; 
 }
 
+
 .projectBox {
-  border: 1px solid #ddd;
+  border: 1px solid #e4e4e4;
   border-radius: 10px;
   padding: 0.6rem 1rem;
   margin-bottom: 0.8rem;
@@ -64,12 +68,13 @@
   cursor: pointer;
   transition: background 0.2s ease;
   font-size: 0.95rem;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
-
+  font-family: 'Open Sans', sans-serif; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: box-shadow 0.25s ease;
 }
 
 .projectBox:hover {
-  background-color: #f2f2f2;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12); 
 }
 
 .arrow {
@@ -85,7 +90,17 @@
   border: 1px solid #ccc;
   font-size: 0.95rem;
   font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  border: 1px solid #ddd;
+  
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
 
+}
+.right textarea:focus,
+.right input:focus {
+  border-color: #1f1d3c;
+  box-shadow: 0 0 0 3px rgba(70, 68, 115, 0.15);
+  outline: none;
 }
 
 .right button {
@@ -98,13 +113,15 @@
   border-radius: 999px;
   cursor: pointer;
   font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
-
+  
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: all 0.2s ease;
 }
 
 
 .right button:hover {
-  background-color: #111d47;
-  transform: scale(1.03);
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
 /* === Error Text === */
@@ -114,37 +131,7 @@
   font-size: 14px;
 }
 
-/* === Modal === */
-/* .modalBackdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
 
-.modalContent {
-  background: white;
-  padding: 2rem 2.5rem;
-  border-radius: 16px;
-  width: 500px;
-  max-width: 95%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-.modalInput {
-  width: 100%;
-  padding: 12px;
-  font-size: 15px;
-  margin: 0.8rem 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
 
 /* === Modal Buttons === */
 .modalButton, .deleteButton, .saveButton {
@@ -182,59 +169,196 @@
 }
 
 .modalContent {
-  background: white;
-  padding: 2rem;
+  background: #fff;
+  padding: 1.5rem 2rem; /* reduce padding */
   border-radius: 20px;
   width: 90%;
-  max-width: 600px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15); /* ✅ deeper shadow */
   overflow-y: auto;
-  max-height: 90vh;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
-
+  max-height: 80vh;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.6rem;
 }
+
 
 .modalInput {
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px 14px;
   margin-top: 8px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  font-size: 0.95rem;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 0.8rem;
   resize: vertical;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
-
+  font-family: 'Open Sans', sans-serif; 
+transition: all 0.2s ease;
 }
 
-/* .modalButton {
-  padding: 10px 20px;
-  background-color: #1e1e32;
-  color: white;
+
+
+.iconActions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 12px;
+}
+
+.iconButton {
+  background: none;
   border: none;
-  border-radius: 12px;
+  padding: 4px;
   cursor: pointer;
+  color: #000;
+  transition: color 0.2s ease;
+}
+
+.iconButton:hover {
+  color: #ff3333;
+}
+
+.iconSvg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.modalLabel {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #333;
+  text-transform: uppercase; /* ✅ smaller, but stronger */
+  margin-bottom: 2px; 
+  letter-spacing: 0.5px;
+}
+
+
+.modalTitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.modalDescription {
+  font-size: 0.95rem;
+  color: #555;
+  font-style: italic;
+}
+
+.modalMemberList li {
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
   font-size: 0.9rem;
-  transition: background-color 0.2s ease;
-} */
-
-/* .modalButton:hover {
-  background-color: #2d2d49;
-} */
-
-/* .saveButton {
-  background-color: #357edd;
+  color: #333;
+  display: inline-block;
 }
 
-.saveButton:hover {
-  background-color: #1d5bbf;
+
+.modalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-top: auto;
 }
 
-.deleteButton {
-  background-color: #d9534f;
+.modalHeaderIcons {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 12px;
 }
 
-.deleteButton:hover {
-  background-color: #c9302c;
-} */
+.modalActions {
+  display: flex;
+   justify-content: flex-end;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
 
+.modalContent {
+  position: relative; /* required for absolute positioning */
+}
+
+.modalText {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+.emptyState {
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.95rem;
+  font-style: italic;
+  background-color: #fdfdfd;
+  margin-bottom: 1rem;
+}
+.modalHeaderIcons {
+  top: 12px;
+  right: 16px;
+}
+
+.iconButton {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.iconButton:hover {
+  opacity: 1;
+  color: #111730;
+}
+
+.cancelLink {
+  background: none;
+  border: none;
+  color: #111730;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.cancelLink:hover {
+  color: #333;
+}
+.secondaryButton {
+  padding: 10px 22px;
+  background-color: transparent;
+  border: 2px solid #111730;
+  color: #111730;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background-color: #111730;
+  color: white;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #111730;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.linkButton:hover {
+  color: #333;
+}

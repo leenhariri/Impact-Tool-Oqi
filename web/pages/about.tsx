@@ -25,24 +25,25 @@ export default function About() {
 
       {/* Main Content */}
       <div className="about-container">
-        <section>
-          <h2 className="arvo-section">About OQI</h2>
-          <p>
-            As part of its mission, one of OQI’s four main activities is focusing on
-            accelerating applications for humanity. While quantum computing is still in
-            its early stage of development and computational resources remain scarce,
-            there is an opportunity today to foster a global effort to explore potential
-            applications of the technology that will positively impact our society and
-            our planet.
-          </p>
-          <p>
-            OQI aims to fully harness the potential of quantum computing by accelerating
-            the development of use cases that contribute to the achievement of the SDGs
-            and beyond. Through the support of OQI, quantum and subject matter experts
-            from around the world have been collaborating with UN agencies and large NGOs
-            to explore the potential of quantum computing to address global challenges.
-          </p>
-        </section>
+<section>
+  <h2 className="arvo-section">About the OQI</h2>
+  <p>
+    As part of its mission, <a href="https://open-quantum-institute.cern/" target="_blank" rel="noopener noreferrer">one of OQI’s four main activities</a> is focusing on
+    accelerating applications for humanity. While quantum computing is still in
+    its early stage of development and computational resources remain scarce,
+    there is an opportunity today to foster a global effort to explore potential
+    applications of the technology that will positively impact our society and
+    our planet.
+  </p>
+  <p>
+    OQI aims to fully harness the potential of quantum computing by accelerating
+    the development of use cases that contribute to the achievement of the SDGs
+    and beyond. Through the support of OQI, quantum and subject matter experts
+    from around the world have been collaborating with UN agencies and large NGOs
+    to explore the potential of quantum computing to address global challenges.
+  </p>
+</section>
+
 
         <section>
           <h2 className="arvo-section">About Impact</h2>
