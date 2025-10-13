@@ -412,22 +412,15 @@ const deleteAssumptionOrActivity = async (index: number) => {
     setSdgTargets((prev) => ({ ...prev, [rowId]: newIds }));
   };
 
-  const saveAll = async () => {
-      for (const row of impactRows) {
-    const rowId = row.id || '';
-    const sdg = selectedSDGs[rowId];
-    const targets = sdgTargets[rowId] || [];
+const saveAll = async (validateForDiagram: boolean = false) => {
+const missingHierarchy = impactRows.some((row) => !row.hierarchyLevel);
 
-    if (
-      !row.hierarchyLevel.trim() ||  // Score
-      !row.resultStatement.trim() || // Result
-      !sdg ||                        // SDG
-      targets.length === 0           // SDG Targets
-    ) {
-      alert("Please fill in all mandatory fields: Score, Result, SDG, and SDG Target for each row.");
-      return;
-    }
-  }
+if (!validateForDiagram && missingHierarchy) {
+  alert("Please select a hierarchy level for each row before saving.");
+  return false;
+}
+
+
     for (const [index, row] of impactRows.entries()) {
 let savedRowId = row.id;
 
@@ -574,7 +567,8 @@ for (let i = 0; i < stakeholders.length; i++) {
 
 
     alert('Saved successfully');
-    router.reload();
+    // router.reload();
+    return true;
 
   };
 const addRisk = () => {
@@ -637,12 +631,12 @@ return (
       <h2 className="font-bold text-lg mb-2">Instructions</h2>
       <ol className="list-decimal list-inside text-sm">   
               <li>  Refer to <a href="/user-guide" target="_blank" rel="noopener noreferrer">
-     User Guide for full instructions.
-  </a></li>   
+     User Guide 
+  </a> for full instructions.</li>   
       <li>Fill in the tables below.</li>
       <li>Save each cell once filled in.</li>
-
       <li>Save final work once done.</li>
+      <li>After filling mandatory fields, Generate Diagram to build the Theory of Change</li>
       <li>Proceed to view Diagram/Matrix.</li></ol>
 
     </div>
@@ -659,9 +653,9 @@ return (
         <thead>
           <tr>
                         <th className={styles.tooltipHeader}>
-  Score <span style={{ color: "#ffffffff" }}>*</span>
+  Objective level <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
-      specify the objective level 
+      specify the Objective level 
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
@@ -872,9 +866,9 @@ setEditingField({
   </span> */}
 </th>
                 <th className={styles.tooltipHeader}>
-  Scale <span style={{ color: "#ffffffff" }}></span>
+  Objective level <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    Indicate to which scale(s) these risks apply
+    Indicate to which Objective level(s) these risks apply
   </span>
 </th>
                 <th></th>
@@ -1082,9 +1076,9 @@ Engagement Strategy<span style={{ color: "#ffffffff" }}></span>
   </span>
 </th>
             <th className={styles.tooltipHeader}>
-Scale<span style={{ color: "#ffffffff" }}></span>
+Objective level<span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-   Indicate which scale they are related to
+   Indicate which Objective level they are related to
   </span>
 </th>
             <th></th>
@@ -1246,13 +1240,29 @@ Scale<span style={{ color: "#ffffffff" }}></span>
 
     {/* Final Buttons */}
     <div className={styles.buttonRow}>
-      <button className={styles.saveBtn} onClick={saveAll}>Save</button>
+        <button className={styles.saveBtn} onClick={() => saveAll(false)}>
+    Save
+  </button>
+  <button
+  className={styles.saveBtn}
+  onClick={async () => {
+    const success = await saveAll(true);
+    if (success) {
+      router.push(`/project/${projectId}/diagram?regenerate=true`);
+    }
+  }}
+>
+  Generate Diagram
+</button>
         <button
     className={styles.editBtn}
     onClick={() => router.push(`/project/${projectId}/diagram`)}
   >
     Edit Diagram
   </button>
+
+
+
         <button
     className={styles.editBtn}
     onClick={() => router.push(`/project/${projectId}/matrix`)}

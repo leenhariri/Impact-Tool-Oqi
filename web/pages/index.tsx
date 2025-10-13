@@ -8,8 +8,8 @@ export default function Home() {
   const SDGS = [
     { num: 1,  title: "No Poverty",                              color: "#e5243b", url: "https://sdgs.un.org/goals/goal1" , icon: "/icons/sdg/image_logo_clean10008_60.jpg"},
     { num: 2,  title: "Zero Hunger",                             color: "#dda63a", url: "https://sdgs.un.org/goals/goal2" ,icon: "/icons/sdg/image_logo_clean10008_32.jpg" },
-    { num: 3,  title: "Good Health & Well-being",                color: "#4c9f38", url: "https://sdgs.un.org/goals/goal3" ,icon: "/icons/sdg/image_logo_clean10008_16.jpg" },
-    { num: 4,  title: "Quality Education",                       color: "#c5192d", url: "https://sdgs.un.org/goals/goal4" ,icon: "/icons/sdg/image_logo_clean10008_68.jpg"  },
+    { num: 3,  title: "Good Health & Well-being",                color: "#4c9f38", url: "https://sdgs.un.org/goals/goal3" ,icon: "/icons/sdg/image_logo_clean10008_68.jpg" },
+    { num: 4,  title: "Quality Education",                       color: "#c5192d", url: "https://sdgs.un.org/goals/goal4" ,icon: "/icons/sdg/image_logo_clean10008_16.jpg"  },
     { num: 5,  title: "Gender Equality",                         color: "#ff3a21", url: "https://sdgs.un.org/goals/goal5"  ,icon: "/icons/sdg/image_logo_clean10008_44.jpg" },
     { num: 6,  title: "Clean Water & Sanitation",                color: "#26bde2", url: "https://sdgs.un.org/goals/goal6"  ,icon: "/icons/sdg/image_logo_clean10008_28.jpg" },
     { num: 7,  title: "Affordable & Clean Energy",               color: "#fcc30b", url: "https://sdgs.un.org/goals/goal7"  ,icon: "/icons/sdg/image_logo_clean10008_8.jpg" },
@@ -74,7 +74,17 @@ export default function Home() {
         <h2 className="arvo-section" style={{ marginBottom: 16 }}>
           Explore the Sustainable Development Goals
         </h2>
-
+<div className="sdg-intro">
+    
+    <p className="sdg-intro-text">
+      The Sustainable Development Goals are a call for action by all countries – poor,
+      rich and middle-income – to promote prosperity while protecting the planet.
+      They recognize that ending poverty must go hand-in-hand with strategies that
+      build economic growth and address a range of social needs including education,
+      health, social protection, and job opportunities, while tackling climate change
+      and environmental protection.
+    </p>
+  </div>
         <div className="sdgGrid">
           {SDGS.map((g) => (
             <a

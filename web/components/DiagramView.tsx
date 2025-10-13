@@ -87,6 +87,8 @@ export default function DiagramView({ projectId }: { projectId: string }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const shouldRegenerate = router.query.regenerate === "true";
+
 const resetNodePositions = () => {
   const verticalSpacing = 110;
   const horizontalSpacing = 260;
@@ -232,9 +234,10 @@ const controller = new AbortController();
          if (!stakeholderRes.ok) throw new Error("Failed to fetch stakeholders");
 const stakeholders: Stakeholder[] = await stakeholderRes.json();
         const nodeList: Node[] = [];
-        const nodePositionMap = new Map(
-          savedNodes.map((n: any) => [n.nodeId, { x: n.x, y: n.y }])
-        );
+const nodePositionMap = shouldRegenerate
+  ? new Map() // ❌ Skip using saved positions
+  : new Map(savedNodes.map((n: any) => [n.nodeId, { x: n.x, y: n.y }]));
+
 
         const verticalSpacing = 150;
         const horizontalSpacing = 260;
@@ -477,14 +480,16 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
 
 
 
-        const edgeList: Edge[] = savedEdges.map((edge: any) => ({
-          id: edge.id,
-          source: edge.source,
-          target: edge.target,
-          type: "default",
+const edgeList: Edge[] = shouldRegenerate
+  ? [] // ❌ Skip loading saved arrows
+  : savedEdges.map((edge: any) => ({
+      id: edge.id,
+      source: edge.source,
+      target: edge.target,
+      type: "default",
+      style: { stroke: "#222", strokeWidth: 2 },
+    }));
 
-          style: { stroke: "#222", strokeWidth: 2 },
-        }));
 // Stakeholders (Right of each hierarchy block)
 // Group stakeholders by hierarchyLevel
 const stakeholdersByHierarchy: Record<string, Stakeholder[]> = {};
@@ -549,6 +554,13 @@ style: {
         setNodes(nodeList);
         setEdges(edgeList);
         setLoading(false);
+        // ✅ Clear `?regenerate=true` from URL after using it once
+if (shouldRegenerate) {
+  const { pathname, query } = router;
+  delete query.regenerate;
+  router.replace({ pathname, query }, undefined, { shallow: true });
+}
+
 } catch (err) {
   console.error("Failed to fetch diagram data", err);
   setError("Failed to load diagram. Please try again later.");
@@ -704,6 +716,7 @@ return (
     <li>Make sure to click the Fit View toggle before exporting the diagram as PDF.</li>
         </ol>
       </div>
+      <h3 className={styles.sectionTitle}>Anticipated Impact Flowchart</h3>
 {/* <button
   onClick={() => {
     setIsDrawingArrow(true);

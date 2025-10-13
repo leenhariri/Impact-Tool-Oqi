@@ -196,3 +196,9 @@
 .no-export {
   display: none !important;
 }
+.sectionTitle {
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: #0c0c2c; /* dark navy/black */
+  margin-bottom: 0.2rem; /* reduce gap below title */
+}

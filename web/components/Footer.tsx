@@ -89,22 +89,22 @@ export default function Footer() {
           marginBottom: "24px",
         }}
       >
-        <img src="/images/cern-logo.png" alt="CERN" style={{ height: "42px" }} />
-        <img src="/images/gesda-logo.png" alt="GESDA" style={{ height: "42px" }} />
-        <img src="/images/ubs-logo.png" alt="UBS" style={{ height: "42px" }} />
+        <img src="/images/cern-logo.png" alt="CERN" style={{ height: "28px" }} />
+        <img src="/images/gesda-logo.png" alt="GESDA" style={{ height: "28px" }} />
+        <img src="/images/ubs-logo.png" alt="UBS" style={{ height: "28px" }} />
         <img
           src="/images/quantum-logo.png"
           alt="Quantum Science"
-          style={{ height: "42px" }}
+          style={{ height: "28px" }}
         />
       </div>
 
       {/* Footer Text */}
       <div style={{ textAlign: "center", maxWidth: "700px", margin: "0 auto" }}>
-        <p style={{ marginBottom: "6px", fontSize: "14px", opacity: 0.8 }}>
+        <p style={{ marginBottom: "6px", fontSize: "10px", opacity: 0.7 }}>
           © 2025 | Open Quantum Institute
         </p>
-        <p style={{ marginBottom: "6px", fontSize: "14px", opacity: 0.8 }}>
+        <p style={{ marginBottom: "6px", fontSize: "12px", opacity: 0.7 }}>
           For media inquiries and access to our branding guidelines, please{" "}
           <a
             href="mailto:oqi.info@cern.ch"
@@ -114,9 +114,10 @@ export default function Footer() {
           </a>.
         </p>
         <a
-        // fix reference here
-          href="/https://open-quantum-institute.cern/wp-content/uploads/2025/01/Open-Quantum-Institute-Privacy-Policy.docx-1.pdf"
-          style={{ color: "#fff", textDecoration: "underline", fontSize: "14px" }}
+          href="https://open-quantum-institute.cern/wp-content/uploads/2025/01/Open-Quantum-Institute-Privacy-Policy.docx-1.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#fff", textDecoration: "underline", fontSize: "12px" , opacity:0.7}}
         >
           Privacy Policy
         </a>
