@@ -67,23 +67,55 @@ const SDGDropdown: React.FC<Props> = ({ allTargets, selectedTargetIds, onChange 
   ref={triggerRef}
   onClick={() => setOpen((prev) => !prev)}
   style={{
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    height: "40px",
-    padding: "0 12px",
+    height: "36px", // ✅ Match real select height visually (not 33px!)
+    padding: "0 10px",
     backgroundColor: "#fff",
+    fontSize: "14px",
+    fontFamily: "inherit",
+    color: "#333",
     cursor: "pointer",
-    width: "100%",
-    userSelect: "none",
     display: "flex",
     alignItems: "center",
-    fontSize: "14px",
-    minWidth: "110px", // ✅ Add this line — adjust if needed
-    whiteSpace: "nowrap", // ✅ Prevent text wrapping
+    justifyContent: "space-between",
+    boxSizing: "border-box",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    width: "100%",
+    lineHeight: "normal",
+    position: "relative",
+    top: "1px", // ✅ Aligns perfectly with native <select> baseline
   }}
 >
-  {renderLabel()} ▼
+  <span
+    style={{
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      flexGrow: 1,
+    }}
+  >
+    {renderLabel()}
+  </span>
+
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#555"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ marginLeft: "8px", flexShrink: 0 }}
+  >
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
 </div>
+
+
+
+
 
 
       {/* Dropdown Portal */}
@@ -91,20 +123,23 @@ const SDGDropdown: React.FC<Props> = ({ allTargets, selectedTargetIds, onChange 
         createPortal(
           <div
             ref={dropdownRef}
-            style={{
-              position: "absolute",
-              top: dropdownPosition.top,
-              left: dropdownPosition.left,
-              width: dropdownPosition.width,
-              maxHeight: "200px",
-              overflowY: "auto",
-              backgroundColor: "#fff",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "10px",
-              zIndex: 9999,
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-            }}
+style={{
+  position: "absolute",
+  top: dropdownPosition.top,
+  left: dropdownPosition.left,
+  width: dropdownPosition.width,
+  maxHeight: "200px",
+  overflowY: "auto",
+  backgroundColor: "#fff",
+  border: "1px solid #ccc",
+  borderRadius: "8px",
+  padding: "10px",
+  zIndex: 9999,
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  fontSize: "13.5px", // match input size
+  fontFamily: "inherit",
+}}
+
           >
             {allTargets.map((target) => (
               <label key={target.id} style={{ display: "block", marginBottom: "8px", fontSize: "14px" }}>

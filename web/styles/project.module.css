@@ -39,7 +39,7 @@
 }
 
 .tableWrapper:hover {
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12); /* ✅ stronger hover effect */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12); 
 }
 
 
@@ -378,8 +378,20 @@
 }
 
 .readonlyInput {
-  cursor: pointer;
+  width: 100%;
+  max-width: 180px; /* or whatever fits your layout */
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+
+  /* Add these for ellipsis */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
   background-color: #fff;
+  cursor: pointer;
+
 }
 
 .horizontalDivider {

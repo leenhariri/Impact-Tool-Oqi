@@ -47,23 +47,30 @@ const HierarchyDropdown: React.FC<Props> = ({ selectedValues, onChange }) => {
         style={{
           border: '1px solid #ccc',
           borderRadius: '8px',
-          minHeight: '40px',
-          padding: '8px',
+          height: '36px',
+          padding: '0 36px 0 12px', // left padding + space for arrow
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           cursor: 'pointer',
           backgroundColor: '#fff',
           fontSize: '14px',
+          lineHeight: 'normal',
+          backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 12px center',
+          backgroundSize: '16px',
+          fontFamily: 'inherit',
+          boxSizing: 'border-box',
         }}
       >
         {selectedItems.length === 0 ? (
-          <span style={{ color: '#aaa' }}>Select Hierarchy</span>
+          <span style={{ color: '#aaa' }}>Hierarchy</span>
         ) : (
           <span>{selectedItems.length} selected</span>
         )}
-        <span style={{ fontSize: '12px', color: '#666' }}>▼</span>
       </div>
+
 
       {/* Dropdown Menu */}
       {open && (

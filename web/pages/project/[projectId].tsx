@@ -96,6 +96,8 @@ const [editingField, setEditingField] = useState<{
 } | null>(null);
 
 const popupRef = useRef<HTMLDivElement | null>(null);
+const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
 useEffect(() => {
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -108,6 +110,9 @@ useEffect(() => {
 
   if (editingField) {
     document.addEventListener('mousedown', handleClickOutside);
+  };
+  if (editingField && textareaRef.current) {
+    textareaRef.current.focus();
   }
 
   return () => {
@@ -473,7 +478,7 @@ if (tempId.startsWith('temp-')) {
   });
 }
 
-// ✅ Now save SDG + SDG Target using correct ID
+// Now save SDG + SDG Target using correct ID
 const targetIds = sdgTargets[savedRowId] || [];
 const sdgId = selectedSDGs[savedRowId];
 
@@ -717,19 +722,41 @@ return (
               ] as (keyof ImpactRow)[]).map((field) => (
                 <td key={field}>
 {field === 'hierarchyLevel' ? (
-  <select
-    value={row.hierarchyLevel}
-    onChange={(e) => handleRowChange(index, 'hierarchyLevel', e.target.value)}
-  >
-    <option value="">-- Select --</option>
-    <option value="LONG_TERM_IMPACT">Long-Term Impact</option>
-    <option value="MID_TERM_IMPACT">Mid-Term Impact</option>
-    <option value="SHORT_TERM_IMPACT">Short-Term Impact</option>
-    <option value="OUTPUT">Deliverable</option>
-    {/* <option value="ACTIVITY">Activity</option> */}
-  </select>
+<select
+  value={row.hierarchyLevel}
+  onChange={(e) => handleRowChange(index, 'hierarchyLevel', e.target.value)}
+  style={{
+    height: "36px",
+    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    fontSize: "14px",
+    lineHeight: "1.5",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center", // ← make arrow sit nicely
+    backgroundSize: "16px",
+    width: "100%",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+    cursor: "pointer",
+  }}
+>
+  <option value="">-- Select --</option>
+  <option value="LONG_TERM_IMPACT">Long-Term Impact</option>
+  <option value="MID_TERM_IMPACT">Mid-Term Impact</option>
+  <option value="SHORT_TERM_IMPACT">Short-Term Impact</option>
+  <option value="OUTPUT">Deliverable</option>
+</select>
+
+
 ) : (
 <input
+title={row[field]}
   value={row[field]}
   readOnly
   onClick={(e) => {
@@ -751,21 +778,47 @@ setEditingField({
                 </td>
               ))}
               <td>
-                <select
-                  value={selectedSDGs[row.id || ''] ?? ''}
-                  onChange={(e) => {
-                    const sdgId = parseInt(e.target.value);
-                    setSelectedSDGs((prev) => ({ ...prev, [row.id || '']: sdgId }));
-                    setSdgTargets((prev) => ({ ...prev, [row.id || '']: [] }));
-                  }}
-                >
-                  <option value="">-- Select SDG --</option>
-                  {allSDGs.map((sdg) => (
-                    <option key={sdg.id} value={sdg.id}>
-                      {sdg.code} – {sdg.name}
-                    </option>
-                  ))}
-                </select>
+              <select
+  value={selectedSDGs[row.id || ''] ?? ''}
+  onChange={(e) => {
+    const sdgId = parseInt(e.target.value);
+    setSelectedSDGs((prev) => ({ ...prev, [row.id || '']: sdgId }));
+    setSdgTargets((prev) => ({ ...prev, [row.id || '']: [] }));
+  }}
+  style={{
+    height: "36px",
+    padding: "0 32px 0 12px", // ✅ added right padding for the arrow
+    fontSize: "14px",
+    lineHeight: "1.5",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center", // ✅ arrow positioned perfectly
+    backgroundSize: "16px",
+    width: "100%",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+    cursor: "pointer",
+  }}
+>
+  <option value="">--</option>
+  {[...allSDGs]
+    .sort((a, b) => Number(a.code) - Number(b.code))
+    .map((sdg) => (
+      <option key={sdg.id} value={sdg.id}>
+        {sdg.code} - {sdg.name}
+      </option>
+    ))}
+</select>
+
+
+
+
               </td>
               <td style={{ minHeight: '48px', verticalAlign: 'middle' }}>
   {selectedSDGs[row.id || ''] ? (
@@ -912,6 +965,26 @@ setEditingField({
                         updated[index].type = e.target.value as AssumptionOrActivityType;
                         setAssumptionsAndActivities(updated);
                       }}
+                      style={{
+    height: "36px",
+    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    fontSize: "14px",
+    lineHeight: "1.5",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center", // ← make arrow sit nicely
+    backgroundSize: "16px",
+    width: "100%",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+    cursor: "pointer",
+  }}
                     >
                       <option value="ASSUMPTION">Assumption</option>
                       <option value="ACTIVITY">Action</option>
@@ -1077,6 +1150,26 @@ Scale<span style={{ color: "#ffffffff" }}></span>
           onChange={(e) =>
             updateStakeholderField(index, 'stakeholderType', e.target.value as StakeholderType)
           }
+          style={{
+    height: "36px",
+    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    fontSize: "14px",
+    lineHeight: "1.5",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center", // ← make arrow sit nicely
+    backgroundSize: "16px",
+    width: "100%",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+    cursor: "pointer",
+  }}
         >
           <option value="DIRECT">Direct</option>
           <option value="INDIRECT">Indirect</option>
@@ -1105,6 +1198,26 @@ Scale<span style={{ color: "#ffffffff" }}></span>
           onChange={(e) =>
             updateStakeholderField(index, 'hierarchyLevel', e.target.value as HierarchyLevel)
           }
+          style={{
+    height: "36px",
+    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    fontSize: "14px",
+    lineHeight: "1.5",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center", // ← make arrow sit nicely
+    backgroundSize: "16px",
+    width: "100%",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+    cursor: "pointer",
+  }}
         >
           <option value="LONG_TERM_IMPACT">Long-Term</option>
           <option value="MID_TERM_IMPACT">Mid-Term</option>
@@ -1163,6 +1276,7 @@ Scale<span style={{ color: "#ffffffff" }}></span>
 
   >
     <textarea
+      ref={textareaRef}
       value={editingField.value}
       onChange={(e) =>
         setEditingField({ ...editingField, value: e.target.value })

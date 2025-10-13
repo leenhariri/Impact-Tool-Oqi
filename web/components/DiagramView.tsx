@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { Plus, X, Trash2 } from "lucide-react";
 import ReactFlow, {
   Background,
   Controls,
@@ -20,12 +21,30 @@ import { applyEdgeChanges } from "reactflow";
 import styles from "../styles/diagram.module.css"; 
 import Legend from "../components/Legend";
 import { useRouter } from 'next/router';
+import { Handle, Position } from "reactflow";
+
 type ImpactRow = {
   id: string;
   hierarchyLevel: string;
   resultStatement: string;
   orderIndex: number;
 };
+const iconStyle: React.CSSProperties = {
+  width: "28px",
+  height: "28px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  color: "#222",
+  transition: "opacity 0.2s ease",
+};
+
+const iconHoverStyle: React.CSSProperties = {
+  opacity: 0.6,
+};
+
+
 
 // type Risk = {
 //   id: string;
@@ -586,33 +605,86 @@ const handleEdgesChange = (changes: any) => {
 };
 
 
-  const onConnect = useCallback(
-    (params: any) => {
-      const newEdge: Edge = {
-        ...params,
-        id: `${params.source}-${params.target}`,
-        type: "default",
+const onConnect = useCallback(
+  (params: any) => {
+    const sourceNode = nodes.find((n) => n.id === params.source);
+    const targetNode = nodes.find((n) => n.id === params.target);
 
+    if (!sourceNode || !targetNode) return;
+
+    // Always draw from top to bottom (lower Y = higher)
+    const isReversed = sourceNode.position.y > targetNode.position.y;
+
+    const newEdge: Edge = {
+      id: `${params.source}-${params.target}-${Date.now()}`,
+      source: isReversed ? params.target : params.source,
+      target: isReversed ? params.source : params.target,
+      type: "default",
+      style: { stroke: "#222", strokeWidth: 2 },
+    };
+
+    const updatedEdges = [...edges, newEdge];
+    setEdges(updatedEdges);
+
+    fetch(`${API_BASE}/api/diagram-edges`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        projectId,
+        edges: updatedEdges.map(({ source, target }) => ({ source, target })),
+      }),
+      credentials: "include",
+    }).catch((err) => {
+      console.error("Edge save error:", err);
+    });
+  },
+  [edges, nodes, projectId]
+);
+
+
+const [isDrawingArrow, setIsDrawingArrow] = useState(false);
+const [arrowSource, setArrowSource] = useState<string | null>(null);
+ const handleNodeClick = useCallback(
+  (event: React.MouseEvent, node: Node) => {
+    if (!isDrawingArrow) return;
+
+    if (!arrowSource) {
+      setArrowSource(node.id);
+    } else {
+      const sourceNode = nodes.find((n) => n.id === arrowSource);
+      const targetNode = nodes.find((n) => n.id === node.id);
+      if (!sourceNode || !targetNode) return;
+
+      const isReversed = sourceNode.position.y > targetNode.position.y;
+
+      const newEdge: Edge = {
+        id: `${arrowSource}-${node.id}-${Date.now()}`,
+        source: isReversed ? node.id : arrowSource,
+        target: isReversed ? arrowSource : node.id,
+        type: "default",
         style: { stroke: "#222", strokeWidth: 2 },
       };
 
       const updatedEdges = [...edges, newEdge];
       setEdges(updatedEdges);
+      setArrowSource(null);
+      setIsDrawingArrow(false);
 
       fetch(`${API_BASE}/api/diagram-edges`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, edges: updatedEdges }),
-        credentials:'include'
-      }).then(res => {
-    if (!res.ok) throw new Error("Failed to save edges");
-  })
-  .catch(err => {
-    console.error("Edge save error:", err);
-  });
-    },
-    [edges, projectId]
-  );
+        body: JSON.stringify({
+          projectId,
+          edges: updatedEdges.map(({ source, target }) => ({ source, target })),
+        }),
+        credentials: "include",
+      }).catch((err) => {
+        console.error("Failed to save edge:", err);
+      });
+    }
+  },
+  [isDrawingArrow, arrowSource, edges, nodes, projectId]
+);
 
   if (loading) return <p>Loading diagram...</p>;
 
@@ -623,22 +695,90 @@ return (
       <div className={styles.instructions}>
         <h2 className="font-bold text-lg mb-2">Instructions</h2>
         <ol className="list-decimal list-inside text-sm">
-          <li>Insert arrows between diagram boxes.</li>
-          <li>To clear a single arrow, click on it then delete.</li>
-          <li>Boxes are movable — when you drag and rearrange them, the layout will be saved automatically.</li>
-          <li>Option to export as PDF.</li>
-          <li>Before exporting as PDF, make sure the diagram is centered on screen for best results.</li>
+          <li>Add Arrow: Click the + icon, then select two boxes to draw an arrow between them.</li>
+    <li>Cancel Arrow: Click the x icon to exit drawing mode before selecting a second box.</li>
+    <li>Delete All Arrows: Click the trash icon to clear all arrows from the diagram. This cannot be undone.</li>
+    <li>Move Boxes: Drag boxes to reposition them — the layout is saved automatically.</li>
+    <li>Delete a Single Arrow: Click on the arrow, then press delete/backspace.</li>
+    <li>Export: Use the Export to PDF button.</li>
+    <li>Make sure to click the Fit View toggle before exporting the diagram as PDF.</li>
         </ol>
       </div>
+{/* <button
+  onClick={() => {
+    setIsDrawingArrow(true);
+    setArrowSource(null);
+  }}
+  className={styles.buttonPrimary}
+>
+  🎯 Draw Arrow
+</button> */}
 
 <div className={styles.diagramArea}>
         <div ref={diagramOnlyRef} className={styles.reactFlowWrapper}>
+      {/* Top-right icon controls */}
+<div
+        style={{
+          position: "absolute",
+          top: "12px",
+          right: "12px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+          zIndex: 10,
+        }}
+        className="no-export"
+      >
+        {/* ➕ Add Arrow */}
+        <div
+          onClick={() => {
+            setIsDrawingArrow(true);
+            setArrowSource(null);
+          }}
+          title="Add Arrow"
+          style={iconStyle}
+        >
+          <Plus size={18} />
+        </div>
+
+        {/* ❌ Cancel Arrow */}
+        <div
+          onClick={() => {
+            setIsDrawingArrow(false);
+            setArrowSource(null);
+          }}
+          title="Cancel Arrow"
+          style={iconStyle}
+        >
+          <X size={18} />
+        </div>
+
+        {/* 🗑️ Delete All Arrows */}
+        <div
+          onClick={() => {
+            setEdges([]);
+            fetch(`${API_BASE}/api/diagram-edges`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ projectId, edges: [] }),
+              credentials: "include",
+            }).catch((err) => console.error("Failed to delete arrows:", err));
+          }}
+          title="Delete All Arrows"
+          style={iconStyle}
+        >
+          <Trash2 size={18} />
+        </div>
+      </div>
+
+    
 <ReactFlow
   nodes={nodes}
   edges={edges}
   onNodesChange={handleNodesChange}
   onEdgesChange={handleEdgesChange}
   onConnect={onConnect}
+  onNodeClick={handleNodeClick}
   fitView
   fitViewOptions={{ padding: 0.2 }}
   panOnScroll
