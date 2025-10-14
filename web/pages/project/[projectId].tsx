@@ -413,12 +413,24 @@ const deleteAssumptionOrActivity = async (index: number) => {
   };
 
 const saveAll = async (validateForDiagram: boolean = false) => {
-const missingHierarchy = impactRows.some((row) => !row.hierarchyLevel);
+if (validateForDiagram) {
+  const missingRequired = impactRows.some((row) => {
+    const rowId = row.id || '';
+    return (
+      !row.hierarchyLevel ||
+      !row.resultStatement.trim() ||
+      !selectedSDGs[rowId] ||
+      !sdgTargets[rowId] ||
+      sdgTargets[rowId].length === 0
+    );
+  });
 
-if (!validateForDiagram && missingHierarchy) {
-  alert("Please select a hierarchy level for each row before saving.");
-  return false;
+  if (missingRequired) {
+    alert("To generate the diagram, each row must have:\n- Objective Level\n- Result Statement\n- SDG\n- At least one SDG Target.");
+    return false;
+  }
 }
+
 
 
     for (const [index, row] of impactRows.entries()) {
@@ -750,22 +762,30 @@ return (
 
 ) : (
 <input
-title={row[field]}
+  title={row[field]}
   value={row[field]}
+  placeholder={
+    field === 'resultStatement' ? 'Enter result...'
+    : field === 'indicator' ? 'Indicator...'
+    : field === 'indicatorDefinition' ? 'Describe indicator definition...'
+    : field === 'meansOfMeasurement' ? 'Specify measurement method...'
+    : field === 'baseline' ? 'Baseline value...'
+    : ''
+  }
   readOnly
   onClick={(e) => {
     const rect = (e.target as HTMLElement).getBoundingClientRect();
-setEditingField({
-  section: 'impact',
-  index,
-  field,
-  value: row[field],
-  anchorRect: rect
-});
-
+    setEditingField({
+      section: 'impact',
+      index,
+      field,
+      value: row[field],
+      anchorRect: rect,
+    });
   }}
   className={styles.readonlyInput}
 />
+
 
 )}
 
@@ -781,7 +801,7 @@ setEditingField({
   }}
   style={{
     height: "36px",
-    padding: "0 32px 0 12px", // ✅ added right padding for the arrow
+    padding: "0 25px 0 12px", // ✅ added right padding for the arrow
     fontSize: "14px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
@@ -880,6 +900,7 @@ setEditingField({
                   <td>
 <input
   value={risk.text}
+  placeholder="Specify risk..."
   readOnly
   onClick={(e) => {
     const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -893,6 +914,7 @@ setEditingField({
   }}
   className={styles.readonlyInput}
 />
+
 
                   </td>
 <td>
@@ -987,6 +1009,7 @@ setEditingField({
                   <td>
 <input
   value={item.text}
+  placeholder="Describtion"
   readOnly
   onClick={(e) => {
     const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -1000,6 +1023,7 @@ setEditingField({
   }}
   className={styles.readonlyInput}
 />
+
 
                   </td>
                   <td>
@@ -1090,6 +1114,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
       <td>
         <input
           value={s.name}
+          placeholder="Enter stakeholder name..."
           readOnly
           onClick={(e) => {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -1107,6 +1132,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
       <td>
         <input
           value={s.role}
+          placeholder="Specify role..."
           readOnly
           onClick={(e) => {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -1124,6 +1150,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
       <td>
         <input
           value={s.interest}
+           placeholder="Specify benefit..."
           readOnly
           onClick={(e) => {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -1172,6 +1199,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
       <td>
         <input
           value={s.engagementStrategy}
+           placeholder="Specify Strategy..."
           readOnly
           onClick={(e) => {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
