@@ -6,6 +6,7 @@ import styles from '../../styles/project.module.css';
 import SDGDropdown from '../../components/SDGDropdown';
 import HierarchyDropdown from '../../components/HierarchyDropdown';
 import DOMPurify from 'dompurify'; // or your own sanitizeInput
+import * as XLSX from 'xlsx';
 
 function sanitizeInput(value: string): string {
   return value
@@ -583,6 +584,62 @@ for (let i = 0; i < stakeholders.length; i++) {
     return true;
 
   };
+  const exportAllToExcel = () => {
+  const wb = XLSX.utils.book_new();
+
+  // 1. Impact Rows
+  const impactData = impactRows.map((row) => ({
+    ObjectiveLevel: row.hierarchyLevel,
+    ResultStatement: row.resultStatement,
+    Indicator: row.indicator,
+    IndicatorDefinition: row.indicatorDefinition,
+    MeansOfMeasurement: row.meansOfMeasurement,
+    Baseline: row.baseline,
+    SDG: selectedSDGs[row.id || ''] || '',
+SDGTargets: (sdgTargets[row.id || ''] || [])
+  .map((id) => {
+    const target = allTargets.find((t) => t.id === id);
+    return target ? `${target.code} ${target.title}` : id;
+  })
+  .join('; ')
+
+
+  }));
+  const impactSheet = XLSX.utils.json_to_sheet(impactData);
+  XLSX.utils.book_append_sheet(wb, impactSheet, "Impact Rows");
+
+  // 2. Risks
+  const risksData = risks.map((r) => ({
+    Risk: r.text,
+    ObjectiveLevels: r.hierarchyLevels.join(', ')
+  }));
+  const risksSheet = XLSX.utils.json_to_sheet(risksData);
+  XLSX.utils.book_append_sheet(wb, risksSheet, "Risks");
+
+  // 3. Assumptions & Activities
+  const aaData = assumptionsAndActivities.map((item) => ({
+    Type: item.type,
+    Description: item.text
+  }));
+  const aaSheet = XLSX.utils.json_to_sheet(aaData);
+  XLSX.utils.book_append_sheet(wb, aaSheet, "Assumptions & Activities");
+
+  // 4. Stakeholders
+  const stakeholdersData = stakeholders.map((s) => ({
+    Name: s.name,
+    Role: s.role,
+    Interest: s.interest,
+    StakeholderType: s.stakeholderType,
+    EngagementStrategy: s.engagementStrategy,
+    ObjectiveLevel: s.hierarchyLevel
+  }));
+  const stakeholdersSheet = XLSX.utils.json_to_sheet(stakeholdersData);
+  XLSX.utils.book_append_sheet(wb, stakeholdersSheet, "Stakeholders");
+
+  // Export
+  XLSX.writeFile(wb, "OQI_Impact_Workbook.xlsx");
+};
+
 const addRisk = () => {
   setRisks(prev => [
     ...prev,
@@ -1344,6 +1401,9 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
     Edit Diagram
   </button>
 
+<button className={styles.saveBtn} onClick={exportAllToExcel}>
+  Export as Excel
+</button>
 
 
         <button
