@@ -265,3 +265,35 @@
   margin-bottom: 0.8rem; /* tighter gap before table */
   line-height: 1.3; /* improve readability */
 }
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltipText {
+  visibility: hidden;
+  width: 260px;
+  background-color: #1a1f36;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  position: absolute;
+  z-index: 1000;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+  white-space: normal;
+  top: 125%; /* default position for row tooltips */
+}
+
+.tooltip:hover .tooltipText {
+  visibility: visible;
+  opacity: 1;
+}
+

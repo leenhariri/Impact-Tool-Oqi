@@ -54,7 +54,7 @@ const iconHoverStyle: React.CSSProperties = {
 type Risk = {
   id: string;
   text: string;
-  hierarchies: { hierarchy: string }[]; // ✅ ADD THIS
+  hierarchies: { hierarchy: string }[]; 
 };
 
 
@@ -135,7 +135,7 @@ const exportAsPDF = async () => {
 
   const element = diagramOnlyRef.current;
 
-  // 🔴 Hide elements with class 'no-export'
+  // Hide elements with class 'no-export'
   const hiddenElements = element.querySelectorAll('.no-export');
   hiddenElements.forEach(el => (el as HTMLElement).style.display = 'none');
 
@@ -156,7 +156,7 @@ const exportAsPDF = async () => {
     scale: 2,
   });
 
-  // ✅ Restore styles after export
+  // Restore styles after export
   element.setAttribute("style", originalStyle);
   hiddenElements.forEach(el => (el as HTMLElement).style.display = '');
 
@@ -189,7 +189,7 @@ const exportAsPDF = async () => {
       x: node.position.x,
       y: node.position.y,
     }));
-const [error, setError] = useState<string>(''); // ✅ Error state
+const [error, setError] = useState<string>(''); // Error state
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ;
 
   useEffect(() => {
@@ -235,7 +235,7 @@ const controller = new AbortController();
 const stakeholders: Stakeholder[] = await stakeholderRes.json();
         const nodeList: Node[] = [];
 const nodePositionMap = shouldRegenerate
-  ? new Map() // ❌ Skip using saved positions
+  ? new Map() // 
   : new Map(savedNodes.map((n: any) => [n.nodeId, { x: n.x, y: n.y }]));
 
 
@@ -324,7 +324,7 @@ risks.forEach((risk) => {
   });
 });
 
-// 📦 Render vertically stacked red risk boxes (one per hierarchy, positioned top to bottom)
+// Render vertically stacked red risk boxes (one per hierarchy, positioned top to bottom)
 const riskBoxBaseX = baseX - 350;
 let accumulatedY = 0;
 const verticalPadding = 30;
@@ -338,7 +338,7 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
   const riskBoxOffset = 60;
 
   const position = (nodePositionMap.get(nodeId) ?? {
-    x: baseX - width - riskBoxOffset, // ✅ shift left of impact row
+    x: baseX - width - riskBoxOffset, // shift left of impact row
     y,
   }) as { x: number; y: number };
 
@@ -422,12 +422,12 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
               padding: "8px 12px",
   fontSize: "13px",
   fontWeight: "normal",
-  whiteSpace: "pre-wrap",         // ✅ allows wrapping mid-word and expands width
-  overflowWrap: "break-word",     // ✅ break long words
+  whiteSpace: "pre-wrap",         
+  overflowWrap: "break-word",     
   textAlign: "center",
-  display: "inline-block",        // ✅ keeps width flexible
-  maxWidth: "300px",              // ✅ optional: prevents super long lines
-  minWidth: "120px",              // ✅ optional: good minimum size
+  display: "inline-block",        
+  maxWidth: "300px",              
+  minWidth: "120px",              
             },
           });
         });
@@ -481,14 +481,23 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
 
 
 const edgeList: Edge[] = shouldRegenerate
-  ? [] // ❌ Skip loading saved arrows
+  ? []
   : savedEdges.map((edge: any) => ({
       id: edge.id,
       source: edge.source,
       target: edge.target,
-      type: "default",
+      type: "smoothstep",
+      sourceHandle: "top",
+      targetHandle: "bottom",
       style: { stroke: "#222", strokeWidth: 2 },
+      markerStart: {
+        type: MarkerType.ArrowClosed,
+        color: "#222",
+        width: 18,
+        height: 18,
+      },
     }));
+
 
 // Stakeholders (Right of each hierarchy block)
 // Group stakeholders by hierarchyLevel
@@ -500,10 +509,10 @@ stakeholders.forEach((s) => {
   stakeholdersByHierarchy[s.hierarchyLevel].push(s);
 });
 
-// 1. Find max X of existing nodes
+
 const maxX = Math.max(...nodeList.map((n) => n.position.x)) || baseX;
 
-// 2. Render stakeholders horizontally to the right of impact rows
+
 for (const level of hierarchyOrder) {
   const group = stakeholdersByHierarchy[level] || [];
 
@@ -511,12 +520,12 @@ for (const level of hierarchyOrder) {
     const nodeId = `stakeholder-${s.id}`;
     
     const position = (nodePositionMap.get(nodeId) ?? {
-x: baseX + 1400 + i * 250, // Push them further right, with even spacing
+x: baseX + 1400 + i * 250, 
 y: hierarchyYMap[level],
 
     }) as { x: number; y: number };
 
-    // Determine border style based on stakeholderType
+    
     const isDirect = s.stakeholderType === "DIRECT";
     const borderStyle = isDirect ? "solid" : "dotted";
 
@@ -530,8 +539,8 @@ y: hierarchyYMap[level],
 style: {
   backgroundColor: "#d4edda",
   borderColor: "#14532d",
-  borderStyle: isDirect ? "solid" : "dashed", // ✅ easier to see
-  borderWidth: 2,                             // ✅ thicker
+  borderStyle: isDirect ? "solid" : "dashed", 
+  borderWidth: 2,                             
   color: "#14532d",
   padding: "8px 12px",
   fontSize: "13px",
@@ -554,7 +563,7 @@ style: {
         setNodes(nodeList);
         setEdges(edgeList);
         setLoading(false);
-        // ✅ Clear `?regenerate=true` from URL after using it once
+        // Clear `?regenerate=true` from URL after using it once
 if (shouldRegenerate) {
   const { pathname, query } = router;
   delete query.regenerate;
@@ -621,18 +630,27 @@ const onConnect = useCallback(
   (params: any) => {
     const sourceNode = nodes.find((n) => n.id === params.source);
     const targetNode = nodes.find((n) => n.id === params.target);
-
     if (!sourceNode || !targetNode) return;
 
-    // Always draw from top to bottom (lower Y = higher)
-    const isReversed = sourceNode.position.y > targetNode.position.y;
+    // Decide which node is higher vs lower
+    const topNode = sourceNode.position.y < targetNode.position.y ? sourceNode : targetNode;
+    const bottomNode = topNode.id === sourceNode.id ? targetNode : sourceNode;
 
+    // Create upward arrow (arrowhead below top box)
     const newEdge: Edge = {
-      id: `${params.source}-${params.target}-${Date.now()}`,
-      source: isReversed ? params.target : params.source,
-      target: isReversed ? params.source : params.target,
-      type: "default",
+      id: `${topNode.id}-${bottomNode.id}-${Date.now()}`,
+      source: topNode.id,
+      target: bottomNode.id,
+      sourceHandle: "top",
+      targetHandle: "bottom",
+      type: "smoothstep",
       style: { stroke: "#222", strokeWidth: 2 },
+      markerStart: {                    // 👈 arrowhead now on START of edge
+        type: MarkerType.ArrowClosed,
+        color: "#222",
+        width: 18,
+        height: 18,
+      },
     };
 
     const updatedEdges = [...edges, newEdge];
@@ -643,15 +661,15 @@ const onConnect = useCallback(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         projectId,
-        edges: updatedEdges.map(({ source, target }) => ({ source, target })),
+        edges: updatedEdges,
+
       }),
       credentials: "include",
-    }).catch((err) => {
-      console.error("Edge save error:", err);
-    });
+    }).catch((err) => console.error("Edge save error:", err));
   },
   [edges, nodes, projectId]
 );
+
 
 
 const [isDrawingArrow, setIsDrawingArrow] = useState(false);
@@ -667,15 +685,25 @@ const [arrowSource, setArrowSource] = useState<string | null>(null);
       const targetNode = nodes.find((n) => n.id === node.id);
       if (!sourceNode || !targetNode) return;
 
-      const isReversed = sourceNode.position.y > targetNode.position.y;
+      const topNode = sourceNode.position.y < targetNode.position.y ? sourceNode : targetNode;
+const bottomNode = topNode.id === sourceNode.id ? targetNode : sourceNode;
 
-      const newEdge: Edge = {
-        id: `${arrowSource}-${node.id}-${Date.now()}`,
-        source: isReversed ? node.id : arrowSource,
-        target: isReversed ? arrowSource : node.id,
-        type: "default",
-        style: { stroke: "#222", strokeWidth: 2 },
-      };
+const newEdge: Edge = {
+  id: `${topNode.id}-${bottomNode.id}-${Date.now()}`,
+  source: topNode.id,
+  target: bottomNode.id,
+  sourceHandle: "top",
+  targetHandle: "bottom",
+  type: "smoothstep",
+  style: { stroke: "#222", strokeWidth: 2 },
+  markerStart: {
+    type: MarkerType.ArrowClosed,
+    color: "#222",
+    width: 18,
+    height: 18,
+  },
+};
+
 
       const updatedEdges = [...edges, newEdge];
       setEdges(updatedEdges);
@@ -687,7 +715,8 @@ const [arrowSource, setArrowSource] = useState<string | null>(null);
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectId,
-          edges: updatedEdges.map(({ source, target }) => ({ source, target })),
+          edges: updatedEdges,
+
         }),
         credentials: "include",
       }).catch((err) => {
@@ -724,7 +753,7 @@ return (
   }}
   className={styles.buttonPrimary}
 >
-  🎯 Draw Arrow
+  Draw Arrow
 </button> */}
 
 <div className={styles.diagramArea}>
@@ -742,7 +771,7 @@ return (
         }}
         className="no-export"
       >
-        {/* ➕ Add Arrow */}
+        {/* Add Arrow */}
         <div
           onClick={() => {
             setIsDrawingArrow(true);
@@ -754,7 +783,7 @@ return (
           <Plus size={18} />
         </div>
 
-        {/* ❌ Cancel Arrow */}
+        {/*  Cancel Arrow */}
         <div
           onClick={() => {
             setIsDrawingArrow(false);

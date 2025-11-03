@@ -10,46 +10,55 @@ const disableSecure = env.DISABLE_SECURE_COOKIE === "true";
 const disableDomain = env.DISABLE_COOKIE_DOMAIN === "true";
 
 const domain = !disableDomain && isProd
-  ? new URL(env.FRONTEND_URL).hostname // e.g. oqi-impact-tool.app.cern.ch
+  ? new URL(env.FRONTEND_URL).hostname
   : undefined;
 
-// === SIGN ===
 export function signSession(payload: object) {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 }
 
-// === VERIFY ===
 export function verify(token: string) {
   return jwt.verify(token, JWT_SECRET) as any;
 }
-
-// === SET COOKIE ===
+// for testing
 export function setCookie(res: any, token: string) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
     secure: !disableSecure && isProd,
     sameSite: isProd ? "none" : "lax",
     path: "/",
-    domain, // exact same as clearCookie
+    domain, // dynamically set based on env
   });
 }
+// for production
+// export function setCookie(res: any, token: string) {
+//   res.cookie(COOKIE_NAME, token, {
+//     httpOnly: true,
+//     secure: true,
+//     sameSite: "none",
+//     path: "/",
+//     domain: ".app.cern.ch", // dynamically set based on env
+//   });
+// }
 
-// === VERIFY SESSION ===
+
 export function verifySession(token: string) {
   try {
     return jwt.verify(token, JWT_SECRET) as { uid: number; email: string };
-  } catch {
+  } catch (e) {
     return null;
   }
 }
 
-// === CLEAR COOKIE ===
 export function clearCookie(res: any) {
   res.clearCookie(COOKIE_NAME, {
-    httpOnly: true,
-    secure: !disableSecure && isProd,
-    sameSite: isProd ? "none" : "lax",
     path: "/",
-    domain,
   });
+
+  if (domain) {
+    res.clearCookie(COOKIE_NAME, {
+      path: "/",
+      domain,
+    });
+  }
 }

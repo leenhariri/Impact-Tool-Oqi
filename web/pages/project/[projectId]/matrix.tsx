@@ -244,7 +244,12 @@ const exportMatrixAsPDF = async () => {
 </h3>
 
 <p className={styles.note}>
-  Please refer to the section in the User Guide for full instructions
+  The SDG Interlinkage Matrix visualizes interactions, both positive and negative, across the SDGs.
+Assess how your Quantum solution's SDG targets (rows) influence or are influenced by other targets (columns). For each intersection, assess the level of impact using the provided rating scale and make sure to justify your ratings. For good assessment, use references, especially the SDG standardized target framework, etc, for your guide in target selection and assessment. You can also use your expert judgement and context knowledge of your designed use case when assessing each relationship.
+Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+     User Guide 
+  </a>  for further details and guidance on how to conduct this assessment.
+
 </p>
     <div className={styles.flexRow}>
       <div id="matrix-table-wrapper" className="w-full flex justify-center">
@@ -252,16 +257,54 @@ const exportMatrixAsPDF = async () => {
           <thead>
             <tr>
               <th className="bg-gray-200 p-2 font-semibold border text-sm">Influencing Targets</th>
-              {targets.map((target) => (
-                <th key={target.id} className={styles.headerCell}>{target.code}</th>
-              ))}
+{targets.map((target) => (
+<th key={target.id} className={styles.headerCell}>
+  <div
+    className={`${styles.tooltip} ${styles.tooltipBottom}`}
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+    }}
+  >
+    <span>{target.code}</span>
+    <div className={styles.tooltipText}>{target.title}</div>
+  </div>
+</th>
+
+
+
+))}
+
+
+
               <th className="bg-purple-200 p-2 font-semibold border text-sm">Outsum</th>
             </tr>
           </thead>
           <tbody>
             {targets.map((source, rowIndex) => (
               <tr key={source.id}>
-                <td className={styles.headerCell}>{source.code}</td>
+<td className={styles.headerCell}>
+  <div
+    className={`${styles.tooltip} ${styles.tooltipTop}`}
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      height: '100%',
+    }}
+  >
+    <span>{source.code}</span>
+    <div className={styles.tooltipText}>{source.title}</div>
+  </div>
+</td>
+
+
+
+
                 {targets.map((target) => {
                   const key = `${source.id}_${target.id}`;
                   const entry = matrix[key];

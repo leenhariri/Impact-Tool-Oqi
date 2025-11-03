@@ -418,14 +418,38 @@
 .note {
   font-weight: normal;
   font-size: 0.9rem;
-  color: #525252; /* purple */
-  margin-top: 0; 
-  margin-bottom: 0.8rem; /* tighter gap before table */
-  line-height: 1.3; /* improve readability */
+  color: #525252;
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  line-height: 1.3;
+  width: 100%; /* ✅ fill the width of parent (usually .column or .container) */
+  max-width: none; /* ✅ remove restriction if previously set */
+  box-sizing: border-box;
 }
+
 
 .readonlyInput::placeholder {
   color: #999;
   font-style: italic;
   opacity: 0.6;
 }
+.sectionHeader {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.column {
+  width: 50%;
+  display: block; /* ✅ No flex-column, avoids layout shifts */
+}
+.twoColumnSection {
+  display: flex;
+  flex-wrap: nowrap; /* ⛔ NEVER wrap vertically */
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+

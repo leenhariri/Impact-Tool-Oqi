@@ -104,7 +104,7 @@ useEffect(() => {
       popupRef.current &&
       !popupRef.current.contains(event.target as Node)
     ) {
-      setEditingField(null);
+      saveEditingField();
     }
   };
 
@@ -634,6 +634,24 @@ if (loading) return <p>Loading...</p>;
 if (isInvalidId) return <p style={{ color: 'red' }}>Invalid Project ID</p>;
 if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
+const saveEditingField = () => {
+  if (!editingField) return;
+  const { section, index, field, value } = editingField;
+
+  if (section === 'impact') {
+    handleRowChange(index, field as keyof ImpactRow, value);
+  } else if (section === 'risk') {
+    handleRiskChange(index, field as keyof Risk, value);
+  } else if (section === 'assumption') {
+    const updated = [...assumptionsAndActivities];
+    updated[index].text = value;
+    setAssumptionsAndActivities(updated);
+  } else if (section === 'stakeholder') {
+    updateStakeholderField(index, field as keyof Stakeholder, value);
+  }
+
+  setEditingField(null);
+};
 
 
 return (
@@ -657,7 +675,13 @@ return (
     {/* <h3>Impact Rows</h3> */}
 <h3 className={styles.sectionTitle}>Indicator Matrix</h3>
 <p className={styles.note}>
-  Please refer to the section in the User Guide for full instructions
+  {/* Please refer to the section in the User Guide for full instructions */}
+  The following Indicator Matrix helps you define what to measure for each result level of your anticipated change logic. Fill in what your solution aims to achieve (Result Level), and with which indicator the anticipated change will be measured. After identifying the indicators, give their definitions, means of measurement, baselines, and link them to relevant SDGs and targets within the goal.
+Start with long-term impact coming down to deliverables. 
+Please refer to the full <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+     User Guide 
+  </a> for detailed explanations and instructions.
+
 </p>
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
@@ -870,11 +894,25 @@ return (
 
 
     {/* Two-up: Risks + Assumptions */}
+    
     <div className={styles.twoColumnSection}>
       {/* Risks */}
       <div className={styles.column}>
-        <h3> Risks Table</h3>
+        
+        <div className={styles.sectionHeader}>
+  <h3>Risks Table</h3>
+  <p className={styles.note}>
+    Fill in here the risks (challenges or external factors that could hinder achievement of your outcomes). For each risk, identify the specific objective level it may affect.
+To better understand how to assess or categorize risks, refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+     User Guide 
+  </a> and useful resources.
+
+  </p>
+</div>
+
+        
         <div className={styles.tableWrapper}>
+          
           <table className={styles.softTable}>
             <thead>
               <tr>
@@ -948,7 +986,17 @@ return (
 
       {/* Assumptions & Activities */}
       <div className={styles.column}>
-        <h3> Assumptions & Actions Table</h3>
+        <div className={styles.sectionHeader}>
+  <h3>Assumptions & Actions Table</h3>
+  <p className={styles.note}>
+    Fill in here the key conditions that must hold true for your solution’s anticipated change to succeed (assumptions) and the actions you plan to take to mitigate potential issues that may deter.
+If you need more information and help on this, refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+     User Guide 
+  </a> for guidance.
+
+  </p>
+</div>
+
         <div className={styles.tableWrapper}>
           <table className={styles.softTable}>
             <thead>
@@ -1009,7 +1057,7 @@ return (
                   <td>
 <input
   value={item.text}
-  placeholder="Describtion"
+  placeholder="Description"
   readOnly
   onClick={(e) => {
     const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -1061,6 +1109,13 @@ return (
 
     {/* Stakeholders */}
     <h3> Stakeholders Matrix</h3>
+     <p className={styles.note}>
+      Map here your anticipated list of stakeholders who are expected to be involved or affected by your quantum solution. Define their roles, their interests and note whether their engagement is direct or indirect. Identify how to best engage with them (engagement strategy) and on which objective level the engagement occurs.
+Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+     User Guide 
+  </a> for more information and guidance.
+
+     </p>
    {/* <p className="text-[10px]">  Add the stakeholders responsible for each of the results</p> */}
 
     <div className={styles.tableWrapper}>
@@ -1300,18 +1355,17 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
     </div>
 {editingField && editingField.anchorRect && (
   <div
-     ref={popupRef}
+    ref={popupRef}
     className={styles.popupEditor}
-  style={{
-    top: editingField.anchorRect.top + window.scrollY,
-    left:
-      editingField.anchorRect.right + 340 > window.innerWidth
-        ? editingField.anchorRect.left - 340
-        : editingField.anchorRect.right + 10,
-    position: 'absolute',
-    zIndex: 1000,
-  }}
-
+    style={{
+      top: editingField.anchorRect.top + window.scrollY,
+      left:
+        editingField.anchorRect.right + 340 > window.innerWidth
+          ? editingField.anchorRect.left - 340
+          : editingField.anchorRect.right + 10,
+      position: 'absolute',
+      zIndex: 1000,
+    }}
   >
     <textarea
       ref={textareaRef}
@@ -1319,31 +1373,19 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
       onChange={(e) =>
         setEditingField({ ...editingField, value: e.target.value })
       }
-    />
-    <div className={styles.popupActions}>
-      <button
-        onClick={() => {
-          const { section, index, field, value } = editingField;
-          if (section === 'impact') {
-            handleRowChange(index, field as keyof ImpactRow, value);
-          } else if (section === 'risk') {
-            handleRiskChange(index, field as keyof Risk, value);
-          } else if (section === 'assumption') {
-            const updated = [...assumptionsAndActivities];
-            updated[index].text = value;
-            setAssumptionsAndActivities(updated);
-          } else if (section === 'stakeholder') {
-            updateStakeholderField(index, field as keyof Stakeholder, value);
-          }
+      onBlur={saveEditingField}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          saveEditingField();
+        } else if (e.key === 'Escape') {
           setEditingField(null);
-        }}
-      >
-        Save
-      </button>
-      <button onClick={() => setEditingField(null)}>Cancel</button>
-    </div>
+        }
+      }}
+    />
   </div>
 )}
+
 
   </div>
 );
