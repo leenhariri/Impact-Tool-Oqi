@@ -85,73 +85,7 @@ body {
 
 
 /* ---------- Transparent / Solid Navbar ---------- */
-.navbar {
-  position: fixed;            /* sit on top of hero */
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  z-index: 20;
-  transition: background-color .25s ease, box-shadow .25s ease;
-  background: #111730;      
-  backdrop-filter: blur(10px);           
-}
-.navbar.solid {
-  background: var(--nav-solid-bg); /* becomes solid on scroll */
-  box-shadow: 0 4px 18px rgba(0,0,0,.18);
-}
-.nav-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-left, .nav-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 700;
-  color: var(--nav-link);
-}
-.nav-logo img { height: 38px; }
 
-.nav-link {
-  color: var(--nav-link);
-  text-decoration: none;
-  font-family: 'Open Sans', sans-serif;  
-  font-weight: 500;                      
-  font-size: 13px;                       
-  padding: 6px 12px;                     
-  border-radius: 6px;                    
-  transition: color 0.2s ease-in-out;    
-}
-
-.nav-link:hover { color: var(--nav-link-hover); }
-
-/* mobile menu */
-.nav-mobile {
-  display: none;
-}
-@media (max-width: 900px){
-  .nav-desktop { display: none; }
-  .nav-mobile  { display: block; }
-  .mobile-menu {
-    position: absolute; top: 64px; left: 0; right: 0;
-    background: var(--nav-solid-bg);
-    padding: 8px 12px 12px;
-  }
-  .mobile-menu a { display: block; padding: 10px 6px; }
-}
 
 /* ---------- Hero (fixed background + gradient overlay) ---------- */
 .hero {
@@ -238,4 +172,198 @@ body {
   background: #f3f3f3;
   font-weight: bold;
   text-align: left;
+}
+
+
+
+.headline::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(17, 17, 17, 0.5);
+}
+
+.inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: fade-in 0.75s 0.25s ease-in forwards;
+}
+
+
+.inner h1 {
+  margin: 0;
+  font-size: 4em;
+  line-height: 1.2em;
+}
+
+.inner p {
+  margin: 0;
+  font-size: 1.4em;
+  font-style: italic;
+  font-family: serif;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+header.headline {
+  position: relative;
+  height: 400px;
+   background-image: url('/images/hero-oqi-bg.jpg');
+  background:
+    linear-gradient(rgba(18, 0, 43, 0.4), rgba(6, 33, 64, 0.4)),
+    url('/images/hero-oqi-bg.jpg') center/cover no-repeat;
+  background-attachment: fixed;
+  /* background-color: #111; fallback */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  z-index: 0;
+}
+
+
+header.headline::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(17, 17, 17, 0.5); /* dark overlay */
+  z-index: 1;
+}
+
+.inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: fade-in 0.75s 0.25s ease-in forwards;
+}
+
+
+.inner h1 {
+  margin: 0;
+  font-size: 4em;
+  line-height: 1.2em;
+  font-family: 'Arvo', serif;
+}
+
+.inner p {
+  margin: 0;
+  font-size: 1.4em;
+  font-style: italic;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Fade-in animation */
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Navbar scrolled effect */
+nav.scrolled {
+  background: rgba(17, 17, 17, 0.9);
+}
+
+nav.main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: transparent; /* transparent at the top */
+  backdrop-filter: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  z-index: 1000;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+/* solid background AFTER scrolling */
+nav.main-nav.scrolled {
+  background: rgba(17, 23, 48, 0.9); /* dark navy */
+  backdrop-filter: blur(8px);
+}
+
+
+
+nav.main-nav .logo img {
+  height: 42px;
+}
+
+nav.main-nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.main-nav li {
+  margin-left: 24px;
+}
+
+nav.main-nav a,
+nav.main-nav button {
+  color: #ffffff; /* white text */
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+nav.main-nav a:hover,
+nav.main-nav button:hover {
+  color: #B7E3FF;
+}
+
+/* Hero section fade & parallax scroll */
+.headline {
+  position: relative;
+  height: 400px;
+  background:
+    linear-gradient(rgba(17, 17, 17, 0.5), rgba(17, 17, 17, 0.5)),
+    url('/images/hero-oqi-bg.jpg') no-repeat center center;
+  background-size: cover;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+}
+
+.inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+  z-index: 2;
+}
+
+nav.main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: transparent;
+  z-index: 1000;
+  transition: background 0.3s ease;
+}
+
+nav.main-nav.scrolled {
+  background: rgba(17, 23, 48, 0.922); /* your dark navy */
+  backdrop-filter: blur(8px);
 }

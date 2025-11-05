@@ -1,10 +1,26 @@
 import React from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import {  useEffect, useState } from "react"; // make sure you have this
 
 export default function Home() {
   const router = useRouter();
+const [heroOpacity, setHeroOpacity] = useState(1);
+const [heroTranslateY, setHeroTranslateY] = useState(0);
+useEffect(() => {
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const navHeight = 64;
+    const heroHeight = 400;
 
+    const newOpacity = 1 - scrollY / (heroHeight - navHeight);
+    setHeroOpacity(Math.max(0, newOpacity));
+    setHeroTranslateY(scrollY * 0.4);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
   const SDGS = [
     { num: 1,  title: "No Poverty",                              color: "#e5243b", url: "https://sdgs.un.org/goals/goal1" , icon: "/icons/sdg/image_logo_clean10008_60.jpg"},
     { num: 2,  title: "Zero Hunger",                             color: "#dda63a", url: "https://sdgs.un.org/goals/goal2" ,icon: "/icons/sdg/image_logo_clean10008_32.jpg" },
@@ -49,14 +65,29 @@ export default function Home() {
       </Head>
 
       {/* Hero Section */}
-      <section className="hero">
+      {/* <section className="hero">
         <div>
           <h1 className="arvo-title">OQI Impact Tool</h1>
           <p className="arvo-subtext">
             Assess, collaborate, and accelerate quantum-for-impact projects.
           </p>
         </div>
-      </section>
+      </section> */}
+{/* <header className="headline">
+  <div
+    className="inner"
+    style={{
+      opacity: heroOpacity,
+      transform: `translate(-50%, calc(-50% + ${heroTranslateY}px))`,
+    }}
+  >
+    <h1>OQI Impact Tool</h1>
+    <p>Assess, collaborate, and accelerate quantum-for-impact projects.</p>
+  </div>
+</header> */}
+
+
+
 
       {/* Intro Section */}
       <section className="home-container">

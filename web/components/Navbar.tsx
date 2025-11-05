@@ -3,118 +3,94 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Navbar() {
-  const [solid, setSolid] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [heroOpacity, setHeroOpacity] = useState(1);
+  const [heroTranslateY, setHeroTranslateY] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [checking, setChecking] = useState(true); // ✅ to prevent flicker
+  const [checking, setChecking] = useState(true);
   const router = useRouter();
 
-  // Detect scroll to make navbar solid
-  useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 60);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const isHome = router.pathname === "/";
 
-  // Check auth session on load AND route change
+  useEffect(() => {
+    // Only add scroll logic on the homepage
+    if (!isHome) {
+      setScrolled(true); // Navbar is always solid on other pages
+      return;
+    }
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const navHeight = 64;
+      const heroHeight = 400;
+
+      const newOpacity = 1 - scrollY / (heroHeight - navHeight);
+      setHeroOpacity(Math.max(0, newOpacity));
+      setHeroTranslateY(scrollY * 0.4);
+      setScrolled(scrollY > (heroHeight - navHeight));
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
+
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, { credentials: "include" })
-
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then(() => setIsLoggedIn(true))
       .catch(() => setIsLoggedIn(false))
-      .finally(() => setChecking(false)); // ✅ done checking
-  }, [router.asPath]); // ✅ recheck when route changes
+      .finally(() => setChecking(false));
+  }, [router.asPath]);
 
   const handleLogout = async () => {
-await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
-  method: "POST",
-  credentials: "include",
-});
-
-
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
     setIsLoggedIn(false);
     window.location.href = "/";
   };
 
   return (
-    <header className={`navbar ${solid ? "solid" : ""}`}>
-      <div className="nav-inner">
-        <div className="nav-left">
-          <Link href="/" className="nav-logo">
-            <img src="/images/oqi-logo.png" alt="OQI" />
+    <>
+      {/* Navbar */}
+      <nav className={`main-nav ${scrolled ? "scrolled" : ""}`}>
+        <div className="logo">
+          <Link href="/">
+            <img src="/images/oqi-logo.png" alt="Logo" />
           </Link>
-
-          {/* Desktop Nav */}
-          <nav className="nav-desktop">
-            <Link href="/about" className="nav-link">About</Link>
-            <Link href="/user-guide" className="nav-link">User Guide</Link>
-            <Link href="/resources" className="nav-link">Useful Resources</Link>
-
-            {!checking && isLoggedIn && (
-              <>
-                {/* <Link href="/dashboard" className="nav-link">My Projects</Link> */}
-                <Link href="/dashboard" className="nav-link">Access Tool</Link>
-              </>
-            )}
-            {!checking && !isLoggedIn && (
-              <Link href="/login" className="nav-link">Access Tool</Link>
-            )}
-
-            {!checking && isLoggedIn && (
-              <button
-                onClick={handleLogout}
-                className="nav-link"
-                style={{ background: "none", border: "none", cursor: "pointer" }}
-              >
-                Sign Out
-              </button>
-            )}
-          </nav>
         </div>
-
-        {/* Mobile Hamburger */}
-        <button
-          className="nav-mobile nav-link"
-          aria-label="Menu"
-          onClick={() => setMobileOpen(v => !v)}
-        >
-          &#9776;
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="mobile-menu">
-          <Link href="/about" className="nav-link" onClick={() => setMobileOpen(false)}>About</Link>
-          <Link href="/user-guide" className="nav-link" onClick={() => setMobileOpen(false)}>User Guide</Link>
-          <Link href="/resources" className="nav-link" onClick={() => setMobileOpen(false)}>Useful Resources</Link>
-          <Link href="/glossary" className="nav-link" onClick={() => setMobileOpen(false)}>Glossary</Link>
-
+        <ul>
+          <li><Link href="/about">About</Link></li>
+          <li><Link href="/user-guide">User Guide</Link></li>
+          <li><Link href="/resources">Useful Resources</Link></li>
           {!checking && isLoggedIn && (
             <>
-              {/* <Link href="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>My Projects</Link> */}
-              <Link href="/dashboard" className="nav-link" onClick={() => setMobileOpen(false)}>Access Tool</Link>
+              <li><Link href="/dashboard">Access Tool</Link></li>
+              <li><button onClick={handleLogout}>Sign Out</button></li>
             </>
           )}
           {!checking && !isLoggedIn && (
-            <Link href="/login" className="nav-link" onClick={() => setMobileOpen(false)}>Sign In</Link>
+            <li><Link href="/login">Access Tool</Link></li>
           )}
-          {!checking && isLoggedIn && (
-            <button
-              onClick={() => {
-                handleLogout();
-                setMobileOpen(false);
-              }}
-              className="nav-link"
-              style={{ background: "none", border: "none", cursor: "pointer" }}
-            >
-              Sign Out
-            </button>
-          )}
-        </div>
+        </ul>
+      </nav>
+
+      {/* Hero only on homepage */}
+      {isHome && (
+        <header className="headline">
+          <div
+            className="inner"
+            style={{
+              opacity: heroOpacity,
+              transform: `translate(-50%, calc(-50% + ${heroTranslateY}px))`,
+            }}
+          >
+            <h1>OQI Impact Tool</h1>
+            <p>Assess, collaborate, and accelerate quantum-for-impact projects.</p>
+          </div>
+        </header>
       )}
-    </header>
+    </>
   );
 }
