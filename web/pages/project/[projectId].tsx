@@ -595,7 +595,12 @@ for (let i = 0; i < stakeholders.length; i++) {
     IndicatorDefinition: row.indicatorDefinition,
     MeansOfMeasurement: row.meansOfMeasurement,
     Baseline: row.baseline,
-    SDG: selectedSDGs[row.id || ''] || '',
+    SDG: (() => {
+  const sdgId = selectedSDGs[row.id || ''];
+  const sdg = allSDGs.find((s) => s.id === sdgId);
+  return sdg ? `${sdg.code} ${sdg.name}` : '';
+})(),
+
 SDGTargets: (sdgTargets[row.id || ''] || [])
   .map((id) => {
     const target = allTargets.find((t) => t.id === id);

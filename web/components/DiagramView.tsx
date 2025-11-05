@@ -135,11 +135,10 @@ const exportAsPDF = async () => {
 
   const element = diagramOnlyRef.current;
 
-  // Hide elements with class 'no-export'
-  const hiddenElements = element.querySelectorAll('.no-export');
-  hiddenElements.forEach(el => (el as HTMLElement).style.display = 'none');
+  // Hide UI elements (e.g., Legend)
+  const hiddenElements = element.querySelectorAll(".no-export");
+  hiddenElements.forEach((el) => ((el as HTMLElement).style.display = "none"));
 
-  // Resize for full export
   const scrollWidth = element.scrollWidth;
   const scrollHeight = element.scrollHeight;
   const originalStyle = element.getAttribute("style") || "";
@@ -148,27 +147,30 @@ const exportAsPDF = async () => {
 
   await new Promise((r) => setTimeout(r, 100));
 
+  // ⬆️ Use high scale for crisp font rendering
   const canvas = await html2canvas(element, {
     backgroundColor: "#ffffff",
     useCORS: true,
     width: scrollWidth,
     height: scrollHeight,
-    scale: 2,
+    scale: 3, //  Change to 2 or 3 depending on size
   });
 
-  // Restore styles after export
   element.setAttribute("style", originalStyle);
-  hiddenElements.forEach(el => (el as HTMLElement).style.display = '');
+  hiddenElements.forEach((el) => ((el as HTMLElement).style.display = ""));
 
   const imgData = canvas.toDataURL("image/png");
+
+  // ✅ Use A3 size PDF (landscape)
   const pdf = new jsPDF({
     orientation: "landscape",
     unit: "mm",
-    format: "a4",
+    format: "a3",
   });
 
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
+
   const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
   const imgWidth = canvas.width * ratio;
   const imgHeight = canvas.height * ratio;
@@ -176,8 +178,9 @@ const exportAsPDF = async () => {
   const y = (pageHeight - imgHeight) / 2;
 
   pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
-  pdf.save("diagram.pdf");
+  pdf.save("diagram-a3.pdf");
 };
+
 
 
 
@@ -277,7 +280,7 @@ const nodePositionMap = shouldRegenerate
 // let style = {};
 let style: React.CSSProperties = {
   padding: "8px 12px",
-  fontSize: "13px",
+  fontSize: "16px",
   fontWeight: "normal",
   whiteSpace: "pre-wrap",
   overflowWrap: "break-word",
@@ -359,7 +362,7 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
           color: "#721c24",
           padding: "6px 8px",
           borderRadius: "6px",
-          fontSize: "12px",
+          fontSize: "16px",
           minWidth: "140px",
           maxWidth: "180px",
           whiteSpace: "normal",
@@ -383,7 +386,7 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
       borderColor: "#721c24",
       color: "#721c24",
       padding: "10px",
-      fontSize: "13px",
+      fontSize: "16px",
       whiteSpace: "normal",
       textAlign: "left",
       display: "inline-block",
@@ -420,7 +423,7 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
               borderColor: "#156e21ff",
               color: "#0a5821ff",
               padding: "8px 12px",
-  fontSize: "13px",
+  fontSize: "16px",
   fontWeight: "normal",
   whiteSpace: "pre-wrap",         
   overflowWrap: "break-word",     
@@ -445,7 +448,7 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
     <div
       style={{
         fontFamily: "Segoe UI, sans-serif",
-        fontSize: "14px",
+        fontSize: "16px",
         lineHeight: 1.6,
       }}
     >
@@ -467,7 +470,7 @@ Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
       border: "1px solid #155724",
       color: "#155724",
       padding: "12px 16px",
-      fontSize: "14px",
+      fontSize: "16px",
       whiteSpace: "normal",
       overflowWrap: "break-word",
       textAlign: "left",
@@ -543,7 +546,7 @@ style: {
   borderWidth: 2,                             
   color: "#14532d",
   padding: "8px 12px",
-  fontSize: "13px",
+  fontSize: "16px",
   fontWeight: "normal",
   whiteSpace: "pre-wrap",
   overflowWrap: "break-word",
