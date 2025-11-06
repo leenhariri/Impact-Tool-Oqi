@@ -364,6 +364,6 @@ nav.main-nav {
 }
 
 nav.main-nav.scrolled {
-  background: rgba(17, 23, 48, 0.922); /* your dark navy */
+  background: rgba(21, 28, 58, 0.97); /* your dark navy */
   backdrop-filter: blur(8px);
 }
