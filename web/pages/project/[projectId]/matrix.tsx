@@ -244,8 +244,9 @@ const exportMatrixAsPDF = async () => {
 </h3>
 
 <p className={styles.note}>
-  The SDG Interlinkage Matrix visualizes interactions, both positive and negative, across the SDGs.
-Assess how your Quantum solution's SDG targets (rows) influence or are influenced by other targets (columns). For each intersection, assess the level of impact using the provided rating scale and make sure to justify your ratings. For good assessment, use references, especially the SDG standardized target framework, etc, for your guide in target selection and assessment. You can also use your expert judgement and context knowledge of your designed use case when assessing each relationship.
+ The SDG Interlinkage Matrix visualizes interactions, both positive and negative, across the SDGs.
+Assess how your Quantum solution's SDG targets (rows) influence or are influenced by other targets (columns). For each intersection, assess the level of impact using the provided rating scale and make sure to justify your ratings.
+
 Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
      User Guide 
   </a>  for further details and guidance on how to conduct this assessment.

@@ -11,28 +11,37 @@ export default function Navbar() {
   const router = useRouter();
 
   const isHome = router.pathname === "/";
+  const isAbout = router.pathname === "/about";
+  const isUserGuide = router.pathname === "/user-guide";
+  const isResources =router.pathname ==="/resources";
+const [heroExists, setHeroExists] = useState(false);
 
-  useEffect(() => {
-    // Only add scroll logic on the homepage
-    if (!isHome) {
-      setScrolled(true); // Navbar is always solid on other pages
-      return;
-    }
+useEffect(() => {
+  // Check if .headline exists
+  setHeroExists(!!document.querySelector(".headline"));
+}, [router.asPath]);
 
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const navHeight = 64;
-      const heroHeight = 400;
+useEffect(() => {
+  if (!heroExists) {
+    setScrolled(true); // Navbar solid if no hero present
+    return;
+  }
 
-      const newOpacity = 1 - scrollY / (heroHeight - navHeight);
-      setHeroOpacity(Math.max(0, newOpacity));
-      setHeroTranslateY(scrollY * 0.4);
-      setScrolled(scrollY > (heroHeight - navHeight));
-    };
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const navHeight = 64;
+    const heroHeight = 400;
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHome]);
+    const newOpacity = 1 - scrollY / (heroHeight - navHeight);
+    setHeroOpacity(Math.max(0, newOpacity));
+    setHeroTranslateY(scrollY * 0.4);
+    setScrolled(scrollY > (heroHeight - navHeight));
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [heroExists]);
+
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, { credentials: "include" })
@@ -88,6 +97,47 @@ export default function Navbar() {
           >
             <h1>OQI Impact Tool</h1>
             <p>Assess, collaborate, and accelerate quantum-for-impact projects.</p>
+          </div>
+        </header>
+      )}
+            {isAbout && (
+        <header className="headline">
+          <div
+            className="inner"
+            style={{
+              opacity: heroOpacity,
+              transform: `translate(-50%, calc(-50% + ${heroTranslateY}px))`,
+            }}
+          >
+            <h1>About the OQI Impact Tool</h1>
+            <p>Understanding the mission, impact, and guidance behind this tool</p>
+          </div>
+        </header>
+      )}
+                  {isUserGuide && (
+        <header className="headline">
+          <div
+            className="inner"
+            style={{
+              opacity: heroOpacity,
+              transform: `translate(-50%, calc(-50% + ${heroTranslateY}px))`,
+            }}
+          >
+            <h1>User Guide</h1>
+            <p>Step-by-step guidance to help you navigate, use, and make the most of the OQI Impact Tool.</p>
+          </div>
+        </header>
+      )}
+      {isResources && (
+        <header className="headline">
+          <div
+          className= "inner"
+          style={{
+            opacity: heroOpacity,
+            transform: `translate(-50%, calc(-50% + ${heroTranslateY}px))`,
+          }}>
+<h1> Useful Resources</h1>
+<p>Explore key references and tools to deepen your understanding of impact design, SDGs, and responsible innovation.</p>
           </div>
         </header>
       )}

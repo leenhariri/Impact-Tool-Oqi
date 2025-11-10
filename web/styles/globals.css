@@ -341,7 +341,12 @@ nav.main-nav button:hover {
   color: white;
   text-align: center;
   overflow: hidden;
+    padding-top: 64px;  /* Match navbar height */
+  
+  z-index: 0;
 }
+/* globals.css or in your CSS module */
+
 
 .inner {
   position: absolute;
@@ -350,6 +355,7 @@ nav.main-nav button:hover {
   transform: translate(-50%, -50%);
   transition: transform 0.2s ease-out, opacity 0.2s ease-out;
   z-index: 2;
+   top: calc(50% + 32px);
 }
 
 nav.main-nav {
@@ -366,4 +372,22 @@ nav.main-nav {
 nav.main-nav.scrolled {
   background: rgba(21, 28, 58, 0.97); /* your dark navy */
   backdrop-filter: blur(8px);
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+/* REMOVE green validation border from filled fields */
+input:valid,
+textarea:valid {
+  border-color: #d1d5db !important;
+  box-shadow: none !important;
+}
+
+/* KEEP highlight on focus */
+input:focus,
+textarea:focus {
+  border-color: #111730 !important; /* deep blue like nice-forms */
+  box-shadow: 0 0 0 1px #1117301a !important;
+  outline: none;
 }

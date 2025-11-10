@@ -9,12 +9,12 @@ export default function UsefulResources() {
         <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet" />
       </Head>
 
-      <div className="hero">
+      {/* <div className="hero">
         <div className="hero-text">
           <h1 className="arvo-title">Useful Resources</h1>
           <p className="arvo-subtext">Explore key references and tools to deepen your understanding of impact design, SDGs, and responsible innovation.</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="resources-container">
         <h2 className="arvo-section">Resources on Measuring Impact</h2>

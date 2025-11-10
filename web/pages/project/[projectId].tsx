@@ -738,11 +738,10 @@ return (
 <h3 className={styles.sectionTitle}>Indicator Matrix</h3>
 <p className={styles.note}>
   {/* Please refer to the section in the User Guide for full instructions */}
-  The following Indicator Matrix helps you define what to measure for each result level of your anticipated change logic. Fill in what your solution aims to achieve (Result Level), and with which indicator the anticipated change will be measured. After identifying the indicators, give their definitions, means of measurement, baselines, and link them to relevant SDGs and targets within the goal.
-Start with long-term impact coming down to deliverables. 
+  Use this matrix to define what your solution aims to achieve at each result level and how change will be measured. Start from long-term impact down to deliverables.  
 Please refer to the full <a href="/user-guide" target="_blank" rel="noopener noreferrer">
      User Guide 
-  </a> for detailed explanations and instructions.
+  </a> for detailed explanations and guidance. 
 
 </p>
     <div className={styles.tableWrapper}>
@@ -1172,10 +1171,10 @@ If you need more information and help on this, refer to the <a href="/user-guide
     {/* Stakeholders */}
     <h3> Stakeholders Matrix</h3>
      <p className={styles.note}>
-      Map here your anticipated list of stakeholders who are expected to be involved or affected by your quantum solution. Define their roles, their interests and note whether their engagement is direct or indirect. Identify how to best engage with them (engagement strategy) and on which objective level the engagement occurs.
+      Map your anticipated stakeholders to be involved or affected by your solution. Define their roles, interests, engagement type (direct/indirect), and how you intend to engage them (strategy). 
 Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
      User Guide 
-  </a> for more information and guidance.
+  </a> for reference and guidance.
 
      </p>
    {/* <p className="text-[10px]">  Add the stakeholders responsible for each of the results</p> */}

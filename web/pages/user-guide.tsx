@@ -10,12 +10,12 @@ export default function UserGuide() {
         <link href="https://fonts.googleapis.com/css2?family=Arvo&display=swap" rel="stylesheet" />
       </Head>
 
-      <div className="hero">
+      {/* <div className="hero">
         <div className="hero-text">
           <h1 className="arvo-title">User Guide</h1>
           <p className="arvo-subtext">Step-by-step guidance to help you navigate, use, and make the most of the OQI Impact Tool.</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="user-guide-container">
         <p><strong>The Impact User Guide</strong> consists of the following elements:</p>

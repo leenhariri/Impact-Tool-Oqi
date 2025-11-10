@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/dashboard.module.css";
+import "nice-forms.css";
 function sanitizeInput(value: string): string {
   return value
     .trim()
@@ -219,63 +220,73 @@ if (!response.ok) {
           </div>
 
           {/* Title */}
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label className={styles.modalLabel}>Title:</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                className={styles.modalInput}
-              />
-            ) : (
-              <p className={styles.modalText}>{selectedProject.title}</p>
-            )}
-          </div>
+{isEditing ? (
+  <div className="nice-form-group">
+    <label htmlFor="editTitle">Project Title</label>
+    <input
+      id="editTitle"
+      type="text"
+      value={editTitle}
+      onChange={(e) => setEditTitle(e.target.value)}
+      required
+    />
+  </div>
+) : (
+  <div className="nice-form-group">
+    <label>Project Title</label>
+    <p>{selectedProject.title}</p>
+  </div>
+)}
+
 
           {/* Description */}
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label className={styles.modalLabel}>Description:</label>
-            {isEditing ? (
-              <textarea
-                value={editDesc}
-                onChange={(e) => setEditDesc(e.target.value)}
-                className={styles.modalInput}
-                placeholder="Project Description"
-              />
-            ) : (
-              <p className={styles.modalText}>
-                {selectedProject.description || "No description"}
-              </p>
-            )}
-          </div>
+{isEditing ? (
+  <div className="nice-form-group">
+    <label htmlFor="editDesc">Description</label>
+    <textarea
+      id="editDesc"
+      placeholder="Project Description"
+      value={editDesc}
+      onChange={(e) => setEditDesc(e.target.value)}
+      rows={4}
+    />
+  </div>
+) : (
+  <div className="nice-form-group">
+    <label>Description</label>
+    <p>{selectedProject.description || "No description"}</p>
+  </div>
+)}
+
 
           {/* Members */}
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label className={styles.modalLabel}>Members:</label>
-            <ul className={styles.modalMemberList}>
-              {selectedProject.members.map((m: any) => (
-                <li key={m.id || m.userId} className={styles.modalText}>
-                  {m.role} – {m.user?.email || m.user?.name}
-                </li>
-              ))}
-            </ul>
-          </div>
+{/* <div className="nice-form-group">
+  <label>Members</label>
+  <ul>
+    {selectedProject.members.map((m: any) => (
+      <li key={m.id || m.userId}>
+        {m.role} – {m.user?.email || m.user?.name}
+      </li>
+    ))}
+  </ul>
+</div> */}
+
 
           {/* Collaborators input */}
-          {isEditing && (
-            <div style={{ marginBottom: "1.5rem" }}>
-              <label className={styles.modalLabel}>
-                New Collaborators (comma-separated emails):
-              </label>
-              <input
-                type="text"
-                value={editCollaborators}
-                onChange={(e) => setEditCollaborators(e.target.value)}
-                className={styles.modalInput}
-              />
-            </div>
-          )}
+{isEditing && (
+  <div className="nice-form-group">
+    <label htmlFor="editCollaborators">New Collaborators</label>
+    <small>Comma-separated emails</small>
+    <input
+      id="editCollaborators"
+      type="text"
+      value={editCollaborators}
+      onChange={(e) => setEditCollaborators(e.target.value)}
+      placeholder="e.g. alice@cern.ch, bob@cern.ch"
+    />
+  </div>
+)}
+
 
           {/* Bottom Buttons */}
 <div className={styles.modalActions}>

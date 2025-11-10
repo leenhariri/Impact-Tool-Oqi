@@ -37,6 +37,7 @@
     "helmet": "^8.1.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.2",
+    "nice-forms.css": "^0.1.7",
     "react-select": "^5.10.2",
     "react-toastify": "^11.0.5",
     "reactflow": "^11.11.4",

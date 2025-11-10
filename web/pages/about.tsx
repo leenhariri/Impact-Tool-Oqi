@@ -14,14 +14,13 @@ export default function About() {
       </Head>
 
       {/* Hero Section */}
-      <div className="hero">
-        <div className="hero-text">
-          <h1 className="arvo-title">About the OQI Impact Tool</h1>
-          <p className="arvo-subtext">
-            Understanding the mission, impact, and guidance behind this tool
-          </p>
-        </div>
-      </div>
+{/* <header className="headline">
+  <div className="inner">
+    <h1>About the OQI Impact Tool</h1>
+    <p>Understanding the mission, impact, and guidance behind this tool</p>
+  </div>
+</header> */}
+
 
       {/* Main Content */}
       <div className="about-container">
