@@ -364,3 +364,259 @@ transition: all 0.2s ease;
   color: #333;
 }
 
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.createButton {
+  background-color: #111730;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 60;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.projectTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-spacing: 0;
+  transform: translateZ(0); /* optional */
+}
+
+
+.projectTable th, .projectTable td {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  background-color: white;
+   font-size: 0.85rem;
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1;
+}
+
+.projectLink {
+  color: #111730;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.avatar {
+  background-color: #111730;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 4px 8px;
+  display: inline-block;
+}
+
+
+
+.actionsDropdown {
+  position: relative;
+}
+
+.actionsDropdown button {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.dropdownMenu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 999;
+  overflow: hidden;
+  min-width: 160px; /* ✅ ensures wide enough */
+  padding: 4px 0;    /* ✅ controls spacing between items */
+  margin-top: 2px;
+}
+
+.dropdownMenu button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;               /* ✅ fix tall spacing */
+  font-size: 0.75rem;               /* ✅ fix font size */
+  font-weight: 500;
+  white-space: nowrap;              /* ✅ prevent wrapping */
+  background: white;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Open Sans', sans-serif;
+  transition: background 0.2s;
+}
+
+.dropdownMenu button:hover {
+  background: #f5f5f5;
+}
+
+
+.dropdownMenu button:hover {
+  background: #f9f9f9;
+}
+.projectTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transform: translateZ(0); /* ✅ GPU rendering */
+}
+
+.projectTable th,
+.projectTable td {
+  padding: 14px 16px;
+  text-align: left;
+  background-color: white; /* ✅ avoids "hairline" glow */
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.85rem;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.projectTable td ul {
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+   font-size: 0.85rem;
+}
+
+.projectTable td ul li {
+  margin-bottom: 2px;
+  margin: 0;
+  font-size: 0.85rem;
+}
+.tableWrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* ✅ trims shadows and borders cleanly */
+}
+/* === FIX DOUBLE BORDER + ALIGN ROWS === */
+
+/* Remove overlapping borders */
+.projectTable {
+  border-collapse: collapse;
+  width: 100%;
+  position: relative;
+  background: #fff;
+}
+
+.projectTable::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Apply border only once per row */
+.projectTable tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.projectTable tr:last-child {
+  border-bottom: none;
+}
+
+/* Reset td/th borders to avoid doubling */
+.projectTable th,
+.projectTable td {
+  border: none;
+  padding: 16px;
+  height: 60px;
+  text-align: left;
+  vertical-align: middle;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  background-color: #fff;
+}
+
+/* Align all text & list items */
+.projectTable td ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.projectTable td ul li {
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Optional: match header thickness */
+.projectTable th {
+  font-weight: 600;
+  color: #111730;
+  border-bottom: 2px solid #e5e7eb; /* cleaner top divider */
+}
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filterSelect {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.filterSelect:focus {
+  border-color: #111730;
+  outline: none;
+}
+
+.searchGroup {
+  flex: 1;
+  position: relative;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.searchInput:focus {
+  border-color: #111730;
+  box-shadow: 0 0 0 2px rgba(17, 23, 48, 0.1);
+  outline: none;
+}
+

@@ -121,7 +121,7 @@
 .buttonPrimary {
   background-color: #0b1437;
   color: white;
-  font-weight: 600;
+  font-weight: 60;
   padding: 0.6rem 1.4rem;
   border-radius: 9999px;
   border: none;
@@ -296,4 +296,100 @@
   visibility: visible;
   opacity: 1;
 }
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 480px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  position: relative;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111730;
+  margin-bottom: 0.25rem;
+}
+
+.modalDescription {
+  font-size: 0.95rem;
+  color: #555;
+  font-style: italic;
+  margin-bottom: 1.25rem;
+}
+
+.modalInput {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  resize: vertical;
+  transition: all 0.2s ease;
+  appearance: none; /* ✅ makes dropdown match the input style */
+}
+
+.modalInput:focus {
+  border-color: #111730;
+  box-shadow: 0 0 0 2px rgba(17, 23, 48, 0.1);
+  outline: none;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.iconButton {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #111730;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+}
+.matrixTable td:not([style*="pointer-events: none"])::after {
+  content: "Click to edit";
+  opacity: 0;
+  position: absolute;
+  background: #111730;
+  color: white;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 6px;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.matrixTable td:not([style*="pointer-events: none"]):hover::after {
+  opacity: 1;
+}
+/* Subtle hover indication for editable cells */
+
 

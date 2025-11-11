@@ -380,45 +380,74 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
     </div>
 
 {modalOpen && selectedPair && (
-  <div
-    className={styles.modalOverlay}
-    onClick={() => setModalOpen(false)} // click outside = cancel
-  >
+  <div className={styles.modalBackdrop} onClick={() => setModalOpen(false)}>
     <div
       className={styles.modalContent}
-      onClick={(e) => e.stopPropagation()} // prevent modal click from closing
+      onClick={(e) => e.stopPropagation()}
     >
-      <h3 className="text-lg font-semibold mb-3">Edit Interaction</h3>
-      <p className="mb-3 text-sm text-gray-600">
-        <strong>{selectedPair.source.code}</strong> → <strong>{selectedPair.target.code}</strong>
+      {/* Close button */}
+      <div className={styles.modalHeaderIcons}>
+        <button onClick={() => setModalOpen(false)} className={styles.iconButton}>
+          ✖
+        </button>
+      </div>
+
+      {/* Title + description */}
+      <h2 className={styles.modalTitle}>Edit Score</h2>
+      <p className={styles.modalDescription}>
+        <em>
+          <strong>{selectedPair.source.code}</strong> →{" "}
+          <strong>{selectedPair.target.code}</strong>
+        </em>
       </p>
 
-      <label className="block text-sm font-medium mb-1">Score</label>
+      {/* Score dropdown (styled like Create Project inputs) */}
       <select
         value={tempScore}
         onChange={(e) => setTempScore(parseInt(e.target.value))}
-        className="w-full p-2 border rounded mb-3"
+        className={styles.modalInput}
       >
-        {[3,2,1,0,-1,-2,-3].map((val) => (
-          <option key={val} value={val}>{val}</option>
+        {[3, 2, 1, 0, -1, -2, -3].map((val) => (
+          <option key={val} value={val}>
+            {val}
+          </option>
         ))}
       </select>
 
-      <label className="block text-sm font-medium mb-1">Rationale</label>
+      {/* Rationale input */}
       <textarea
+        className={styles.modalInput}
+        placeholder="Explanation (optional)"
         value={tempRationale}
         onChange={(e) => setTempRationale(e.target.value)}
-        className="w-full p-2 border rounded h-24"
       />
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '20px' }}>
-                <button onClick={handleModalSave} className={styles.buttonPrimary}>Save</button>
-        <button onClick={() => setModalOpen(false)} className={styles.buttonPrimary}>Cancel</button>
-        
+      {/* Buttons */}
+      <div className={styles.modalActions}>
+        <button
+          className="nice-button"
+          style={{
+            marginTop: "1.5rem",
+            backgroundColor: "#f3f4f6",
+            color: "#111827",
+            border: "1px solid #ccc",
+          }}
+          onClick={() => setModalOpen(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="nice-button"
+          style={{ marginTop: "1.5rem" }}
+          onClick={handleModalSave}
+        >
+          Save
+        </button>
       </div>
     </div>
   </div>
 )}
+
 
   </div>
 );

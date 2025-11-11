@@ -133,7 +133,7 @@
   margin: 1.5rem 0 1rem;
   font-size: 20px;
   color: #111730;
-  font-weight: 600;
+  font-weight: 60;
   font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
 
 }
@@ -153,7 +153,7 @@
 .editBtn {
   padding: 10px 18px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 60;
   background-color: #111730;
   color: white;
   border: none;
@@ -219,7 +219,7 @@
   gap: 0.5rem;
   background-color: #111730;
   color: white;
-  font-weight: 600;
+  font-weight: 60;
   font-size: 14px;
   padding: 8px 16px;
   border: none;
@@ -365,7 +365,7 @@
   border: none;
   padding: 8px 14px;
   border-radius: 999px;
-  font-weight: 600;
+  font-weight: 60;
   font-size: 13px;
   cursor: pointer;
   transition: background-color 0.2s ease;

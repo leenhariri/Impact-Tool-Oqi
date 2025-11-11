@@ -22,6 +22,32 @@ export default function Dashboard() {
 const [editTitle, setEditTitle] = useState("");
 const [editDesc, setEditDesc] = useState("");
 const [editCollaborators, setEditCollaborators] = useState("");
+const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
+const [filterRole, setFilterRole] = useState("All");
+const [searchTerm, setSearchTerm] = useState("");
+
+// ✅ Close dropdown when clicking outside
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    const dropdowns = document.querySelectorAll(`.${styles.dropdownMenu}`);
+    dropdowns.forEach((menu) => {
+      if (!menu.contains(event.target as Node)) {
+        setDropdownOpen(null);
+      }
+    });
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+const [showCreateModal, setShowCreateModal] = useState(false);
+
+const toggleDropdown = (id: string) => {
+  setDropdownOpen(prev => (prev === id ? null : id));
+};
 
 useEffect(() => {
   if (selectedProject) {
@@ -61,113 +87,196 @@ setEditCollaborators(
     }
   }, [user]);
 
-  const handleCreate = async () => {
-    setError("");
-    if (!title) return setError("Project title is required");
+const handleCreate = async () => {
+  setError("");
+  if (!title) return setError("Project title is required");
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: sanitizeInput(title),
-description: sanitizeInput(description),
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: sanitizeInput(title),
+        description: sanitizeInput(description),
+        collaborators: collaborators
+          .split(",")
+          .map((email) => ({ email: email.trim(), role: "EDITOR" })),
+      }),
+    });
 
-          collaborators: collaborators
-            .split(",")
-            .map((email) => ({ email: email.trim(), role: "EDITOR" })),
-        }),
-      });
+    if (!response.ok) {
+      const result = await response.json();
 
-     
-
-if (!response.ok) {
-  const result = await response.json();
-
-  if (result.code === "P2002") {
-    setError("You already have a project with this title.");
-  } else if (result.missingEmails?.length) {
-    setError(`These collaborators were not found: ${result.missingEmails.join(", ")}`);
-  } else {
-    setError(result.error || "Failed to create project");
-  }
-  return;
-}
-
-
-
-      const newProject = await response.json();
-      setProjects((prev: any) => [...prev, newProject]);
-
-      setSelectedProject(newProject); 
-      // Reset form
-      setTitle("");
-      setDescription("");
-      setCollaborators("");
-    } catch (err: any) {
-      setError(err.message);
+      if (result.code === "P2002") {
+        setError("You already have a project with this title.");
+      } else if (result.missingEmails?.length) {
+        setError(`These collaborators were not found: ${result.missingEmails.join(", ")}`);
+      } else {
+        setError(result.error || "Failed to create project");
+      }
+      return;
     }
-  };
+
+    const newProject = await response.json();
+    setProjects((prev: any) => [...prev, newProject]);
+
+    // ✅ Close the modal instead of opening the edit view
+    setShowCreateModal(false);
+
+    // ✅ Reset form fields
+    setTitle("");
+    setDescription("");
+    setCollaborators("");
+    setError("");
+  } catch (err: any) {
+    setError(err.message);
+  }
+};
+
 
   if (!user) return <p>Loading...</p>;
 
  return (
-  <div className={styles.container}>
-    <div className={styles.instructions}>
+  <div style={{ position: "relative", zIndex: 1 }} className={styles.container}>
+    {/* <div className={styles.instructions}>
       <h2 className="font-bold text-lg mb-2">Instructions</h2>
       <ol className="list-decimal list-inside text-sm">
         <li>Enter a unique project title, add an optional description, and click Create to start your new project.</li>
         <li>Click to view/edit an existing project.</li>
       </ol>
-    </div>
+    </div> */}
 
-    <div className={styles.dashboard}>
-      <div className={styles.left}>
-        <h3>Previous Projects</h3>
-{projects.length === 0 ? (
-  <div className={styles.emptyState}>
-    No projects yet — create one on the right.
-  </div>
-) : (
-  projects.map((p: any) => (
-    <div
-      key={p.id}
-      className={styles.projectBox}
-      onClick={() => setSelectedProject(p)}
+    <div className={styles.tableHeader}>
+  <h2>Projects</h2>
+  <button className={styles.createButton} onClick={() => setShowCreateModal(true)}>
+    Create Project
+  </button>
+</div>
+<div className={styles.filterBar}>
+  {/* Filter dropdown */}
+  <div className={styles.filterGroup}>
+    <label htmlFor="roleFilter" className={styles.filterLabel}>
+      <i className="fa fa-filter" style={{ marginRight: "6px" }}></i> Filter
+    </label>
+    <select
+      id="roleFilter"
+      value={filterRole}
+      onChange={(e) => setFilterRole(e.target.value)}
+      className={styles.filterSelect}
     >
-      <strong>{p.title}</strong>{p.description && ` : ${p.description}`}
-      <span className={styles.arrow}>→</span>
-    </div>
-  ))
-)}
+      <option value="All">All</option>
+      <option value="Owner">Owner</option>
+      <option value="Editor">Editor</option>
+    </select>
+  </div>
 
-      </div>
+  {/* Search box */}
+  <div className={styles.searchGroup}>
+    <input
+      type="text"
+      placeholder="Search by project name..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className={styles.searchInput}
+    />
+  </div>
+</div>
 
-      <div className={styles.right}>
-        <h3>New Project</h3>
-        <input
-          type="text"
-          placeholder="Project Title:"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <textarea
-          placeholder="Project Description (Optional):"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Invite Collaborators:"
-          //  (comma-separated emails)"
-          value={collaborators}
-          onChange={(e) => setCollaborators(e.target.value)}
-        />
-        <button onClick={handleCreate}>Create</button>
-        {error && <p className={styles.error}>{error}</p>}
-      </div>
-    </div>
+<table className={styles.projectTable}>
+<thead>
+  <tr>
+    <th>Name</th>
+    <th>Members</th>
+    <th>Requester</th>
+    <th>Created</th>
+    <th></th>
+  </tr>
+</thead>
+
+  <tbody>
+  {projects.length === 0 ? (
+    <tr>
+      <td colSpan={6}>
+        <div className={styles.emptyState}>
+          No projects yet — create one above.
+        </div>
+      </td>
+    </tr>
+  ) : (
+      projects
+  .filter((p: any) => {
+    const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRole =
+      filterRole === "All" ||
+      p.members.some((m: any) => {
+        if (filterRole === "Owner") return m.role === "OWNER";
+        if (filterRole === "Editor") return m.role === "EDITOR";
+        return true;
+      });
+    return matchesSearch && matchesRole;
+  })
+  .map((p: any) => (
+
+        <tr key={p.id}>
+          <td className={styles.nameCell}>
+            <span className={styles.avatar}>PR</span>
+<a
+  href={`/project/${p.id}`}
+  className={styles.projectLink}
+  style={{ textDecoration: "underline", color: "#111827" }}
+>
+  {p.title}
+</a>
+
+          </td>
+<td>
+  <ul style={{ paddingLeft: 0, margin: 0, listStyle: "none" }}>
+    {p.members.map((m: any) => (
+      <li key={m.userId || m.id} style={{ marginBottom: "2px" }}>
+        {m.user?.email || m.user?.name || "(unknown)"}
+        {m.role === "OWNER" && " (Owner)"}
+      </li>
+    ))}
+  </ul>
+</td>
+
+          <td>{p.members.find((m: any) => m.role === "OWNER")?.user?.email || "Unknown"}</td>
+          <td>{new Date(p.createdAt).toLocaleString()}</td>
+          <td>
+            <div className={styles.actionsDropdown}>
+              <button onClick={() => toggleDropdown(p.id)}>⋮</button>
+              {dropdownOpen === p.id && (
+                <div className={styles.dropdownMenu}>
+                  <button onClick={() => setSelectedProject(p)}>Edit Project</button>
+                  <button
+                    onClick={async () => {
+                      if (!confirm("Are you sure you want to delete this project?")) return;
+                      try {
+                        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${p.id}`, {
+                          method: "DELETE",
+                          credentials: "include",
+                        });
+                        if (!res.ok) throw new Error("Failed to delete project");
+                        setProjects((prev) => prev.filter((proj) => proj.id !== p.id));
+                        setSelectedProject(null);
+                      } catch (err) {
+                        alert("Error deleting project.");
+                      }
+                    }}
+                  >
+                    Delete Project
+                  </button>
+                </div>
+              )}
+            </div>
+          </td>
+        </tr>
+      ))
+    )}
+  </tbody>
+</table>
+
 
     {selectedProject && (
       <div className={styles.modalBackdrop} onClick={() => {
@@ -224,38 +333,35 @@ if (!response.ok) {
 {isEditing ? (
   <>
     {/* ===== EDIT MODE FORM ===== */}
-    <div className="nice-form-group">
-      <label htmlFor="editTitle">Project Title</label>
-      <input
-        id="editTitle"
-        type="text"
-        value={editTitle}
-        onChange={(e) => setEditTitle(e.target.value)}
-        required
-      />
-    </div>
+{/* ===== EDIT MODE FORM (MATCH CREATE FORM STYLE) ===== */}
+<h2 className={styles.modalTitle}>Edit Project</h2>
+<p className={styles.modalDescription}>
+Update the title, optional description, or invite new collaborators.
+</p>
 
-    <div className="nice-form-group">
-      <label htmlFor="editDesc">Description</label>
-      <textarea
-        id="editDesc"
-        placeholder="Project Description"
-        value={editDesc}
-        onChange={(e) => setEditDesc(e.target.value)}
-        rows={4}
-      />
-    </div>
+<input
+  type="text"
+  className={styles.modalInput}
+  placeholder="Name *"
+  value={editTitle}
+  onChange={(e) => setEditTitle(e.target.value)}
+/>
 
-    <div className="nice-form-group">
-      <label htmlFor="editCollaborators">New Collaborators</label>
-      <input
-        id="editCollaborators"
-        type="text"
-        value={editCollaborators}
-        onChange={(e) => setEditCollaborators(e.target.value)}
-        placeholder="e.g. alice@cern.ch, bob@cern.ch"
-      />
-    </div>
+<textarea
+  placeholder="Description (optional)"
+  className={styles.modalInput}
+  value={editDesc}
+  onChange={(e) => setEditDesc(e.target.value)}
+/>
+
+<input
+  type="text"
+  className={styles.modalInput}
+  placeholder="Invite collaborators (emails, comma-separated)"
+  value={editCollaborators}
+  onChange={(e) => setEditCollaborators(e.target.value)}
+/>
+
 
     {/* ===== Edit Mode Buttons ===== */}
     <div className={styles.modalActions}>
@@ -363,6 +469,61 @@ if (!response.ok) {
         </div>
       </div>
     )}
+    {showCreateModal && (
+  <div className={styles.modalBackdrop} onClick={() => setShowCreateModal(false)}>
+    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.modalHeaderIcons}>
+        <button onClick={() => setShowCreateModal(false)} className={styles.iconButton}>✖</button>
+      </div>
+      <h2 className={styles.modalTitle}>Create Project</h2>
+      <p className={styles.modalDescription}>
+        Enter a unique project title, add an optional description, and click Create to start your new project.
+      </p>
+
+      <input
+        type="text"
+        className={styles.modalInput}
+        placeholder="Name *"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <textarea
+        placeholder="Description (optional)"
+        className={styles.modalInput}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <input
+        type="text"
+        className={styles.modalInput}
+        placeholder="Invite collaborators (emails, comma-separated)"
+        value={collaborators}
+        onChange={(e) => setCollaborators(e.target.value)}
+      />
+
+      <div className={styles.modalActions}>
+        {/* <button className="cancelLink" onClick={() => setShowCreateModal(false)}>Cancel</button> */}
+              <button
+        className="nice-button"
+        style={{
+          marginTop: "1.5rem",
+          backgroundColor: "#f3f4f6",
+          color: "#111827",
+          border: "1px solid #ccc",
+        }}
+        onClick={() => setShowCreateModal(false)}
+      >
+        Cancel
+      </button>
+        <button         className="nice-button"
+        style={{ marginTop: "1.5rem" }} onClick={handleCreate}>Create</button>
+      </div>
+
+      {error && <p className={styles.error}>{error}</p>}
+    </div>
+  </div>
+)}
+
   </div>
 );
 

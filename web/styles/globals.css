@@ -1,6 +1,7 @@
 @import url('https://www.w3schools.com/w3css/5/w3.css');
 @import url('https://www.w3schools.com/lib/w3-theme-blue-grey.css');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Aleo:wght@300;400;500;600;700&display=swap');
 
 body {
   margin: 0;
@@ -373,10 +374,17 @@ nav.main-nav.scrolled {
   background: rgba(21, 28, 58, 0.97); /* your dark navy */
   backdrop-filter: blur(8px);
 }
-html, body {
+/* html, body {
   margin: 0;
   padding: 0;
-}
+} */
+/* html, body {
+  font-family: 'Aleo', serif !important;
+  color: #111730;
+  margin: 0;
+  padding: 0;
+} */
+
 /* REMOVE green validation border from filled fields */
 input:valid,
 textarea:valid {
@@ -437,3 +445,15 @@ textarea:focus {
   border-radius: 0;
 }
 
+/* === GLOBAL FONT OVERRIDE === */
+html, body {
+  font-family: 'Aleo', serif;
+  color: #111730;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure all text-based elements inherit Aleo */
+* {
+  font-family: inherit;
+}
