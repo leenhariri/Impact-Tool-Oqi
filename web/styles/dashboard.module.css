@@ -256,13 +256,14 @@ transition: all 0.2s ease;
 }
 
 
-.modalActions {
+/* .modalActions {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   margin-top: auto;
-}
+  
+} */
 
 .modalHeaderIcons {
   position: absolute;
@@ -362,3 +363,4 @@ transition: all 0.2s ease;
 .linkButton:hover {
   color: #333;
 }
+

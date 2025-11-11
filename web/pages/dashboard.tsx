@@ -159,7 +159,8 @@ if (!response.ok) {
         />
         <input
           type="text"
-          placeholder="Invite Collaborators: (comma-separated emails)"
+          placeholder="Invite Collaborators:"
+          //  (comma-separated emails)"
           value={collaborators}
           onChange={(e) => setCollaborators(e.target.value)}
         />
@@ -221,85 +222,59 @@ if (!response.ok) {
 
           {/* Title */}
 {isEditing ? (
-  <div className="nice-form-group">
-    <label htmlFor="editTitle">Project Title</label>
-    <input
-      id="editTitle"
-      type="text"
-      value={editTitle}
-      onChange={(e) => setEditTitle(e.target.value)}
-      required
-    />
-  </div>
-) : (
-  <div className="nice-form-group">
-    <label>Project Title</label>
-    <p>{selectedProject.title}</p>
-  </div>
-)}
+  <>
+    {/* ===== EDIT MODE FORM ===== */}
+    <div className="nice-form-group">
+      <label htmlFor="editTitle">Project Title</label>
+      <input
+        id="editTitle"
+        type="text"
+        value={editTitle}
+        onChange={(e) => setEditTitle(e.target.value)}
+        required
+      />
+    </div>
 
+    <div className="nice-form-group">
+      <label htmlFor="editDesc">Description</label>
+      <textarea
+        id="editDesc"
+        placeholder="Project Description"
+        value={editDesc}
+        onChange={(e) => setEditDesc(e.target.value)}
+        rows={4}
+      />
+    </div>
 
-          {/* Description */}
-{isEditing ? (
-  <div className="nice-form-group">
-    <label htmlFor="editDesc">Description</label>
-    <textarea
-      id="editDesc"
-      placeholder="Project Description"
-      value={editDesc}
-      onChange={(e) => setEditDesc(e.target.value)}
-      rows={4}
-    />
-  </div>
-) : (
-  <div className="nice-form-group">
-    <label>Description</label>
-    <p>{selectedProject.description || "No description"}</p>
-  </div>
-)}
+    <div className="nice-form-group">
+      <label htmlFor="editCollaborators">New Collaborators</label>
+      <input
+        id="editCollaborators"
+        type="text"
+        value={editCollaborators}
+        onChange={(e) => setEditCollaborators(e.target.value)}
+        placeholder="e.g. alice@cern.ch, bob@cern.ch"
+      />
+    </div>
 
-
-          {/* Members */}
-{/* <div className="nice-form-group">
-  <label>Members</label>
-  <ul>
-    {selectedProject.members.map((m: any) => (
-      <li key={m.id || m.userId}>
-        {m.role} – {m.user?.email || m.user?.name}
-      </li>
-    ))}
-  </ul>
-</div> */}
-
-
-          {/* Collaborators input */}
-{isEditing && (
-  <div className="nice-form-group">
-    <label htmlFor="editCollaborators">New Collaborators</label>
-    <small>Comma-separated emails</small>
-    <input
-      id="editCollaborators"
-      type="text"
-      value={editCollaborators}
-      onChange={(e) => setEditCollaborators(e.target.value)}
-      placeholder="e.g. alice@cern.ch, bob@cern.ch"
-    />
-  </div>
-)}
-
-
-          {/* Bottom Buttons */}
-<div className={styles.modalActions}>
-  {isEditing ? (
-    <>
+    {/* ===== Edit Mode Buttons ===== */}
+    <div className={styles.modalActions}>
       <button
-        className={styles.linkButton}
+        className="nice-button"
+        style={{
+          marginTop: "1.5rem",
+          backgroundColor: "#f3f4f6",
+          color: "#111827",
+          border: "1px solid #ccc",
+        }}
         onClick={() => setIsEditing(false)}
       >
         Cancel
       </button>
+
       <button
-        className={styles.linkButton}
+        className="nice-button"
+        style={{ marginTop: "1.5rem" }}
         onClick={async () => {
           try {
             const res = await fetch(
@@ -313,7 +288,10 @@ if (!response.ok) {
                   description: editDesc,
                   collaborators: editCollaborators
                     .split(",")
-                    .map((email) => ({ email: email.trim(), role: "EDITOR" })),
+                    .map((email) => ({
+                      email: email.trim(),
+                      role: "EDITOR",
+                    })),
                 }),
               }
             );
@@ -339,19 +317,47 @@ if (!response.ok) {
       >
         Save Changes
       </button>
-    </>
-  ) : (
-    <button
-      className={styles.linkButton}
-      onClick={() => {
-        setSelectedProject(null);
-        router.push(`/project/${selectedProject.id}`);
-      }}
-    >
-      Open Project →
-    </button>
-  )}
-</div>
+    </div>
+  </>
+) : (
+  <>
+    {/* ===== VIEW MODE INFO ===== */}
+    <div className="styled-dl-template">
+      <dl className="definition-list">
+        <dt>Project Title</dt>
+        <dd>{selectedProject.title}</dd>
+
+        <dt>Description</dt>
+        <dd>{selectedProject.description || "No description"}</dd>
+
+        <dt>Members</dt>
+        <dd>
+          <ul style={{ paddingLeft: "1rem", margin: 0 }}>
+            {selectedProject.members.map((m: any) => (
+              <li key={m.userId || m.id}>
+                {m.user?.email || m.user?.name || "(unknown)"}{" "}
+                {m.role === "OWNER" && "(Owner)"}
+              </li>
+            ))}
+          </ul>
+        </dd>
+      </dl>
+    </div>
+
+    <div className={styles.modalActions}>
+      <button
+        className="nice-button"
+        onClick={() => {
+          setSelectedProject(null);
+          router.push(`/project/${selectedProject.id}`);
+        }}
+      >
+        Open Project →
+      </button>
+    </div>
+  </>
+)}
+
 
 
         </div>
