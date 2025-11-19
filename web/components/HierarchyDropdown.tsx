@@ -54,7 +54,7 @@ const HierarchyDropdown: React.FC<Props> = ({ selectedValues, onChange }) => {
           justifyContent: 'space-between',
           cursor: 'pointer',
           backgroundColor: '#fff',
-          fontSize: '14px',
+          fontSize: '12px',
           lineHeight: 'normal',
           backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
           backgroundRepeat: 'no-repeat',
@@ -93,7 +93,7 @@ const HierarchyDropdown: React.FC<Props> = ({ selectedValues, onChange }) => {
           {ALL_HIERARCHIES.map((option) => (
             <label
               key={option.value}
-              style={{ display: 'block', marginBottom: '8px', fontSize: '14px' }}
+              style={{ display: 'block', marginBottom: '8px', fontSize: '12px' }}
             >
               <input
                 type="checkbox"

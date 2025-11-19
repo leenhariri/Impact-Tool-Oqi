@@ -148,7 +148,8 @@ const handleCreate = async () => {
     </div> */}
 
     <div className={styles.tableHeader}>
-  <h2>Projects</h2>
+  <h1 className={styles.Title}>Projects</h1>
+
   <button className={styles.createButton} onClick={() => setShowCreateModal(true)}>
     Create Project
   </button>

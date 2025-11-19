@@ -41,7 +41,7 @@ interface Risk {
   id?: string;
   projectId?: string;
   text: string;
-  hierarchyLevels: string[]; // ✅ add this
+  hierarchyLevels: string[]; 
 }
 
 
@@ -87,6 +87,8 @@ if (!projectId || typeof projectId !== "string") {
 const [risks, setRisks] = useState<Risk[]>([])
 const [assumptionsAndActivities, setAssumptionsAndActivities] = useState<AssumptionOrActivity[]>([]);
 const [stakeholders, setStakeholders] = useState<Stakeholder[]>([])
+const [showInstructions, setShowInstructions] = useState(true); // 👈 new
+
 // State for editing a specific cell
 const [editingField, setEditingField] = useState<{
   section: 'impact' | 'risk' | 'assumption' | 'stakeholder';
@@ -719,23 +721,52 @@ const saveEditingField = () => {
 return (
   <div className={styles.container}>
 
-    <div className={styles.instructions}>
-      <h2 className="font-bold text-lg mb-2">Instructions</h2>
-      <ol className="list-decimal list-inside text-sm">   
-              <li>  Refer to <a href="/user-guide" target="_blank" rel="noopener noreferrer">
-     User Guide 
-  </a> for full instructions.</li>   
-      <li>Fill in the tables below.</li>
-      <li>Save each cell once filled in.</li>
-      <li>Save final work once done.</li>
-      <li>After filling mandatory fields, Generate Diagram to build the Theory of Change</li>
-      <li>Proceed to view Diagram/Matrix.</li></ol>
-
+{/* 🔹 Collapsible Instructions */}
+<div className={styles.instructionsWrapper}>
+  <button
+    type="button"
+    className={styles.instructionsHeader}
+    onClick={() => setShowInstructions((prev) => !prev)}
+  >
+    <div className={styles.instructionsHeaderText}>
+      <span className={styles.instructionsTitle}>Instructions</span>
+      <span className={styles.instructionsSubtitle}>
+        Quick steps to use this page
+      </span>
     </div>
+    <span className={styles.instructionsChevron} aria-hidden="true">
+      {showInstructions ? '▾' : '▸'}
+    </span>
+  </button>
+
+  {showInstructions && (
+    <div className={styles.instructions}>
+      <ol>
+        <li>
+          Refer to{' '}
+          <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+            User Guide
+          </a>{' '}
+          for full instructions.
+        </li>
+        <li>Fill in the tables below.</li>
+        <li>Save each cell once filled in.</li>
+        <li>Save final work once done.</li>
+        <li>
+          After filling mandatory fields, use <strong>Generate Diagram</strong> to
+          build the Theory of Change.
+        </li>
+        <li>Proceed to view the Diagram and SDG Interlinkage Matrix.</li>
+      </ol>
+    </div>
+  )}
+</div>
+
 
     {/* Impact Rows */}
     {/* <h3>Impact Rows</h3> */}
-<h3 className={styles.sectionTitle}>Indicator Matrix</h3>
+    
+<h1 className={styles.Title}>Indicator Matrix</h1>
 <p className={styles.note}>
   {/* Please refer to the section in the User Guide for full instructions */}
   Use this matrix to define what your solution aims to achieve at each result level and how change will be measured. Start from long-term impact down to deliverables.  
@@ -819,7 +850,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
   style={{
     height: "36px",
     padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
-    fontSize: "14px",
+    fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -887,7 +918,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
   style={{
     height: "36px",
     padding: "0 25px 0 12px", // ✅ added right padding for the arrow
-    fontSize: "14px",
+    fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -944,12 +975,28 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
       </table>
     </div>
     <div className={styles.tableActions}>
-      <button className={styles.addRowButton} onClick={addRow}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
-        Add Row
-      </button>
+<button
+  title="Add New"
+  className={styles.addCircleButton}
+  onClick={addRow} // or addRisk, addItem, etc.
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+      stroke="#9ca3af"
+      strokeWidth="1.5"
+      fill="none"
+    />
+    <path d="M8 12H16" stroke="#9ca3af" strokeWidth="1.5" />
+    <path d="M12 16V8" stroke="#9ca3af" strokeWidth="1.5" />
+  </svg>
+</button>
+
     </div>
     <hr className={styles.horizontalDivider} />
 
@@ -961,7 +1008,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
       <div className={styles.column}>
         
         <div className={styles.sectionHeader}>
-  <h3>Risks Table</h3>
+  <h1 className={styles.Title}>Risks</h1>
   <p className={styles.note}>
     Fill in here the risks (challenges or external factors that could hinder achievement of your outcomes). For each risk, identify the specific objective level it may affect.
 To better understand how to assess or categorize risks, refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
@@ -1048,7 +1095,8 @@ To better understand how to assess or categorize risks, refer to the <a href="/u
       {/* Assumptions & Activities */}
       <div className={styles.column}>
         <div className={styles.sectionHeader}>
-  <h3>Assumptions & Actions Table</h3>
+  
+  <h1 className={styles.Title}>Assumptions & Actions Table</h1>
   <p className={styles.note}>
     Fill in here the key conditions that must hold true for your solution’s anticipated change to succeed (assumptions) and the actions you plan to take to mitigate potential issues that may deter.
 If you need more information and help on this, refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
@@ -1093,7 +1141,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
                       style={{
     height: "36px",
     padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
-    fontSize: "14px",
+    fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -1169,7 +1217,8 @@ If you need more information and help on this, refer to the <a href="/user-guide
 <hr className={styles.horizontalDivider} />
 
     {/* Stakeholders */}
-    <h3> Stakeholders Matrix</h3>
+
+    <h1 className={styles.Title}>Stakeholders Matrix</h1>
      <p className={styles.note}>
       Map your anticipated stakeholders to be involved or affected by your solution. Define their roles, interests, engagement type (direct/indirect), and how you intend to engage them (strategy). 
 Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
@@ -1290,7 +1339,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
           style={{
     height: "36px",
     padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
-    fontSize: "14px",
+    fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -1339,7 +1388,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
           style={{
     height: "36px",
     padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
-    fontSize: "14px",
+    fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -1357,9 +1406,9 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
     cursor: "pointer",
   }}
         >
-          <option value="LONG_TERM_IMPACT">Long-Term</option>
-          <option value="MID_TERM_IMPACT">Mid-Term</option>
-          <option value="SHORT_TERM_IMPACT">Short-Term</option>
+          <option value="LONG_TERM_IMPACT">Long Term</option>
+          <option value="MID_TERM_IMPACT">Mid Term</option>
+          <option value="SHORT_TERM_IMPACT">Short Term</option>
         </select>
       </td>
       <td>

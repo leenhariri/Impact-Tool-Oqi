@@ -1,16 +1,18 @@
 /* 🔹 Base Layout */
+
 .container {
   padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
+ font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
   background-color:  #f9f9f9;
   min-height: 100vh;
   
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  
 
 }
 
 /* 🔹 Instructions Box */
-.instructions {
+/* .instructions {
   background-color: #eeeeee95;
   border-left: 5px solid #111730;
   margin-bottom: 2rem;
@@ -18,17 +20,19 @@
   font-size: 16px;
   line-height: 1.6;
   border-radius: 0;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 
-}
 
-.instructions h2 {
+} */
+
+/* .instructions h2 {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 1rem;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 
-}
+
+} */
 
 /* 🔹 Table Wrapper */
 .tableWrapper {
@@ -62,7 +66,7 @@
   color: white;
   padding: 12px 14px;
   font-weight: 600;
-  font-size: 13.5px;
+  font-size: 11.9px;
   overflow: visible;
 
   position: relative;
@@ -88,7 +92,7 @@
 .softTable textarea {
   width: 100%;
   padding: 8px 10px;
-  font-size: 13.5px;
+  font-size: 12px;
   border: 1px solid #ccc;
   border-radius: 8px;
   background-color: #fff;
@@ -100,10 +104,10 @@
 .softTable button {
   background-color: transparent;
   border: none;
-  font-size: 18px;
+  font-size: 15px;
   cursor: pointer;
   color: #333;
-  padding: 4px;
+  padding: 2px;
 }
 
 .softTable button:hover {
@@ -134,7 +138,8 @@
   font-size: 20px;
   color: #111730;
   font-weight: 60;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 
 }
 
@@ -183,7 +188,8 @@
   background: #fff;
   box-sizing: border-box;
   font-family: inherit;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 
 }
 
@@ -428,8 +434,9 @@
 
 .readonlyInput::placeholder {
   color: #999;
-  font-style: italic;
-  opacity: 0.6;
+  /* font-style: italic; */
+  opacity: 0.9;
+  
 }
 .sectionHeader {
   width: 100%;
@@ -484,13 +491,13 @@
   opacity: 1;
 }
 .tabHeader {
-  text-align: left;         /* 👈 Align title to the left */
+  text-align: left;        
   margin-bottom: 1rem;
-  padding-left: 0.5rem;     /* optional: gives slight spacing from the edge */
-  font-size: 22px;
+  padding-left: 0.5rem;     
   font-weight: 600;
   
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 }
 
 
@@ -526,4 +533,127 @@
   border: 1px solid #cbd5e1;
   border-radius: 0 0 0.5rem 0.5rem;
   line-height: 1.7;
+}
+.tableWrapper.indicatorMatrix {
+  width: 100%;
+  max-width: 100%;
+}
+.Title {
+  font-size: 1.15rem;              /* adjust size */
+  font-weight: 600;             /* bold */
+  color: #111730;               /* your navy color */
+  margin-bottom: 1rem;          /* spacing below */
+  font-family: 'BlinkMacSystemFont', sans-serif;
+}
+/* 🔹 Instructions Accordion */
+
+.instructionsWrapper {
+  margin-bottom: 1.75rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+}
+
+.instructionsHeader {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f1f5f9b6;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.instructionsHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.instructionsTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.instructionsSubtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.instructionsChevron {
+  font-size: 1.1rem;
+  color: #111730;
+}
+
+.instructions {
+  padding: 1rem 1.25rem 1.1rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #525252;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.instructions li {
+  margin-bottom: 0.35rem;
+}
+
+.instructions a {
+  color: #525252;
+  text-decoration: underline;
+}
+/* Make Indicator Matrix table same width as combined lower tables */
+
+/* FIX: Prevent delete column from stretching */
+.softTable td:last-child,
+.softTable th:last-child {
+  width: 1%;           /* force smallest possible */
+  white-space: nowrap; /* prevent stretching */
+  text-align: center;  /* center the X */
+  padding: 4px 6px;    /* reduce extra padding */
+}
+/* FINAL override for Indicator Matrix wrapper */
+/* SHRINK the Indicator Matrix EXACTLY to match Risks + Assumptions */
+.tableWrapper.indicatorMatrix {
+  width: 60rem !important;       /* adjust to taste */
+  max-width: 60rem !important;
+  margin: 0 auto !important;
+}
+
+/* FINAL override for Indicator Matrix TABLE */
+.tableWrapper.indicatorMatrix .softTable {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.indicatorContainer {
+  width: 75rem;
+  max-width: 75rem;
+  margin: 0 auto;
+}
+
+.addCircleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  transition: 0.2s ease;
+}
+
+.addCircleButton:hover svg path {
+  stroke: #e2e2e2;
+}
+
+.addCircleButton:active svg path {
+  stroke: #ffffff;
 }

@@ -79,7 +79,7 @@ const SDGDropdown: React.FC<Props> = ({ allTargets, selectedTargetIds, onChange 
           height: "36px",
           padding: "0 10px",
           backgroundColor: "#fff",
-          fontSize: "14px",
+          fontSize: "12px",
           fontFamily: "inherit",
           color: "#333",
           cursor: "pointer",
@@ -140,7 +140,7 @@ const SDGDropdown: React.FC<Props> = ({ allTargets, selectedTargetIds, onChange 
               padding: "10px",
               zIndex: 9999,
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-              fontSize: "13.5px",
+              fontSize: "12px",
               fontFamily: "inherit",
             }}
           >
@@ -150,7 +150,7 @@ const SDGDropdown: React.FC<Props> = ({ allTargets, selectedTargetIds, onChange 
                 style={{
                   display: "block",
                   marginBottom: "8px",
-                  fontSize: "13px",
+                  fontSize: "12px",
                   lineHeight: 1.4,
                   position: "relative",
                 }}

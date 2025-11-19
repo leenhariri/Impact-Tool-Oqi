@@ -2,11 +2,12 @@
 
 .container {
   padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
+  
   background-color:  #f9f9f9;
   min-height: 100vh;
   
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 
 }
 .instructions {
@@ -17,7 +18,8 @@
   font-size: 16px;
   line-height: 1.6;
   border-radius: 0;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 
 }
 
@@ -25,7 +27,8 @@
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 1rem;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 
 }
 
@@ -33,7 +36,8 @@
   display: flex;
   gap: 2rem;
   justify-content: space-between;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 
 }
 
@@ -42,7 +46,8 @@
   background-color: #fafafa;
   padding: 1rem;
   border-radius: 16px;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.215);
 }
 
@@ -68,7 +73,8 @@
   cursor: pointer;
   transition: background 0.2s ease;
   font-size: 0.95rem;
-  font-family: 'Open Sans', sans-serif; 
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   transition: box-shadow 0.25s ease;
 }
@@ -89,7 +95,8 @@
   border-radius: 6px;
   border: 1px solid #ccc;
   font-size: 0.95rem;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
   border: 1px solid #ddd;
   
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
@@ -112,7 +119,8 @@
   border: none;
   border-radius: 999px;
   cursor: pointer;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
   
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   transition: all 0.2s ease;
@@ -164,7 +172,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Open Sans', sans-serif; /* ✅ ADD THIS */
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 
 }
 
@@ -177,7 +186,8 @@
   box-shadow: 0 12px 32px rgba(0,0,0,0.15); /* ✅ deeper shadow */
   overflow-y: auto;
   max-height: 80vh;
-  font-family: 'Open Sans', sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
   font-size: 0.6rem;
 }
 
@@ -191,7 +201,8 @@
   border-radius: 10px;
   font-size: 0.8rem;
   resize: vertical;
-  font-family: 'Open Sans', sans-serif; 
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
 transition: all 0.2s ease;
 }
 
@@ -242,7 +253,7 @@ transition: all 0.2s ease;
 .modalDescription {
   font-size: 0.95rem;
   color: #555;
-  font-style: italic;
+  /* font-style: italic; */
 }
 
 .modalMemberList li {
@@ -300,7 +311,7 @@ transition: all 0.2s ease;
   text-align: center;
   color: #666;
   font-size: 0.95rem;
-  font-style: italic;
+  /* font-style: italic; */
   background-color: #fdfdfd;
   margin-bottom: 1rem;
 }
@@ -372,16 +383,19 @@ transition: all 0.2s ease;
 }
 
 .createButton {
-  background-color: #111730;
+  background-color: #3d5bd1e3;
   color: white;
   padding: 10px 20px;
   border-radius: 999px;
   border: none;
   font-weight: 60;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   cursor: pointer;
 }
-
+.createButton:hover {
+  background-color: #3149a9;
+  color: white;
+}
 .projectTable {
   width: 100%;
   border-collapse: collapse;
@@ -406,11 +420,17 @@ transition: all 0.2s ease;
   line-height: 1;
 }
 
-.projectLink {
-  color: #111730;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: underline;
+.projectLink,
+.projectLink:link,
+.projectLink:visited {
+  text-decoration: none !important; /* 🚫 force removes underline */
+  color: #111730 !important;
+}
+
+.projectLink:hover,
+.projectLink:focus {
+  text-decoration: underline !important;/* optional hover underline */
+  color: #1a1a40;
 }
 
 .avatar {
@@ -462,7 +482,8 @@ transition: all 0.2s ease;
   border: none;
   cursor: pointer;
   text-align: left;
-  font-family: 'Open Sans', sans-serif;
+ font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+
   transition: background 0.2s;
 }
 
@@ -620,3 +641,10 @@ transition: all 0.2s ease;
   outline: none;
 }
 
+.Title {
+  font-size: 1.8rem;              /* adjust size */
+  font-weight: 600;             /* bold */
+  color: #111730;               /* your navy color */
+  margin-bottom: 1rem;          /* spacing below */
+  font-family: 'BlinkMacSystemFont', sans-serif;
+}
