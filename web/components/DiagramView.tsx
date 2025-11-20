@@ -87,6 +87,7 @@ export default function DiagramView({ projectId }: { projectId: string }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [showInstructions, setShowInstructions] = useState(true); // 👈 new
   const shouldRegenerate = router.query.regenerate === "true";
 
 const resetNodePositions = () => {
@@ -736,18 +737,46 @@ return (
   <ReactFlowProvider>
     <div className={styles.container}>
       {/* Instructions */}
-      <div className={styles.instructions}>
-        <h2 className="font-bold text-lg mb-2">Instructions</h2>
-        <ol className="list-decimal list-inside text-sm">
-          <li>Add Arrow: Click the + icon, then select two boxes to draw an arrow between them.</li>
-    <li>Cancel Arrow: Click the x icon to exit drawing mode before selecting a second box.</li>
-    <li>Delete All Arrows: Click the trash icon to clear all arrows from the diagram. This cannot be undone.</li>
-    <li>Move Boxes: Drag boxes to reposition them — the layout is saved automatically.</li>
-    <li>Delete a Single Arrow: Click on the arrow, then press delete/backspace.</li>
-    <li>Export: Use the Export to PDF button.</li>
-    <li>Make sure to click the Fit View toggle before exporting the diagram as PDF.</li>
-        </ol>
-      </div>
+<div className={styles.instructionsWrapper}>
+  <button
+    type="button"
+    className={styles.instructionsHeader}
+    onClick={() => setShowInstructions((prev) => !prev)}
+  >
+    <div className={styles.instructionsHeaderText}>
+      <span className={styles.instructionsTitle}>Instructions</span>
+      <span className={styles.instructionsSubtitle}>
+        Quick steps to use this page
+      </span>
+    </div>
+    <span className={styles.instructionsChevron} aria-hidden="true">
+      {showInstructions ? '▾' : '▸'}
+    </span>
+  </button>
+
+  {showInstructions && (
+    <div className={styles.instructions}>
+      <ol>
+        <li>
+          Refer to{' '}
+          <a href="/user-guide" target="_blank" rel="noopener noreferrer">
+            User Guide
+          </a>{' '}
+          for full instructions.
+        </li>
+        <li>Add Arrow: Click the + icon, then select two boxes to draw an arrow between them.</li>
+        <li>Cancel Arrow: Click the x icon to exit drawing mode before selecting a second box.</li>
+        <li>Delete All Arrows: Click the trash icon to clear all arrows from the diagram. This cannot be undone.</li>
+        <li>
+          Move Boxes: Drag boxes to reposition them — the layout is saved automatically.
+        </li>
+        <li>Delete a Single Arrow: Click on the arrow, then press delete/backspace.</li>
+        <li> Export: Use the Export to PDF button.</li>
+        <li> Make sure to click the Fit View toggle before exporting the diagram as PDF.</li>
+      </ol>
+    </div>
+  )}
+</div>
       <h3 className={styles.sectionTitle}>Anticipated Impact Flowchart</h3>
 {/* <button
   onClick={() => {
@@ -849,31 +878,71 @@ return (
       </div>
 
       {/* Buttons Row */}
-      <div className={styles.bottomButtonRow}>
-        <div className={styles.leftButtons}>
-          <button onClick={exportAsPDF} className={styles.buttonPrimary}>
-            Export as PDF
-          </button>
-        </div>
-        <div className={styles.rightButtons}>
-          {/* <button onClick={resetNodePositions} className={styles.buttonPrimary}>
-             Reset Positions
-          </button> */}
-         <button
-  onClick={() => router.push(`/project/${projectId}`)}
+{/* 🔹 Floating Action Icons (Right Side) */}
+<div className="actionIconBar">
 
-            className={styles.buttonPrimary}
-          >
-            Edit Input
-          </button>
-          <button
-            onClick={() => router.push(`/project/${projectId}/matrix`)}
-            className={styles.buttonPrimary}
-          >
-            Edit SDG Interlinkage
-          </button>
-        </div>
-      </div>
+  {/* Export PDF */}
+  {/* <button className="actionIcon" title="Export as PDF" onClick={exportAsPDF}>
+    <svg 
+      width="22" height="22" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="white" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  </button> */}
+  <button className="actionIcon" title="Export as Excel"
+    onClick={exportAsPDF}>
+    <i className="uil uil-import"></i>
+  </button>
+  {/* Edit Input */}
+  <button
+    className="actionIcon"
+    title="Edit Input"
+    onClick={() => router.push(`/project/${projectId}`)}
+  >
+    <svg 
+      width="18" height="18" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="white" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    >
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+    </svg>
+  </button>
+
+  {/* Edit SDG Interlinkage */}
+<button className="actionIcon" title="Edit SDG Interlinkage"
+  onClick={() => router.push(`/project/${projectId}/matrix`)}>
+  
+  <svg viewBox="0 0 48 48" fill="#ffffff" stroke="none" width="22" height="22">
+    <rect x="4" y="4" width="10" height="10"></rect>
+    <rect x="19" y="4" width="10" height="10"></rect>
+    <rect x="34" y="4" width="10" height="10"></rect>
+
+    <rect x="4" y="19" width="10" height="10"></rect>
+    <rect x="19" y="19" width="10" height="10"></rect>
+    <rect x="34" y="19" width="10" height="10"></rect>
+
+    <rect x="4" y="34" width="10" height="10"></rect>
+    <rect x="19" y="34" width="10" height="10"></rect>
+    <rect x="34" y="34" width="10" height="10"></rect>
+  </svg>
+
+</button>
+
+</div>
+
       {error && <p style={{ color: "red", marginBottom: "1rem" }}>{error}</p>}
 
     </div>

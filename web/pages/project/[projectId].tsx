@@ -976,7 +976,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
     </div>
     <div className={styles.tableActions}>
 <button
-  title="Add New"
+  title="Add Row"
   className={styles.addCircleButton}
   onClick={addRow} // or addRisk, addItem, etc.
 >
@@ -988,12 +988,12 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
   >
     <path
       d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
-      stroke="#9ca3af"
+      stroke="#111730"
       strokeWidth="1.5"
       fill="none"
     />
-    <path d="M8 12H16" stroke="#9ca3af" strokeWidth="1.5" />
-    <path d="M12 16V8" stroke="#9ca3af" strokeWidth="1.5" />
+    <path d="M8 12H16" stroke="#111730" strokeWidth="1.5" />
+    <path d="M12 16V8" stroke="#111730" strokeWidth="1.5" />
   </svg>
 </button>
 
@@ -1083,12 +1083,27 @@ To better understand how to assess or categorize risks, refer to the <a href="/u
           </table>
         </div>
         <div className={styles.tableActions}>
-          <button className={styles.addRowButton} onClick={addRisk}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Add Risk
-          </button>
+<button
+  title="Add Risk"
+  className={styles.addCircleButton}
+  onClick={addRisk} // or addRisk, addItem, etc.
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+      stroke="#111730"
+      strokeWidth="1.5"
+      fill="none"
+    />
+    <path d="M8 12H16" stroke="#111730" strokeWidth="1.5" />
+    <path d="M12 16V8" stroke="#111730" strokeWidth="1.5" />
+  </svg>
+</button>
         </div>
       </div>
 
@@ -1197,20 +1212,33 @@ If you need more information and help on this, refer to the <a href="/user-guide
           </table>
         </div>
         <div className={styles.tableActions}>
-          <button
-            className={styles.addRowButton}
-            onClick={() =>
-              setAssumptionsAndActivities((prev = []) => [
-                ...prev,
-                { type: 'ASSUMPTION', text: '' },
-              ])
-            }
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Add Item
-          </button>
+<button
+  title="Add Assumption/Activity"
+  className={styles.addCircleButton}
+  onClick={() =>
+    setAssumptionsAndActivities((prev = []) => [
+      ...prev,
+      { type: 'ASSUMPTION', text: '' },
+    ])
+  }
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+      stroke="#111730"
+      strokeWidth="1.5"
+      fill="none"
+    />
+    <path d="M8 12H16" stroke="#111730" strokeWidth="1.5" />
+    <path d="M12 16V8" stroke="#111730" strokeWidth="1.5" />
+  </svg>
+</button>
+
         </div>
       </div>
     </div>
@@ -1423,49 +1451,107 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
       </table>
     </div>
     <div className={styles.tableActions}>
-      <button className={styles.addRowButton} onClick={addStakeholder}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-        </svg>
-        Add Stakeholder
-      </button>
+<button
+  title="Add Stakeholder"
+  className={styles.addCircleButton}
+  onClick={addStakeholder} // or addRisk, addItem, etc.
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z"
+      stroke="#111730"
+      strokeWidth="1.5"
+      fill="none"
+    />
+    <path d="M8 12H16" stroke="#111730" strokeWidth="1.5" />
+    <path d="M12 16V8" stroke="#111730" strokeWidth="1.5" />
+  </svg>
+</button>
     </div>
 
     {/* Final Buttons */}
-    <div className={styles.buttonRow}>
-        <button className={styles.saveBtn} onClick={() => saveAll(false)}>
-    Save
+<div className="actionIconBar">
+  <button className="actionIcon" title="Save" onClick={() => saveAll(false)}>
+    <i className="uil uil-save"></i>
   </button>
-  <button
-  className={styles.saveBtn}
+
+<button 
+  className="actionIcon" 
+  title="Generate Diagram"
   onClick={async () => {
-    const success = await saveAll(true);
-    if (success) {
-      router.push(`/project/${projectId}/diagram?regenerate=true`);
-    }
+    const ok = await saveAll(true);
+    if (ok) router.push(`/project/${projectId}/diagram?regenerate=true`);
   }}
 >
-  Generate Diagram
-</button>
-        <button
-    className={styles.editBtn}
-    onClick={() => router.push(`/project/${projectId}/diagram`)}
+  <svg 
+    viewBox="0 0 512 512" 
+    fill="#ffffff" 
+    width="20" 
+    height="20"
+    style={{ display: "block" }}
   >
-    Edit Diagram
-  </button>
-
-<button className={styles.saveBtn} onClick={exportAllToExcel}>
-  Export as Excel
+    <path d="M426.666667,320 L426.666,383.999 L490.666667,384 L490.666667,426.666667 L426.666,426.666 L426.666667,490.666667 L384,490.666667 L383.999,426.666 L320,426.666667 L320,384 L383.999,383.999 L384,320 L426.666667,320 Z M341.333333,42.6666667 L405.333333,106.666667 L405.332667,298.666667 L362.666667,298.666667 L362.666667,362.666667 L298.666667,362.666667 L298.665667,426.666667 L106.666667,426.666667 L42.6666667,362.666667 L42.6666667,42.6666667 L341.333333,42.6666667 Z M320,85.3333333 L85.3333333,85.3333333 L85.3333333,341.333333 L320,341.333333 L320,85.3333333 Z M170.666667,128 L170.666667,149.333 L213.333333,149.333333 L213.332667,256 L234.666667,256 L234.666667,234.666667 L298.666667,234.666667 L298.666667,298.666667 L234.666667,298.666667 L234.666667,277.332667 L170.666667,277.333 L170.666667,298.666667 L106.666667,298.666667 L106.666667,234.666667 L170.666667,234.666667 L170.666667,256 L191.999667,256 L191.999667,170.666 L170.666667,170.666 L170.666667,192 L106.666667,192 L106.666667,128 L170.666667,128 Z"/>
+  </svg>
 </button>
 
 
-        <button
-    className={styles.editBtn}
-    onClick={() => router.push(`/project/${projectId}/matrix`)}
+<button 
+  className="actionIcon" 
+  title="Edit Diagram"
+  onClick={() => router.push(`/project/${projectId}/diagram`)}
+>
+  <svg 
+    viewBox="0 0 512 512" 
+    fill="#ffffff" 
+    width="20" 
+    height="20"
+    style={{ display: "block" }}
   >
-    Edit SDG Interlinkage
+    <path d="M64,64 L362.666667,64 L426.666667,128 L426.666667,448 L128,448 L64,384 L64,64 Z 
+             M341.333333,106.666667 L106.666667,106.666667 L106.666667,362.666667 
+             L341.333333,362.666667 L341.333333,106.666667 Z 
+             M192,149.333333 L192,170.666667 L234.666667,170.666667 
+             L234.666,277.333333 L256,277.333333 L256,256 L320,256 L320,320 
+             L256,320 L256,298.666667 L192,298.666333 L192,320 L128,320 
+             L128,256 L192,256 L192,277.333333 L213.333,277.333333 
+             L213.333,191.999333 L192,192 L192,213.333333 L128,213.333333 
+             L128,149.333333 L192,149.333333 Z"/>
+  </svg>
+</button>
+
+
+  <button className="actionIcon" title="Export as Excel"
+    onClick={exportAllToExcel}>
+    <i className="uil uil-import"></i>
   </button>
-    </div>
+
+<button className="actionIcon" title="Edit SDG Interlinkage"
+  onClick={() => router.push(`/project/${projectId}/matrix`)}>
+  
+  <svg viewBox="0 0 48 48" fill="#ffffff" stroke="none" width="22" height="22">
+    <rect x="4" y="4" width="10" height="10"></rect>
+    <rect x="19" y="4" width="10" height="10"></rect>
+    <rect x="34" y="4" width="10" height="10"></rect>
+
+    <rect x="4" y="19" width="10" height="10"></rect>
+    <rect x="19" y="19" width="10" height="10"></rect>
+    <rect x="34" y="19" width="10" height="10"></rect>
+
+    <rect x="4" y="34" width="10" height="10"></rect>
+    <rect x="19" y="34" width="10" height="10"></rect>
+    <rect x="34" y="34" width="10" height="10"></rect>
+  </svg>
+
+</button>
+
+</div>
+
+    
 {editingField && editingField.anchorRect && (
   <div
     ref={popupRef}

@@ -5,7 +5,7 @@
   min-height: 100vh;
   
 }
-.instructions {
+/* .instructions {
   background-color: #eeeeee95;
   border-left: 5px solid #111730;
   margin-bottom: 2rem;
@@ -13,7 +13,7 @@
   font-size: 16px;
   line-height: 1.6;
   border-radius: 0;
-}
+} */
 
 .instructions h2 {
   font-size: 22px;
@@ -25,13 +25,13 @@
   margin-bottom: 1rem;
 }
 
-.instructionsTitle {
+/* .instructionsTitle {
   background-color: #dcdcdc;
   padding: 10px;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
   font-weight: bold;
-}
+} */
 
 .instructionsList {
   margin-left: 1rem;
@@ -198,7 +198,113 @@
 }
 .sectionTitle {
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: #0c0c2c; /* dark navy/black */
   margin-bottom: 0.2rem; /* reduce gap below title */
+}
+
+.instructionsWrapper {
+  margin-bottom: 1.75rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+}
+
+.instructionsHeader {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f1f5f9b6;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.instructionsHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.instructionsTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.instructionsSubtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.instructionsChevron {
+  font-size: 1.1rem;
+  color: #111730;
+}
+
+.instructions {
+  padding: 1rem 1.25rem 1.1rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #525252;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.instructions li {
+  margin-bottom: 0.35rem;
+}
+
+.instructions a {
+  color: #525252;
+  text-decoration: underline;
+}
+
+.floatingActions {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 2000;
+}
+
+.floatingBtn {
+  width: 55px;
+  height: 55px;
+  background: #111730;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow:
+    0 0 12px rgba(17, 23, 48, 0.45),
+    0 0 25px rgba(17, 23, 48, 0.35),
+    0 4px 12px rgba(0,0,0,0.25);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.floatingBtn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow:
+    0 0 15px rgba(17, 23, 48, 0.75),
+    0 0 30px rgba(17, 23, 48, 0.65),
+    0 6px 18px rgba(0,0,0,0.3);
+}
+
+.floatingBtn svg {
+  width: 22px;
+  height: 22px;
+  fill: white;
 }

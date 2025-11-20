@@ -3,6 +3,7 @@
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Aleo:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 
 body {
   margin: 0;
@@ -458,4 +459,142 @@ html, body {
 .softTable th:nth-child(5),
 .softTable td:nth-child(5) {
   width: 160px; 
+}
+
+
+/* Please ❤ this if you like it! */
+
+
+
+
+.sec-center {
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.dropdown {
+  display: none;
+}
+
+.for-dropdown {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  background-color: #111730;
+  color: white;
+  border-radius: 30px;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 20px rgba(17, 23, 48, 0.2);
+}
+
+.for-dropdown i {
+  transition: all 0.25s ease;
+  font-size: 18px;
+}
+
+.dropdown:checked + .for-dropdown i {
+  transform: rotate(180deg);
+}
+
+.section-dropdown {
+  position: absolute;
+  margin-top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 10px 0;
+  width: 250px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s ease;
+  z-index: 9999;
+}
+
+.dropdown:checked ~ .section-dropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(5px);
+}
+
+.section-dropdown a {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 18px;
+  text-decoration: none;
+  color: #111730;
+  font-size: 14px;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.section-dropdown a:hover {
+  background: #f3f4f6;
+}
+.main-nav {
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  transition: box-shadow 0.3s ease;
+}
+
+.main-nav.scrolled {
+  background: rgba(17, 23, 48, 0.142);  /* your navy but semi-transparent */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.386);
+}
+/* Floating Action Icon Dock */
+.actionIconBar {
+  position: fixed;
+  top: 50%;
+  right: 28px;              /* distance from right side */
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;   /* vertical */
+  gap: 14px;                /* space between icons */
+  z-index: 9999;            /* always on top */
+}
+
+/* Individual icons */
+.actionIcon {
+  width: 42px;              /* smaller */
+  height: 42px;
+  border-radius: 50%;
+  background: rgb(26, 33, 62);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;          /* smaller icons */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* glow */
+  box-shadow: 0 0 12px rgba(17, 23, 48, 0.6),
+              0 0 22px rgba(17, 23, 48, 0.4);
+
+  transition: all 0.25s ease;
+}
+
+/* Hover glow + lift */
+.actionIcon:hover {
+  transform: translateY(-3px) scale(1.07);
+  background: #0d1330;
+
+  box-shadow: 0 0 16px rgba(17, 23, 48, 0.8),
+              0 0 30px rgba(17, 23, 48, 0.6);
+}
+
+/* Click effect */
+.actionIcon:active {
+  transform: scale(0.93);
 }
