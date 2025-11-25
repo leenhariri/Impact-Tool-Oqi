@@ -598,3 +598,51 @@ html, body {
 .actionIcon:active {
   transform: scale(0.93);
 }
+.swipe {
+  position: relative;
+  background-color: #eeeff4ba;
+  width: 180px;
+  height: 50px;
+  color: #111730;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  letter-spacing: 1.5px;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.06);
+  border-left: 0.5px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.06);
+  border-right: 0.5px solid rgba(0, 0, 0, 0.06);
+  padding-left: 40px;
+  cursor: pointer;
+  transition: 0.35s ease;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+  font-size: 14px;
+    margin: 0 auto;
+}
+
+.swipe:hover {
+  padding-left: 0;
+  padding-right: 40px;
+  color: #111730c4;
+}
+
+.swipe-container {
+  position: absolute;
+  left: 5px;
+  width: 40px;
+  height: 40px;
+  background: #111730;
+  border-radius: 50%;
+  transition: 0.35s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #f1f4f7;
+}
+
+.swipe:hover .swipe-container {
+  left: calc(100% - 55px);
+  color: #ffffff4f;
+}

@@ -383,7 +383,7 @@ transition: all 0.2s ease;
 }
 
 .createButton {
-  background-color: #3d5bd1e3;
+  background-color: #3149a9;
   color: white;
   padding: 10px 20px;
   border-radius: 999px;
@@ -393,7 +393,7 @@ transition: all 0.2s ease;
   cursor: pointer;
 }
 .createButton:hover {
-  background-color: #3149a9;
+  background-color: #2b4198;
   color: white;
 }
 .projectTable {
@@ -647,4 +647,69 @@ transition: all 0.2s ease;
   color: #111730;               /* your navy color */
   margin-bottom: 1rem;          /* spacing below */
   font-family: 'BlinkMacSystemFont', sans-serif;
+}
+.instructionsWrapper {
+  margin-bottom: 1.75rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+}
+
+.instructionsHeader {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f1f5f9b6;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.instructionsHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.instructionsTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.instructionsSubtitle {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.instructionsChevron {
+  font-size: 1.1rem;
+  color: #111730;
+}
+
+.instructions {
+  padding: 1rem 1.25rem 1.1rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #525252;
+}
+
+.instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.instructions li {
+  margin-bottom: 0.35rem;
+}
+
+.instructions a {
+  color: #525252;
+  text-decoration: underline;
 }

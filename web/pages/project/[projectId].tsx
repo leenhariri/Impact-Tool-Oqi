@@ -87,7 +87,7 @@ if (!projectId || typeof projectId !== "string") {
 const [risks, setRisks] = useState<Risk[]>([])
 const [assumptionsAndActivities, setAssumptionsAndActivities] = useState<AssumptionOrActivity[]>([]);
 const [stakeholders, setStakeholders] = useState<Stakeholder[]>([])
-const [showInstructions, setShowInstructions] = useState(true); // 👈 new
+const [showInstructions, setShowInstructions] = useState(true); //  new
 
 // State for editing a specific cell
 const [editingField, setEditingField] = useState<{

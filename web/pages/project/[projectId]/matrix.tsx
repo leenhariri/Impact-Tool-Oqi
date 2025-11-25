@@ -42,7 +42,7 @@ export default function MatrixPage() {
   const [targets, setTargets] = useState<SDGTarget[]>([]);
   const [matrix, setMatrix] = useState<{ [key: string]: MatrixEntry }>({});
   const [loading, setLoading] = useState(true);
-
+const [showInstructions, setShowInstructions] = useState(true); // 👈 new
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPair, setSelectedPair] = useState<{
     source: SDGTarget;
@@ -229,19 +229,55 @@ const exportMatrixAsPDF = async () => {
 
   return (
   <div className={styles.container}>
-    <div className={styles.instructions}>
+    {/* <div className={styles.instructions}>
       <h2 className="font-bold text-lg mb-2">Instructions</h2>
       <ol className="list-decimal list-inside text-sm">
         <li>Click a cell to select interaction score and rationale.</li>
         <li>Save the chosen score and explanation.</li>
         <li>Option to export as pdf.</li>
       </ol>
+    </div> */}
+    <div className={styles.instructionsWrapper}>
+  <button
+    type="button"
+    className={styles.instructionsHeader}
+    onClick={() => setShowInstructions((prev) => !prev)}
+  >
+    <div className={styles.instructionsHeaderText}>
+      <span className={styles.instructionsTitle}>Instructions</span>
+      <span className={styles.instructionsSubtitle}>
+        Quick steps to use this page
+      </span>
     </div>
+    <span className={styles.instructionsChevron} aria-hidden="true">
+      {showInstructions ? '▾' : '▸'}
+    </span>
+  </button>
+
+  {showInstructions && (
+    <div className={styles.instructions}>
+      <ol>
+        <li>
+Click a cell to select interaction score and rationale.
+        </li>
+        <li>Save the chosen score and explanation.</li>
+        <li>Option to export as pdf.</li>
+
+      </ol>
+    </div>
+  )}
+</div>
 <h3 className={styles.sectionTitle}>
-  <a href="/user-guide#sdg-interlinkage" target="_blank" rel="noopener noreferrer">
-     SDG Interlinkage Matrix
+  <a
+    href="/user-guide#sdg-interlinkage"
+    target="_blank"
+    rel="noopener noreferrer"
+    className={styles.noUnderline}
+  >
+    SDG Interlinkage Matrix
   </a>
 </h3>
+
 
 <p className={styles.note}>
  The SDG Interlinkage Matrix visualizes interactions, both positive and negative, across the SDGs.
