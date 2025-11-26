@@ -25,13 +25,13 @@ interface MatrixEntry {
 }
 
 const scoreColors: { [key: number]: string } = {
-  [-3]: '#8B0000',
-  [-2]: '#DC143C',
-  [-1]: '#FF007F',
-  [0]: '#FFFFFF',
-  [1]: '#FFFF66',
-  [2]: '#90EE90',
-  [3]: '#006400',
+  [-3]: '#C7422A',   // Cancelling
+  [-2]: '#E6914A',   // Counteracting
+  [-1]: '#F1C120',   // Constraining
+   [0]: '#E6D720',   // NEW → "No influence" yellow
+   [1]: '#9CCF6C',   // Enabling
+   [2]: '#61AD4A',   // Reinforcing
+   [3]: '#185C29',   // Indivisible
 };
 
 export default function MatrixPage() {
@@ -41,7 +41,29 @@ export default function MatrixPage() {
 
   const [targets, setTargets] = useState<SDGTarget[]>([]);
   const [matrix, setMatrix] = useState<{ [key: string]: MatrixEntry }>({});
+// 🔥 Dynamically scale matrix cells based on number of targets
+useEffect(() => {
+  if (targets.length > 0) {
+    document.documentElement.style.setProperty(
+      "--matrix-size",
+      targets.length.toString()
+    );
+
+    // compute cell sizes
+    const cellSize = Math.max(22, Math.min(60, 420 / targets.length));
+
+    document.documentElement.style.setProperty(
+      "--matrix-cell-size",
+      `${cellSize}px`
+    );
+  }
+}, [targets]);
+
   const [loading, setLoading] = useState(true);
+    // 🔥 Dynamically scale matrix cells based on number of targets
+
+
+
 const [showInstructions, setShowInstructions] = useState(true); // 👈 new
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPair, setSelectedPair] = useState<{
@@ -52,6 +74,8 @@ const [showInstructions, setShowInstructions] = useState(true); // 👈 new
   } | null>(null);
   const [tempScore, setTempScore] = useState<number>(0);
   const [tempRationale, setTempRationale] = useState<string>("");
+const [showStats, setShowStats] = useState(true);
+const [showScale, setShowScale] = useState(true);
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_API_BASE) {
@@ -117,13 +141,13 @@ const updateEntry = async (sourceId: string, targetId: string, score: number, ra
 try {
   const res = await axios.post(
     `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`,
-    {
-      projectId,
-      sourceSdgTargetId: sourceId,
-      targetSdgTargetId: targetId,
-      score,
-      rationale
-    },
+{ 
+  projectId,
+  sourceSdgTargetId: sourceId,
+  targetSdgTargetId: targetId,
+  score: score,           // null allowed
+  rationale
+},
     { withCredentials: true }
   );
   // console.log("🟢 Matrix entry saved:", res.data);
@@ -169,9 +193,10 @@ const handleModalSave = async () => {
 await updateEntry(
   selectedPair.source.id,
   selectedPair.target.id,
-  tempScore,
-  tempRationale?.trim() // this can be empty now
+  tempScore,                 // can be null now
+  tempRationale?.trim() || ""
 );
+
 
 
   setModalOpen(false);
@@ -226,6 +251,35 @@ const exportMatrixAsPDF = async () => {
   const colSums = targets.map((target) =>
     targets.reduce((sum, source) => sum + (matrix[`${source.id}_${target.id}`]?.score ?? 0), 0)
   );
+  // --- STATISTICS COMPUTATION (CORRECTED) ---
+
+// All entries that have been saved (score is not null or undefined)
+const allEntries = Object.values(matrix).filter(
+  (e) => e.score !== null && e.score !== undefined
+);
+
+// Colored cells only (scores !== 0)
+const coloredEntries = allEntries.filter((e) => e.score !== 0);
+
+// Denominator should be number of colored cells
+const totalColored = coloredEntries.length;
+
+// Stats per category
+const stats = {
+  indivisible: coloredEntries.filter((e) => e.score === 3).length,
+  reinforcing: coloredEntries.filter((e) => e.score === 2).length,
+  enabling: coloredEntries.filter((e) => e.score === 1).length,
+  constraining: coloredEntries.filter((e) => e.score === -1).length,
+  counteracting: coloredEntries.filter((e) => e.score === -2).length,
+  cancelling: coloredEntries.filter((e) => e.score === -3).length,
+
+  // Score 0 shown separately (NOT included in denominator)
+  noInfluence: allEntries.filter((e) => e.score === 0).length,
+};
+
+
+
+
 
   return (
   <div className={styles.container}>
@@ -288,6 +342,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
   </a>  for further details and guidance on how to conduct this assessment.
 
 </p>
+
     <div className={styles.flexRow}>
       <div id="matrix-table-wrapper" className="w-full flex justify-center">
         <table className={styles.matrixTable}>
@@ -345,30 +400,85 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
                 {targets.map((target) => {
                   const key = `${source.id}_${target.id}`;
                   const entry = matrix[key];
-                  const score = entry?.score ?? 0;
+                  const score = entry ? entry.score : null;
+
                   const isDiagonal = source.id === target.id;
 
                   return (
-                    <td
-                      key={target.id}
-                      className="border p-1 text-center cursor-pointer"
-                      style={{
-                        backgroundColor: isDiagonal ? '#F5F5F5' : scoreColors[score] || '#FFF',
-                        pointerEvents: isDiagonal ? 'none' : 'auto',
-                        opacity: isDiagonal ? 0.6 : 1,
-                      }}
-                      onClick={() =>
-                        !isDiagonal &&
-                        openModal(source, target, entry || {
-                          sourceSdgTargetId: source.id,
-                          targetSdgTargetId: target.id,
-                          score: 0,
-                          rationale: '',
-                        })
-                      }
-                    >
-                      {score}
-                    </td>
+<td
+  key={target.id}
+  className="border p-1 text-center"
+  style={{
+    backgroundColor: isDiagonal
+  ? '#F5F5F5'
+  : score === null
+      ? '#FFFFFF'     // empty – untouched
+      : scoreColors[score],
+
+    pointerEvents: isDiagonal ? 'none' : 'auto',
+    opacity: isDiagonal ? 0.6 : 1,
+    position: "relative",
+    cursor: isDiagonal ? "default" : "pointer",
+  }}
+
+  onMouseEnter={(e) => {
+    if (isDiagonal) return;
+
+    const popup = document.getElementById("hoverPopup");
+    if (!popup) return;
+
+    popup.innerHTML = `
+      <h3 style="margin-top:0; font-size:1.1rem; color:white;">
+        How is target ${source.code} affecting target ${target.code}?
+      </h3>
+
+      <div style="margin-bottom:10px;">
+        <strong style="color:#facc15;">Target ${source.code}</strong><br/>
+        ${source.title}
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <strong style="color:#facc15;">Target ${target.code}</strong><br/>
+        ${target.title}
+      </div>
+
+      <div style="
+        background:white;
+        padding:8px;
+        border-radius:6px;
+        color:#374151;
+        font-weight:600;
+      ">
+        ${score === 0 ? "No value assigned" : score}
+      </div>
+    `;
+
+    popup.classList.add(styles.showPopup);
+
+    // const rect = e.currentTarget.getBoundingClientRect();
+    // popup.style.top = rect.top + window.scrollY + "px";
+    // popup.style.left = rect.right + 15 + "px";
+  }}
+
+  onMouseLeave={() => {
+    const popup = document.getElementById("hoverPopup");
+    if (popup) popup.classList.remove(styles.showPopup);
+  }}
+
+  onClick={() =>
+    !isDiagonal &&
+    openModal(source, target, entry || {
+      sourceSdgTargetId: source.id,
+      targetSdgTargetId: target.id,
+      score: 0,
+      rationale: '',
+    })
+  }
+>
+  <div style={{ visibility: "hidden" }}>{score}</div>
+
+</td>
+
                   );
                 })}
                 <td className="bg-purple-200 p-2 font-semibold border text-center text-sm">{rowSums[rowIndex]}</td>
@@ -383,20 +493,124 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
             </tr>
           </tbody>
         </table>
+        <div id="hoverPopup" className={styles.hoverPopup}></div>
       </div>
 
-      <div className={styles.legendWrapper}>
-        <h3 className="font-semibold text-md mb-2">Interaction Scale</h3>
+{/* --- RIGHT PANEL (Interaction Scale + Statistics stacked vertically) --- */}
+<div className={styles.rightPanel}>
+
+  {/* --- INTERACTION SCALE (NON-COLLAPSIBLE) --- */}
+  <div className={styles.scaleBox}>
+    <button
+      className={styles.scaleHeader}
+      onClick={() => setShowScale(prev => !prev)}
+    >
+      <div className={styles.scaleHeaderLeft}>
+        
+        <span className={styles.scaleTitle}>Interaction Scale</span>
+      </div>
+      <span className={styles.statsChevron}>{showScale ? "▾" : "▸"}</span>
+    </button>
+
+    {showScale && (
+      <div className={styles.scaleContent}>
         <ul className={styles.legendBox}>
-          <li><span style={{ backgroundColor: '#006400' }}></span> +3 Indivisible</li>
-          <li><span style={{ backgroundColor: '#90EE90' }}></span> +2 Reinforcing</li>
-          <li><span style={{ backgroundColor: '#FFFF66' }}></span> +1 Enabling</li>
-          <li><span style={{ backgroundColor: '#FFFFFF', border: '1px solid #ccc' }}></span> 0 Consistent</li>
-          <li><span style={{ backgroundColor: '#FF007F' }}></span> -1 Constraining</li>
-          <li><span style={{ backgroundColor: '#DC143C' }}></span> -2 Counteracting</li>
-          <li><span style={{ backgroundColor: '#8B0000' }}></span> -3 Cancelling</li>
+          <li><span style={{ backgroundColor: '#185C29' }}></span> +3 Indivisible</li>
+          <li><span style={{ backgroundColor: '#61AD4A' }}></span> +2 Reinforcing</li>
+          <li><span style={{ backgroundColor: '#9CCF6C' }}></span> +1 Enabling</li>
+          <li><span style={{ backgroundColor: '#E6D720', border: '1px solid #ccc' }}></span> 0 Consistent</li>
+          <li><span style={{ backgroundColor: '#F1C120' }}></span> -1 Constraining</li>
+          <li><span style={{ backgroundColor: '#E6914A' }}></span> -2 Counteracting</li>
+          <li><span style={{ backgroundColor: '#C7422A' }}></span> -3 Cancelling</li>
         </ul>
       </div>
+    )}
+  </div>
+
+  {/* --- STATISTICS (COLLAPSIBLE) --- */}
+  <div className={styles.statsAccordion}>
+    <button
+      className={styles.statsAccordionHeader}
+      onClick={() => setShowStats(prev => !prev)}
+    >
+      <div className={styles.statsAccordionHeaderLeft}>
+        {/* <span className={styles.statsIcon}>📊</span> */}
+        <span className={styles.statsTitle}>Statistics</span>
+      </div>
+      <span className={styles.statsChevron}>{showStats ? "▾" : "▸"}</span>
+    </button>
+
+    {showStats && (
+      <div className={styles.statsAccordionContent}>
+        
+        {stats.indivisible > 0 && (
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Indivisible (+3)</span>
+            <span className={styles.statValue}>{stats.indivisible}/{totalColored}</span>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill}
+                style={{ width: `${(stats.indivisible / totalColored) * 100}%`, background: '#185C29' }}
+              />
+            </div>
+          </div>
+        )}
+
+        {stats.reinforcing > 0 && (
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Reinforcing (+2)</span>
+            <span className={styles.statValue}>{stats.reinforcing}/{totalColored}</span>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill}
+                style={{ width: `${(stats.reinforcing / totalColored) * 100}%`, background: '#61AD4A' }}
+              />
+            </div>
+          </div>
+        )}
+
+        {stats.noInfluence > 0 && (
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>No influence (0)</span>
+            <span className={styles.statValue}>{stats.noInfluence}/{totalColored}</span>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill}
+                style={{ width: `${(stats.noInfluence / totalColored) * 100}%`, background: '#d8d8d8' }}
+              />
+            </div>
+          </div>
+        )}
+
+        {stats.counteracting > 0 && (
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Counteracting (-2)</span>
+            <span className={styles.statValue}>{stats.counteracting}/{totalColored}</span>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill}
+                style={{ width: `${(stats.counteracting / totalColored) * 100}%`, background: '#E6914A' }}
+              />
+            </div>
+          </div>
+        )}
+
+        {stats.cancelling > 0 && (
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Cancelling (-3)</span>
+            <span className={styles.statValue}>{stats.cancelling}/{totalColored}</span>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill}
+                style={{ width: `${(stats.cancelling / totalColored) * 100}%`, background: '#C7422A' }}
+              />
+            </div>
+          </div>
+        )}
+
+      </div>
+    )}
+  </div>
+
+</div>
+
+
+
     </div>
 
     <div className={styles.bottomButtonRow}>
@@ -438,17 +652,22 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
       </p>
 
       {/* Score dropdown (styled like Create Project inputs) */}
-      <select
-        value={tempScore}
-        onChange={(e) => setTempScore(parseInt(e.target.value))}
-        className={styles.modalInput}
-      >
-        {[3, 2, 1, 0, -1, -2, -3].map((val) => (
-          <option key={val} value={val}>
-            {val}
-          </option>
-        ))}
-      </select>
+<select
+  value={tempScore}
+  onChange={(e) => {
+    const value = e.target.value;
+    setTempScore(value === "null" ? null : parseInt(value));
+  }}
+  className={styles.modalInput}
+>
+  <option value="null">-- Clear (Empty) --</option>   {/* NEW */}
+  {[3, 2, 1, 0, -1, -2, -3].map((val) => (
+    <option key={val} value={val}>
+      {val}
+    </option>
+  ))}
+</select>
+
 
       {/* Rationale input */}
       <textarea

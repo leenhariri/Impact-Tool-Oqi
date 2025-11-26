@@ -43,16 +43,20 @@
 
 .matrixTable th,
 .matrixTable td {
-  border: 1.5px solid #3a3a3a;
+  border: 1.5px solid #3a3a3a23;
   padding: 4px 6px;
   text-align: center;
   font-size: 12px;
-  width: 60px;
-  height: 36px;
+
+  /* 🔥 Dynamic square size */
+  width: var(--matrix-cell-size) !important;
+  height: var(--matrix-cell-size) !important;
 }
 
+/* --- MAKE MATRIX CELLS PERFECTLY SQUARE --- */
+
 .headerCell {
-  background-color: #d6d9f5;
+  background-color: #dadce76d;
   font-weight: bold;
   font-size: 12px;
   padding: 6px;
@@ -72,7 +76,7 @@
   padding: 1px;
 }
 .inputCell:disabled {
-  background-color: #f5f5f5;
+  background-color: #9f9f9f;
   border: none;
   color: #999;
   cursor: not-allowed;
@@ -157,9 +161,10 @@
   display: flex;
   align-items: flex-start;
   gap: 3rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;   /* 🔥 do NOT wrap */
+  justify-content: flex-start;
 }
+
 .bottomButtonRow {
   display: flex;
   justify-content: space-between;
@@ -466,3 +471,484 @@
   color: inherit;
 }
 
+/* --- Make editable cells show a hand cursor --- */
+.matrixTable td:not([style*="pointer-events: none"]) {
+  cursor: pointer !important;
+}
+/* --- Hover popup container --- */
+.hoverPopup {
+  position: absolute;
+  background: #111730;        /* same grey as your example */
+  color: white;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  width: 340px;
+  z-index: 9999;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  line-height: 1.4;
+  pointer-events: none;
+  display: none;
+}
+
+/* Title inside popup */
+.hoverPopup h4 {
+  margin: 0 0 0.3rem 0;
+  color: #fbbf24;              /* gold accent like screenshot */
+  font-size: 1rem;
+}
+
+/* Visible when hovered */
+.showPopup {
+  display: block !important;
+}
+/* Fixed right side popup */
+.hoverPopup {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #111730;
+  color: white;
+  padding: 1.2rem 1.5rem;
+  border-radius: 16px;
+  width: 360px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  display: none;
+  line-height: 1.45;
+}
+
+/* Show when active */
+.showPopup {
+  display: block !important;
+}
+/* ================ ACCORDIONS ================== */
+
+.accordionWrapper {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f1f5f9;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.accordionHeaderText {
+  display: flex;
+  flex-direction: column;
+}
+
+.accordionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.accordionChevron {
+  font-size: 1.1rem;
+  color: #111730;
+}
+
+.accordionContent {
+  padding: 1rem 1.25rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* ============= Statistics rows ================ */
+
+.statRow {
+  margin-bottom: 1rem;
+}
+
+.statLabel {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #111730;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.statValue {
+  float: right;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.progressBar {
+  width: 100%;
+  background: #e5e7eb;
+  height: 6px;
+  border-radius: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 6px;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* ============= Interaction Scale ============== */
+
+.scaleList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.scaleList li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #111730;
+}
+
+.scaleList li span {
+  width: 16px;
+  height: 16px;
+  margin-right: 10px;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #2222;
+}
+/* Right panel containing both cards */
+.rightPanel {
+  width: 200px !important;
+  gap: 0.8rem !important;
+}
+
+
+
+/* Card container */
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Card header */
+.cardHeader {
+  width: 100%;
+  background: #f1f5f9;
+  border: none;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  color: #111730;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+/* Content box */
+.cardContent {
+  padding: 1rem;
+}
+
+/* --- Statistics Card (matches your screenshot) --- */
+
+.statsCard {
+  background: #ffffff;       /* match your Interaction Scale box exactly */
+  border: 1px solid #ccc;    /* same border */
+  border-radius: 0px !important;   /* 🔥 square corners */
+  margin-top: 1rem;
+  width: 260px;
+  overflow: hidden;
+  box-shadow: none;          /* remove soft shadow */
+}
+
+.statsHeader {
+  padding: 0.9rem 1rem;
+  background: #f1f5f9;
+  border-bottom: 1px solid #d7dce0;
+  border-radius: 0 !important;    /* 🔥 no rounding */
+  box-shadow: none !important;
+}
+
+.statsIcon {
+  font-size: 1.1rem;
+}
+
+.statsTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.statsContent {
+  padding: 1rem;
+}
+/* --- STATISTICS ACCORDION (Matches screenshot exactly) --- */
+
+.statsAccordion {
+  width: 260px;
+  /* background: #f1f4f7; */
+   border-radius: 0px !important;     /* ⬅️ SQUARE */
+  background: #ffffff !important;    /* match Interaction Scale */
+  border: 1px solid #ccc !important; /* same border */
+  box-shadow: none !important;       /* remove shadow */
+  overflow: hidden;
+  font-family: Inter, sans-serif;
+}
+
+.statsAccordionHeader {
+  width: 100%;
+  background: #ffffff;
+  padding: 0.9rem 1rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statsAccordionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statsIcon {
+  font-size: 1.2rem;
+}
+
+.statsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.statsChevron {
+  font-size: 0.9rem !important;
+  color: #111730;
+}
+
+.statsAccordionContent {
+  background: #ffffff;
+  padding: 1rem 1.2rem;
+  border-top: 1px solid #d7dce0;
+}
+
+/* perfect stat rows */
+.statRow {
+  margin-bottom: 1.4rem;
+}
+
+.statLabel {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #111730;
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.statValue {
+  float: right;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111730;
+}
+
+.progressBar {
+  width: 100%;
+  background: #e5e7eb;
+  height: 7px;
+  border-radius: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 7px;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+/* Container that holds both accordions */
+.rightPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 260px;
+}
+
+/* ---------------- Interaction Scale ---------------- */
+
+.scaleBox {
+  border: 1px solid #ccc;
+  background: #ffffff;
+  border-radius: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.scaleHeader {
+  width: 100%;
+  background: #f1f5f9;
+   padding: 0.5rem 0.7rem !important;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scaleHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scaleTitle {
+  font-size: 0.85rem !important;
+  font-weight: 600;
+  color: #111730;
+}
+
+.scaleContent {
+  background: #ffffff;
+   padding: 0.6rem 0.8rem !important;
+  border-top: 1px solid #d7dce0;
+  
+}
+.statsChevron,
+.scaleChevron {
+  font-size: 0.9rem !important;
+}
+/* Legend list inside Interaction Scale */
+.legendBox {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.legendBox li {
+  display: flex;
+  align-items: center;
+  /* margin-bottom: 10px; */
+  /* font-size: 0.95rem; */
+  color: #111730;
+    margin-bottom: 6px;
+  font-size: 0.8rem !important;
+}
+
+.legendBox li span {
+  
+
+  display: inline-block;
+  border: 1px solid #2222;
+    width: 10px !important;
+  height: 10px !important;
+  margin-right: 6px !important;
+  border-radius: 2px !important;
+}
+
+
+/* ---------------- Statistics Accordion ---------------- */
+
+.statsAccordion {
+  border: 1px solid #ccc;
+  background: #ffffff;
+  border-radius: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.statsAccordionHeader {
+  width: 100%;
+  background: #f1f5f9;
+  
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem !important;
+}
+
+.statsAccordionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statsIcon {
+  font-size: 1.2rem;
+}
+
+.statsTitle {
+  font-size: 0.85rem !important;
+  font-weight: 600;
+  color: #111730;
+}
+
+.statsChevron {
+  font-size: 1.2rem;
+  color: #111730;
+}
+
+.statsAccordionContent {
+  background: #ffffff;
+  
+  border-top: 1px solid #d7dce0;
+  padding: 0.6rem 0.8rem !important;
+}
+
+.statRow {
+  margin-bottom: 0.8rem !important;
+}
+
+.statLabel {
+  font-size: 0.8rem !important;
+  font-weight: 500;
+  color: #111730;
+  display: block;
+}
+
+.statValue {
+  float: right;
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  color: #111730;
+}
+
+.progressBar {
+  width: 100%;
+  background: #e5e7eb;
+  
+  border-radius: 4px;
+  margin-top: 6px;
+  overflow: hidden;
+  height: 5px !important;
+}
+
+.progressFill {
+  height: 5px !important;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+#matrix-table-wrapper {
+  flex-shrink: 1;        /* 🔥 important: table can shrink */
+  max-width: 100%;       /* prevents overflow */
+  overflow-x: auto;      /* optional — only if needed */
+}

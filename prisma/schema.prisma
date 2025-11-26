@@ -145,7 +145,7 @@ model MatrixEntry {
   projectId         String
   sourceSdgTargetId String
   targetSdgTargetId String
-  score             Int
+  score             Int?
   rationale         String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
