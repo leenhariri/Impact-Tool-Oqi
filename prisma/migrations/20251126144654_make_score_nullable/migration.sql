@@ -1,0 +1,2 @@
+ALTER TABLE "MatrixEntry"
+ALTER COLUMN "score" DROP NOT NULL;

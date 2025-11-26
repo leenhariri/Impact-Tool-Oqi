@@ -18,7 +18,8 @@ export default function UserGuide() {
       </div> */}
 
       <div className="user-guide-container">
-        <p><strong>The Impact User Guide</strong> consists of the following elements:</p>
+        <h2 className="arvo-section">The Impact User Guide</h2>
+        <p>The Impact User Guide consists of the following elements:</p>
 
         <ul>
           <li><strong>Impact Indicator Matrix:</strong>  This matrix captures the anticipated long-, mid-and short-term impact of the quantum computing use case. Users are encouraged to carefully consider the assumptions underlying the anticipated impact, highlight possible risks and unintended consequences along with mitigation strategies, and list relevant stakeholders involved.

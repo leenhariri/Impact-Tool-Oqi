@@ -7,7 +7,7 @@
 
 body {
   margin: 0;
-   font-family: 'Inter', system-ui, sans-serif;
+   font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   background-color: #f9f9f9;
     margin: 0;
   padding: 0;
@@ -32,7 +32,7 @@ body {
   background-color: rgba(0, 0, 0, 0.4);
   padding: 20px 40px;
   border-radius: 10px;
-  font-family: "Segoe UI", sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 }
 
 .hero-text h1 {
@@ -93,12 +93,12 @@ body {
     linear-gradient(rgba(18, 0, 43, 0.5), rgba(6, 33, 64, 0.5)),
     url('/images/hero-oqi-bg.jpg') center/cover no-repeat;
   background-attachment: fixed;
-  min-height: 400px;
+  min-height: 250px;
   display: grid;
   place-items: center;
   text-align: center;
   color: #fff;
-  padding: 96px 16px 40px;
+   padding: 60px 16px 20px;
 }
 
 .hero h1 { font-family: 'Roboto Slab', 'Georgia', serif; font-size: 2.4rem; margin: 0 0 8px; }
@@ -119,11 +119,11 @@ body {
 
 .section { padding: 56px 16px; }
 .arvo {
-  font-family: 'Arvo', serif !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif !important;
 }
 
 .arvo-title {
-  font-family: 'Arvo', serif !important;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif !important;
   font-size: 22px;
   font-weight: bold;
   margin-top: 24px;
@@ -131,15 +131,48 @@ body {
 }
 
 .arvo-section {
-  font-family: 'Arvo', serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif !important;
   font-size: 22px;
   font-weight: 600;
   margin-top: 24px;  
   margin-bottom: 10px; 
 }
+.resources-container {
+  padding-top: 0px !important;
+}
+
+.resources-container h2:first-of-type {
+  margin-top: -10px !important;   /* pulls it up */
+  padding-top: 0 !important;
+}
+.user-guide-container {
+  padding-top: 0px !important;
+}
+
+.user-guide-container h2:first-of-type {
+  margin-top: -10px !important;
+  padding-top: 0 !important;
+}
+.home-container {
+  padding-top: 0px !important;
+}
+
+.home-container h2:first-of-type {
+  margin-top: -10px !important;
+  padding-top: 0 !important;
+}
+.about-container {
+  padding-top: 0px !important;
+}
+
+.about-container h2:first-of-type {
+  margin-top: -10px !important;
+  padding-top: 0 !important;
+}
+
 
 .modalText {
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   font-size: 14px;
   font-weight: normal;
   color: #444; 
@@ -204,7 +237,7 @@ body {
   margin: 0;
   font-size: 1.4em;
   font-style: italic;
-  font-family: serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 }
 
 @keyframes fade-in {
@@ -253,14 +286,14 @@ header.headline::after {
   margin: 0;
   font-size: 4em;
   line-height: 1.2em;
-  font-family: 'Arvo', serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 }
 
 .inner p {
   margin: 0;
   font-size: 1.4em;
   font-style: italic;
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 }
 
 /* Fade-in animation */
@@ -317,7 +350,7 @@ nav.main-nav a,
 nav.main-nav button {
   color: #ffffff; 
   text-decoration: none;
-  font-family: 'Open Sans', sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   font-size: 14px;
   background: none;
   border: none;
@@ -416,7 +449,7 @@ textarea:focus {
 .definition-list {
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   font-size: 0.875rem;
   line-height: 1.5;
 }
@@ -446,7 +479,7 @@ textarea:focus {
 
 /* === GLOBAL FONT OVERRIDE === */
 html, body {
-  font-family: 'Aleo', serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   color: #111730;
   margin: 0;
   padding: 0;
@@ -478,7 +511,7 @@ html, body {
 }
 
 .for-dropdown {
-  font-family: 'Inter', sans-serif;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
   font-size: 15px;
   font-weight: 500;
   background-color: #111730;

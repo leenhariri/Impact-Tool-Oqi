@@ -2,15 +2,232 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-//
-// 🔹 ENUMS
-//
+model User {
+  id              String          @id @default(uuid())
+  email           String          @unique @db.Citext
+  name            String?         @unique
+  passwordHash    String?
+  isSiteAdmin     Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  createdProjects Project[]       @relation("CreatedBy")
+  projectsOwned   Project[]       @relation("Owner")
+  updatedProjects Project[]       @relation("UpdatedBy")
+  invitesSent     ProjectInvite[] @relation("InvitedBy")
+  memberships     ProjectMember[]
+}
+
+model Project {
+  id              String            @id @default(uuid())
+  title           String
+  description     String?
+  status          ProjectStatus     @default(DRAFT)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  ownerUserId     String
+  createdByUserId String?
+  updatedByUserId String?
+  activities      Activity[]
+  assumptions     Assumption[]
+  diagramEdges    DiagramEdge[]
+  diagramNodes    DiagramNode[]
+  impactRows      ImpactRow[]
+  rowTargets      ImpactRowTarget[]
+  matrix          MatrixEntry[]
+  createdBy       User?             @relation("CreatedBy", fields: [createdByUserId], references: [id])
+  owner           User              @relation("Owner", fields: [ownerUserId], references: [id])
+  updatedBy       User?             @relation("UpdatedBy", fields: [updatedByUserId], references: [id])
+  invites         ProjectInvite[]
+  members         ProjectMember[]
+  risks           Risk[]
+  stakeholders    Stakeholder[]
+
+  @@unique([title, ownerUserId], map: "unique_project_title_owner")
+}
+
+model ProjectMember {
+  id            String      @id @default(uuid())
+  role          ProjectRole
+  addedAt       DateTime    @default(now())
+  addedByUserId String?
+  projectId     String
+  userId        String
+  project       Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([userId])
+}
+
+model ImpactRow {
+  id                  String            @id @default(uuid())
+  projectId           String
+  orderIndex          Int
+  hierarchyLevel      HierarchyLevel
+  resultStatement     String
+  indicator           String?
+  indicatorDefinition String?
+  meansOfMeasurement  String?
+  baseline            String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  createdByUserId     String?
+  updatedByUserId     String?
+  project             Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  targets             ImpactRowTarget[]
+
+  @@unique([projectId, orderIndex])
+  @@index([projectId])
+}
+
+model ImpactRowTarget {
+  id          String    @id @default(uuid())
+  projectId   String
+  impactRowId String
+  sdgTargetId String
+  sdgId       Int
+  impactRow   ImpactRow @relation(fields: [impactRowId], references: [id])
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sdg         SDG       @relation(fields: [sdgId], references: [id])
+  sdgTarget   SDGTarget @relation(fields: [sdgTargetId], references: [id])
+}
+
+model MatrixEntry {
+  id                String    @id @default(uuid())
+  projectId         String
+  sourceSdgTargetId String
+  targetSdgTargetId String
+  score             Int?
+  rationale         String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  project           Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  source            SDGTarget @relation("SourceTarget", fields: [sourceSdgTargetId], references: [id])
+  target            SDGTarget @relation("TargetTarget", fields: [targetSdgTargetId], references: [id])
+
+  @@unique([projectId, sourceSdgTargetId, targetSdgTargetId])
+  @@index([projectId, sourceSdgTargetId, targetSdgTargetId])
+}
+
+model SDG {
+  id               Int               @id @default(autoincrement())
+  code             String
+  name             String
+  description      String?
+  colorHex         String?
+  impactRowTargets ImpactRowTarget[]
+  targets          SDGTarget[]
+}
+
+model SDGTarget {
+  id                    String            @id @default(uuid())
+  sdgId                 Int
+  code                  String
+  title                 String
+  text                  String?
+  impactRowTargets      ImpactRowTarget[]
+  matrixEntriesAsSource MatrixEntry[]     @relation("SourceTarget")
+  matrixEntriesAsTarget MatrixEntry[]     @relation("TargetTarget")
+  sdg                   SDG               @relation(fields: [sdgId], references: [id])
+
+  @@unique([sdgId, code])
+}
+
+model ProjectInvite {
+  id              String       @id @default(uuid())
+  projectId       String
+  email           String       @db.Citext
+  role            ProjectRole
+  token           String       @unique
+  status          InviteStatus @default(PENDING)
+  invitedByUserId String?
+  expiresAt       DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  invitedBy       User?        @relation("InvitedBy", fields: [invitedByUserId], references: [id])
+  project         Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, email])
+}
+
+model Risk {
+  id          String          @id @default(uuid())
+  projectId   String
+  text        String
+  createdAt   DateTime        @default(now())
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  hierarchies RiskHierarchy[]
+}
+
+model RiskHierarchy {
+  id        String         @id @default(uuid())
+  riskId    String
+  hierarchy HierarchyLevel
+  risk      Risk           @relation(fields: [riskId], references: [id], onDelete: Cascade)
+
+  @@unique([riskId, hierarchy])
+}
+
+model Assumption {
+  id        String   @id @default(uuid())
+  projectId String
+  text      String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id        String   @id @default(uuid())
+  projectId String
+  text      String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Stakeholder {
+  id                 String          @id @default(uuid())
+  projectId          String
+  name               String
+  role               String
+  interest           String
+  stakeholderType    StakeholderType
+  engagementStrategy String
+  hierarchyLevel     HierarchyLevel
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  project            Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model DiagramNode {
+  id        String   @id @default(uuid())
+  projectId String
+  nodeId    String
+  x         Float
+  y         Float
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
+model DiagramEdge {
+  id        String   @id @default(uuid())
+  projectId String
+  source    String
+  target    String
+  createdAt DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
+
 enum ProjectStatus {
   DRAFT
   ACTIVE
@@ -36,259 +253,6 @@ enum InviteStatus {
   ACCEPTED
   EXPIRED
   REVOKED
-}
-
-//
-// 🔹 MODELS
-//
-model User {
-  id           String   @id @default(uuid())
-  email        String   @unique @db.Citext
-  name         String?  @unique
-  passwordHash String?
-  isSiteAdmin  Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Relations
-  memberships     ProjectMember[]
-  invitesSent     ProjectInvite[] @relation("InvitedBy")
-  projectsOwned   Project[]       @relation("Owner")
-  createdProjects Project[]       @relation("CreatedBy")
-  updatedProjects Project[]       @relation("UpdatedBy")
-}
-
-model Project {
-  id          String        @id @default(uuid())
-  title       String
-  description String?
-  status      ProjectStatus @default(DRAFT)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  ownerUserId String
-  owner       User   @relation("Owner", fields: [ownerUserId], references: [id])
-
-  createdByUserId String?
-  updatedByUserId String?
-  createdBy       User?   @relation("CreatedBy", fields: [createdByUserId], references: [id])
-  updatedBy       User?   @relation("UpdatedBy", fields: [updatedByUserId], references: [id])
-
-  members    ProjectMember[]
-  impactRows ImpactRow[]
-  rowTargets ImpactRowTarget[]
-  matrix     MatrixEntry[]
-  invites    ProjectInvite[]
-
-  risks        Risk[]
-  assumptions  Assumption[]
-  activities   Activity[]
-  stakeholders Stakeholder[]
-  diagramNodes DiagramNode[]
-  diagramEdges DiagramEdge[]
-
-  @@unique([title, ownerUserId], map: "unique_project_title_owner")
-}
-
-model ProjectMember {
-  id            String      @id @default(uuid())
-  role          ProjectRole
-  addedAt       DateTime    @default(now())
-  addedByUserId String?
-
-  projectId String
-  userId    String
-
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([projectId, userId])
-  @@index([userId])
-}
-
-model ImpactRow {
-  id                  String         @id @default(uuid())
-  projectId           String
-  orderIndex          Int
-  hierarchyLevel      HierarchyLevel
-  resultStatement     String
-  indicator           String?
-  indicatorDefinition String?
-  meansOfMeasurement  String?
-  baseline            String?
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
-  createdByUserId     String?
-  updatedByUserId     String?
-
-  project Project           @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  targets ImpactRowTarget[]
-
-  @@unique([projectId, orderIndex])
-  @@index([projectId])
-}
-
-model ImpactRowTarget {
-  id          String    @id @default(uuid())
-  impactRow   ImpactRow @relation(fields: [impactRowId], references: [id])
-  impactRowId String
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String
-  sdgTarget   SDGTarget @relation(fields: [sdgTargetId], references: [id])
-  sdgTargetId String
-  sdg         SDG       @relation(fields: [sdgId], references: [id])
-  sdgId       Int
-}
-
-model MatrixEntry {
-  id                String   @id @default(uuid())
-  projectId         String
-  sourceSdgTargetId String
-  targetSdgTargetId String
-  score             Int?
-  rationale         String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  project Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  source  SDGTarget @relation("SourceTarget", fields: [sourceSdgTargetId], references: [id])
-  target  SDGTarget @relation("TargetTarget", fields: [targetSdgTargetId], references: [id])
-
-  @@unique([projectId, sourceSdgTargetId, targetSdgTargetId])
-  @@index([projectId, sourceSdgTargetId, targetSdgTargetId])
-}
-
-model SDG {
-  id          Int     @id @default(autoincrement())
-  code        String
-  name        String
-  description String?
-  colorHex    String?
-
-  targets          SDGTarget[]
-  impactRowTargets ImpactRowTarget[]
-}
-
-model SDGTarget {
-  id    String  @id @default(uuid())
-  sdgId Int
-  code  String
-  title String
-  text  String?
-
-  sdg                   SDG               @relation(fields: [sdgId], references: [id])
-  impactRowTargets      ImpactRowTarget[]
-  matrixEntriesAsSource MatrixEntry[]     @relation("SourceTarget")
-  matrixEntriesAsTarget MatrixEntry[]     @relation("TargetTarget")
-
-  @@unique([sdgId, code])
-}
-
-model ProjectInvite {
-  id              String       @id @default(uuid())
-  projectId       String
-  email           String       @db.Citext
-  role            ProjectRole
-  token           String       @unique
-  status          InviteStatus @default(PENDING)
-  invitedByUserId String?
-  expiresAt       DateTime?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  invitedBy User?   @relation("InvitedBy", fields: [invitedByUserId], references: [id])
-
-  @@index([projectId, email])
-}
-
-//
-// 🔹 Risk and RiskHierarchy (Many-to-Many to HierarchyLevel)
-//
-model Risk {
-  id        String   @id @default(uuid())
-  projectId String
-  text      String
-  createdAt DateTime @default(now())
-
-  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  hierarchies RiskHierarchy[] // M:N
-}
-
-model RiskHierarchy {
-  id        String         @id @default(uuid())
-  riskId    String
-  hierarchy HierarchyLevel
-
-  risk Risk @relation(fields: [riskId], references: [id], onDelete: Cascade)
-
-  @@unique([riskId, hierarchy])
-}
-
-//
-// 🔹 Assumptions & Activities (linked to project)
-//
-model Assumption {
-  id        String   @id @default(uuid())
-  projectId String
-  text      String
-  createdAt DateTime @default(now())
-
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-}
-
-model Activity {
-  id        String   @id @default(uuid())
-  projectId String
-  text      String
-  createdAt DateTime @default(now())
-
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-}
-
-//
-// 🔹 Stakeholders
-//
-model Stakeholder {
-  id                 String          @id @default(uuid())
-  projectId          String
-  name               String
-  role               String
-  interest           String
-  stakeholderType    StakeholderType
-  engagementStrategy String
-  hierarchyLevel     HierarchyLevel
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
-
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  @@index([projectId])
-}
-
-model DiagramNode {
-  id        String   @id @default(uuid())
-  projectId String
-  nodeId    String // e.g. impactRow.id or risk-id etc
-  x         Float
-  y         Float
-  createdAt DateTime @default(now())
-
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  @@index([projectId])
-}
-
-model DiagramEdge {
-  id        String   @id @default(uuid())
-  projectId String
-  source    String
-  target    String
-  createdAt DateTime @default(now())
-
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  @@index([projectId])
 }
 
 enum StakeholderType {

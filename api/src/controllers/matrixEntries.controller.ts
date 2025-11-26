@@ -9,7 +9,11 @@ const upsertSchema = z.object({
   projectId: z.string().uuid(),
   sourceSdgTargetId: z.string().uuid(),
   targetSdgTargetId: z.string().uuid(),
-  score: z.number().int().min(-3).max(3),
+  score: z.union([
+  z.number().int().min(-3).max(3),
+  z.null()
+]),
+
   rationale: z.string().max(1000).optional(),
 });
 

@@ -20,7 +20,7 @@ interface SDGTarget {
 interface MatrixEntry {
   sourceSdgTargetId: string;
   targetSdgTargetId: string;
-  score: number;
+   score: number | null;
   rationale?: string;
 }
 
@@ -112,6 +112,7 @@ const fetchMatrix = async () => {
       entries[key] = entry;
     });
     setMatrix(entries);
+    
     return res;
   } catch (error) {
     // console.error("Failed to fetch matrix data:", error);
@@ -129,6 +130,23 @@ const fetchMatrix = async () => {
       setTargets(sortedTargets);
     }).finally(() => setLoading(false));
   }, [projectId]);
+// 🔥 Remove stale matrix entries for deleted SDG targets
+useEffect(() => {
+  if (targets.length === 0 || Object.keys(matrix).length === 0) return;
+
+  const validIds = new Set(targets.map(t => t.id));
+
+  const cleanedMatrix = Object.fromEntries(
+    Object.entries(matrix).filter(([key, entry]) =>
+      validIds.has(entry.sourceSdgTargetId) &&
+      validIds.has(entry.targetSdgTargetId)
+    )
+  );
+
+  if (Object.keys(cleanedMatrix).length !== Object.keys(matrix).length) {
+    setMatrix(cleanedMatrix);
+  }
+}, [targets]);
 
 const updateEntry = async (sourceId: string, targetId: string, score: number, rationale?: string) => {
   const key = `${sourceId}_${targetId}`;
@@ -509,7 +527,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
         
         <span className={styles.scaleTitle}>Interaction Scale</span>
       </div>
-      <span className={styles.statsChevron}>{showScale ? "▾" : "▸"}</span>
+      {/* <span className={styles.statsChevron}>{showScale ? "▾" : "▸"}</span> */}
     </button>
 
     {showScale && (
@@ -528,16 +546,16 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
   </div>
 
   {/* --- STATISTICS (COLLAPSIBLE) --- */}
-  <div className={styles.statsAccordion}>
+   <div className={styles.statsAccordion}>
     <button
       className={styles.statsAccordionHeader}
       onClick={() => setShowStats(prev => !prev)}
     >
       <div className={styles.statsAccordionHeaderLeft}>
-        {/* <span className={styles.statsIcon}>📊</span> */}
+       
         <span className={styles.statsTitle}>Statistics</span>
       </div>
-      <span className={styles.statsChevron}>{showStats ? "▾" : "▸"}</span>
+      {/* <span className={styles.statsChevron}>{showStats ? "▾" : "▸"}</span> */}
     </button>
 
     {showStats && (
@@ -573,7 +591,18 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
             <span className={styles.statValue}>{stats.noInfluence}/{totalColored}</span>
             <div className={styles.progressBar}>
               <div className={styles.progressFill}
-                style={{ width: `${(stats.noInfluence / totalColored) * 100}%`, background: '#d8d8d8' }}
+                style={{ width: `${(stats.noInfluence / totalColored) * 100}%`, background: '#E6D720' }}
+              />
+            </div>
+          </div>
+        )}
+                {stats.constraining > 0 && (
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Constraining (0)</span>
+            <span className={styles.statValue}>{stats.constraining}/{totalColored}</span>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill}
+                style={{ width: `${(stats.constraining / totalColored) * 100}%`, background: '#F1C120' }}
               />
             </div>
           </div>
@@ -586,6 +615,17 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
             <div className={styles.progressBar}>
               <div className={styles.progressFill}
                 style={{ width: `${(stats.counteracting / totalColored) * 100}%`, background: '#E6914A' }}
+              />
+            </div>
+          </div>
+        )}
+                {stats.enabling > 0 && (
+          <div className={styles.statRow}>
+            <span className={styles.statLabel}>Enabling (+1)</span>
+            <span className={styles.statValue}>{stats.enabling}/{totalColored}</span>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill}
+                style={{ width: `${(stats.enabling / totalColored) * 100}%`, background: '#9CCF6C' }}
               />
             </div>
           </div>
@@ -605,7 +645,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
 
       </div>
     )}
-  </div>
+  </div> 
 
 </div>
 
