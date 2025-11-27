@@ -404,7 +404,7 @@
   margin-bottom: 1.75rem;
   border-radius: 12px;
   background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dadce76d;
   overflow: hidden;
   font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 }
@@ -416,6 +416,7 @@
   align-items: center;
   justify-content: space-between;
   background: #f1f5f9b6;
+ 
   border: none;
   cursor: pointer;
   text-align: left;
@@ -446,7 +447,7 @@
 .instructions {
   padding: 1rem 1.25rem 1.1rem;
   background-color: #ffffff;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid #dadce76d;
   font-size: 0.9rem;
   line-height: 1.5;
   color: #525252;
@@ -532,7 +533,7 @@
   margin-bottom: 1.5rem;
   border-radius: 12px;
   background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dadce76d;
   overflow: hidden;
 }
 
@@ -542,7 +543,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f1f5f9;
+  background: #dadce76d;
   border: none;
   cursor: pointer;
   text-align: left;
@@ -567,7 +568,7 @@
 .accordionContent {
   padding: 1rem 1.25rem;
   background-color: #ffffff;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid #dadce76d;
 }
 
 /* ============= Statistics rows ================ */
@@ -593,7 +594,7 @@
 
 .progressBar {
   width: 100%;
-  background: #e5e7eb;
+  background: #dadce76d;
   height: 6px;
   border-radius: 4px;
   margin-top: 6px;
@@ -951,4 +952,52 @@
   flex-shrink: 1;        /* 🔥 important: table can shrink */
   max-width: 100%;       /* prevents overflow */
   overflow-x: auto;      /* optional — only if needed */
+}
+/* ===== SUPER COMPRESSED INSTRUCTIONS BOX ===== */
+
+.instructionsWrapper {
+  margin-bottom: 1rem !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #dadce76d !important;
+  padding: 0 !important;
+}
+
+/* Header height smaller */
+.instructionsHeader {
+  padding: 0.5rem 0.8rem !important;
+  min-height: unset !important;
+}
+
+/* Title smaller */
+.instructionsTitle {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+}
+
+/* Subtitle smaller + reduced spacing */
+.instructionsSubtitle {
+  font-size: 0.7rem !important;
+  color: #64748b !important;
+  margin: 0 !important;
+}
+
+/* CONTENT very compact */
+.instructions {
+  padding: 0.6rem 0.9rem !important;
+  font-size: 0.78rem !important;
+  line-height: 1.15 !important;
+}
+
+/* Reduce spacing between list items */
+.instructions li {
+  margin-bottom: 0.25rem !important;
+  padding: 0 !important;
+}
+
+/* Remove left indent slightly */
+.instructions ol {
+  padding-left: 1rem !important;
+  margin: 0 !important;
 }

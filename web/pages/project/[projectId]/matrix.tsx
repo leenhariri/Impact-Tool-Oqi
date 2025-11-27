@@ -74,8 +74,8 @@ const [showInstructions, setShowInstructions] = useState(true); // 👈 new
   } | null>(null);
   const [tempScore, setTempScore] = useState<number>(0);
   const [tempRationale, setTempRationale] = useState<string>("");
-const [showStats, setShowStats] = useState(true);
-const [showScale, setShowScale] = useState(true);
+const [showStats, setShowStats] = useState(false);
+const [showScale, setShowScale] = useState(false);
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_API_BASE) {
@@ -527,7 +527,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
         
         <span className={styles.scaleTitle}>Interaction Scale</span>
       </div>
-      {/* <span className={styles.statsChevron}>{showScale ? "▾" : "▸"}</span> */}
+      <span className={styles.statsChevron}>{showScale ? "▾" : "▸"}</span>
     </button>
 
     {showScale && (
@@ -555,7 +555,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
        
         <span className={styles.statsTitle}>Statistics</span>
       </div>
-      {/* <span className={styles.statsChevron}>{showStats ? "▾" : "▸"}</span> */}
+      <span className={styles.statsChevron}>{showStats ? "▾" : "▸"}</span>
     </button>
 
     {showStats && (
@@ -653,21 +653,58 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
 
     </div>
 
-    <div className={styles.bottomButtonRow}>
-      <div className={styles.leftButtons}>
-        <button onClick={exportMatrixAsPDF} className={styles.buttonPrimary}>
+
+        {/* <button onClick={exportMatrixAsPDF} className={styles.buttonPrimary}>
           Export as PDF
-        </button>
-      </div>
-      <div className={styles.rightButtons}>
-        <button onClick={() => router.push(`/project/${projectId}`)} className={styles.buttonPrimary}>
-          Edit Input
-        </button>
-        <button onClick={() => router.push(`/project/${projectId}/diagram`)} className={styles.buttonPrimary}>
-          Edit Diagram
-        </button>
-      </div>
-    </div>
+        </button> */}
+        <div className="actionIconBar">
+          <button className="actionIcon" title="Export as PDF"
+    onClick={exportMatrixAsPDF}>
+    <i className="uil uil-import"></i>
+  </button>
+
+  <button
+    className="actionIcon"
+    title="Edit Input"
+    onClick={() => router.push(`/project/${projectId}`)}
+  >
+    <svg 
+      width="18" height="18" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="white" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    >
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+    </svg>
+  </button>
+<button 
+  className="actionIcon" 
+  title="Edit Diagram"
+  onClick={() => router.push(`/project/${projectId}/diagram`)}
+>
+  <svg 
+    viewBox="0 0 512 512" 
+    fill="#ffffff" 
+    width="20" 
+    height="20"
+    style={{ display: "block" }}
+  >
+    <path d="M64,64 L362.666667,64 L426.666667,128 L426.666667,448 L128,448 L64,384 L64,64 Z 
+             M341.333333,106.666667 L106.666667,106.666667 L106.666667,362.666667 
+             L341.333333,362.666667 L341.333333,106.666667 Z 
+             M192,149.333333 L192,170.666667 L234.666667,170.666667 
+             L234.666,277.333333 L256,277.333333 L256,256 L320,256 L320,320 
+             L256,320 L256,298.666667 L192,298.666333 L192,320 L128,320 
+             L128,256 L192,256 L192,277.333333 L213.333,277.333333 
+             L213.333,191.999333 L192,192 L192,213.333333 L128,213.333333 
+             L128,149.333333 L192,149.333333 Z"/>
+  </svg>
+</button>
+</div>
 
 {modalOpen && selectedPair && (
   <div className={styles.modalBackdrop} onClick={() => setModalOpen(false)}>

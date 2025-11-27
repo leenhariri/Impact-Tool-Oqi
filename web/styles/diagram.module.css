@@ -269,3 +269,51 @@
   text-decoration: underline;
 }
 
+/* ===== SUPER COMPRESSED INSTRUCTIONS BOX ===== */
+
+.instructionsWrapper {
+  margin-bottom: 1rem !important;
+  border-radius: 10px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e5e7eb !important;
+  padding: 0 !important;
+}
+
+/* Header height smaller */
+.instructionsHeader {
+  padding: 0.5rem 0.8rem !important;
+  min-height: unset !important;
+}
+
+/* Title smaller */
+.instructionsTitle {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+}
+
+/* Subtitle smaller + reduced spacing */
+.instructionsSubtitle {
+  font-size: 0.7rem !important;
+  color: #64748b !important;
+  margin: 0 !important;
+}
+
+/* CONTENT very compact */
+.instructions {
+  padding: 0.6rem 0.9rem !important;
+  font-size: 0.78rem !important;
+  line-height: 1.15 !important;
+}
+
+/* Reduce spacing between list items */
+.instructions li {
+  margin-bottom: 0.25rem !important;
+  padding: 0 !important;
+}
+
+/* Remove left indent slightly */
+.instructions ol {
+  padding-left: 1rem !important;
+  margin: 0 !important;
+}
