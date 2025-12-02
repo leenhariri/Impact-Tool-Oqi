@@ -23,6 +23,25 @@ import Legend from "../components/Legend";
 import { useRouter } from 'next/router';
 import { Handle, Position } from "reactflow";
 
+// async function measureNodeSize(htmlString: string): Promise<{ width: number; height: number }> {
+//   return new Promise((resolve) => {
+//     const div = document.createElement("div");
+//     div.style.position = "absolute";
+//     div.style.visibility = "hidden";
+//     div.style.top = "-9999px";
+//     div.style.left = "-9999px";
+//     div.innerHTML = htmlString;
+
+//     document.body.appendChild(div);
+
+//     requestAnimationFrame(() => {
+//       const rect = div.getBoundingClientRect();
+//       document.body.removeChild(div);
+//       resolve({ width: rect.width, height: rect.height });
+//     });
+//   });
+// }
+
 type ImpactRow = {
   id: string;
   hierarchyLevel: string;
@@ -87,7 +106,7 @@ export default function DiagramView({ projectId }: { projectId: string }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const [showInstructions, setShowInstructions] = useState(true); // 👈 new
+  const [showInstructions, setShowInstructions] = useState(true); 
   const shouldRegenerate = router.query.regenerate === "true";
 
 const resetNodePositions = () => {
@@ -148,13 +167,13 @@ const exportAsPDF = async () => {
 
   await new Promise((r) => setTimeout(r, 100));
 
-  // ⬆️ Use high scale for crisp font rendering
+ 
   const canvas = await html2canvas(element, {
     backgroundColor: "#ffffff",
     useCORS: true,
     width: scrollWidth,
     height: scrollHeight,
-    scale: 3, //  Change to 2 or 3 depending on size
+    scale: 3, 
   });
 
   element.setAttribute("style", originalStyle);
@@ -162,7 +181,7 @@ const exportAsPDF = async () => {
 
   const imgData = canvas.toDataURL("image/png");
 
-  // ✅ Use A3 size PDF (landscape)
+
   const pdf = new jsPDF({
     orientation: "landscape",
     unit: "mm",
@@ -238,12 +257,22 @@ const controller = new AbortController();
          if (!stakeholderRes.ok) throw new Error("Failed to fetch stakeholders");
 const stakeholders: Stakeholder[] = await stakeholderRes.json();
         const nodeList: Node[] = [];
+        // We will accumulate measured auto-layout positions
+let autoY = {
+  LONG_TERM_IMPACT: 0,
+  MID_TERM_IMPACT: 0,
+  SHORT_TERM_IMPACT: 0,
+  OUTPUT: 0,
+};
+
+const verticalPadding = 60;
+
 const nodePositionMap = shouldRegenerate
   ? new Map() // 
   : new Map(savedNodes.map((n: any) => [n.nodeId, { x: n.x, y: n.y }]));
 
 
-        const verticalSpacing = 150;
+        const verticalSpacing = 220;
         const horizontalSpacing = 260;
         const baseX = 300;
 
@@ -328,21 +357,21 @@ risks.forEach((risk) => {
   });
 });
 
-// Render vertically stacked red risk boxes (one per hierarchy, positioned top to bottom)
+
 const riskBoxBaseX = baseX - 350;
 let accumulatedY = 0;
-const verticalPadding = 30;
+// const verticalPadding = 30;
 const baseRiskY = -50; // top margin
 
 Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
   const nodeId = `risk-${hierarchy}`;
   const y = hierarchyYMap[hierarchy] ?? 0;
 
-  const width = Math.max(320, riskList.length * 170); // dynamically set width
+  const width = Math.max(320, riskList.length * 170); 
   const riskBoxOffset = 60;
 
   const position = (nodePositionMap.get(nodeId) ?? {
-    x: baseX - width - riskBoxOffset, // shift left of impact row
+    x: baseX - width - riskBoxOffset, 
     y,
   }) as { x: number; y: number };
 
@@ -503,8 +532,8 @@ const edgeList: Edge[] = shouldRegenerate
     }));
 
 
-// Stakeholders (Right of each hierarchy block)
-// Group stakeholders by hierarchyLevel
+// Stakeholders 
+
 const stakeholdersByHierarchy: Record<string, Stakeholder[]> = {};
 stakeholders.forEach((s) => {
   if (!stakeholdersByHierarchy[s.hierarchyLevel]) {
@@ -567,7 +596,7 @@ style: {
         setNodes(nodeList);
         setEdges(edgeList);
         setLoading(false);
-        // Clear `?regenerate=true` from URL after using it once
+        
 if (shouldRegenerate) {
   const { pathname, query } = router;
   delete query.regenerate;
@@ -649,7 +678,7 @@ const onConnect = useCallback(
       targetHandle: "bottom",
       type: "smoothstep",
       style: { stroke: "#222", strokeWidth: 2 },
-      markerStart: {                    // 👈 arrowhead now on START of edge
+      markerStart: {                    
         type: MarkerType.ArrowClosed,
         color: "#222",
         width: 18,
@@ -827,7 +856,7 @@ return (
           <X size={18} />
         </div>
 
-        {/* 🗑️ Delete All Arrows */}
+       
         <div
           onClick={() => {
             setEdges([]);
@@ -878,7 +907,7 @@ return (
       </div>
 
       {/* Buttons Row */}
-{/* 🔹 Floating Action Icons (Right Side) */}
+
 <div className="actionIconBar">
 
   {/* Export PDF */}

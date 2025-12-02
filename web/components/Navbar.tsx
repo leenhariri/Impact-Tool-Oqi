@@ -8,40 +8,41 @@ export default function Navbar() {
   const [heroTranslateY, setHeroTranslateY] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);   // ← NEW
+
   const router = useRouter();
 
   const isHome = router.pathname === "/";
   const isAbout = router.pathname === "/about";
   const isUserGuide = router.pathname === "/user-guide";
-  const isResources =router.pathname ==="/resources";
-const [heroExists, setHeroExists] = useState(false);
+  const isResources = router.pathname === "/resources";
 
-useEffect(() => {
-  // Check if .headline exists
-  setHeroExists(!!document.querySelector(".headline"));
-}, [router.asPath]);
+  const [heroExists, setHeroExists] = useState(false);
 
-useEffect(() => {
-  if (!heroExists) {
-    setScrolled(true); // Navbar solid if no hero present
-    return;
-  }
+  useEffect(() => {
+    setHeroExists(!!document.querySelector(".headline"));
+  }, [router.asPath]);
 
-  const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const navHeight = 64;
-    const heroHeight = 400;
+  useEffect(() => {
+    if (!heroExists) {
+      setScrolled(true);
+      return;
+    }
 
-    const newOpacity = 1 - scrollY / (heroHeight - navHeight);
-    setHeroOpacity(Math.max(0, newOpacity));
-    setHeroTranslateY(scrollY * 0.4);
-    setScrolled(scrollY > (heroHeight - navHeight));
-  };
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const navHeight = 64;
+      const heroHeight = 400;
 
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [heroExists]);
+      const newOpacity = 1 - scrollY / (heroHeight - navHeight);
+      setHeroOpacity(Math.max(0, newOpacity));
+      setHeroTranslateY(scrollY * 0.4);
+      setScrolled(scrollY > (heroHeight - navHeight));
+    };
 
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [heroExists]);
 
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, { credentials: "include" })
@@ -69,23 +70,37 @@ useEffect(() => {
             <img src="/images/oqi-logo.png" alt="Logo" />
           </Link>
         </div>
-        <ul>
-          <li><Link href="/about">About</Link></li>
-          <li><Link href="/user-guide">User Guide</Link></li>
-          <li><Link href="/resources">Useful Resources</Link></li>
-          {!checking && isLoggedIn && (
-            <>
-              <li><Link href="/dashboard">Access Tool</Link></li>
-              <li><button onClick={handleLogout}>Sign Out</button></li>
-            </>
-          )}
-          {!checking && !isLoggedIn && (
-            <li><Link href="/login">Access Tool</Link></li>
-          )}
-        </ul>
+
+        {/* Hamburger Button (mobile only) */}
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? "✕" : "☰"}
+        </button>
+
+        {/* Nav links (desktop & mobile) */}
+        <div className={`nav-links ${mobileMenuOpen ? "open" : ""}`}>
+          <ul>
+            <li><Link href="/about" onClick={() => setMobileMenuOpen(false)}>About</Link></li>
+            <li><Link href="/user-guide" onClick={() => setMobileMenuOpen(false)}>User Guide</Link></li>
+            <li><Link href="/resources" onClick={() => setMobileMenuOpen(false)}>Useful Resources</Link></li>
+
+            {!checking && isLoggedIn && (
+              <>
+                <li><Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>Access Tool</Link></li>
+                <li><button onClick={handleLogout}>Sign Out</button></li>
+              </>
+            )}
+
+            {!checking && !isLoggedIn && (
+              <li><Link href="/login" onClick={() => setMobileMenuOpen(false)}>Access Tool</Link></li>
+            )}
+          </ul>
+        </div>
       </nav>
 
-      {/* Hero only on homepage */}
+      {/* Hero Sections (unchanged) */}
       {isHome && (
         <header className="headline">
           <div
@@ -100,7 +115,8 @@ useEffect(() => {
           </div>
         </header>
       )}
-            {isAbout && (
+
+      {isAbout && (
         <header className="headline">
           <div
             className="inner"
@@ -114,7 +130,8 @@ useEffect(() => {
           </div>
         </header>
       )}
-                  {isUserGuide && (
+
+      {isUserGuide && (
         <header className="headline">
           <div
             className="inner"
@@ -128,16 +145,18 @@ useEffect(() => {
           </div>
         </header>
       )}
+
       {isResources && (
         <header className="headline">
           <div
-          className= "inner"
-          style={{
-            opacity: heroOpacity,
-            transform: `translate(-50%, calc(-50% + ${heroTranslateY}px))`,
-          }}>
-<h1> Useful Resources</h1>
-<p>Explore key references and tools to deepen your understanding of impact design, SDGs, and responsible innovation.</p>
+            className="inner"
+            style={{
+              opacity: heroOpacity,
+              transform: `translate(-50%, calc(-50% + ${heroTranslateY}px))`,
+            }}
+          >
+            <h1>Useful Resources</h1>
+            <p>Explore key references and tools to deepen your understanding of impact design, SDGs, and responsible innovation.</p>
           </div>
         </header>
       )}

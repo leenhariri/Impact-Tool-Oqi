@@ -846,3 +846,28 @@
   padding-left: 1rem !important;
   margin: 0 !important;
 }
+@media (max-width: 900px) {
+  .container {
+    overflow-x: auto !important;
+    min-height: auto !important; /* FIX overlapping footer/buttons */
+    padding-bottom: 6rem !important; /* Space for buttons */
+  }
+}
+@media (max-width: 900px) {
+  .floating-buttons {
+    position: absolute !important;
+    right: 20px !important;
+  }
+}
+@media (max-width: 900px) {
+  .twoColumnSection {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    width: max-content !important;
+  }
+
+  .twoColumnSection .column {
+    min-width: 350px !important;
+    width: 350px !important;
+  }
+}

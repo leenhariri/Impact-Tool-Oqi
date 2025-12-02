@@ -713,3 +713,19 @@ transition: all 0.2s ease;
   color: #525252;
   text-decoration: underline;
 }
+@media (max-width: 768px) {
+  .container {
+    overflow-x: auto !important;   /* ENABLE horizontal scrolling */
+  }
+
+  .tableWrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    width: 100%;
+  }
+
+  .projectTable {
+    min-width: 700px !important;  /* adjust based on your headers */
+  }
+}

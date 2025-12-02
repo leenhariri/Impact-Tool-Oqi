@@ -679,3 +679,269 @@ html, body {
   left: calc(100% - 55px);
   color: #ffffff4f;
 }
+/* ================================
+   📱 MOBILE FIXES
+   ================================ */
+@media (max-width: 768px) {
+
+  /* ----- NAVBAR ----- */
+  nav.main-nav {
+    padding: 0 16px !important;
+    
+  }
+
+  nav.main-nav ul {
+    gap: 10px;
+  }
+
+  nav.main-nav li {
+    margin-left: 10px !important;
+  }
+
+  /* ----- HERO SECTION ----- */
+  .headline,
+  .hero,
+  .hero-image {
+    height: 260px !important;
+    background-attachment: scroll !important; /* Mobile friendly */
+    padding-top: 90px !important;
+    text-align: center;
+  }
+
+  .inner h1 {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .inner p {
+    font-size: 1rem !important;
+  }
+
+  /* Center hero text better */
+  .inner {
+    top: 55% !important;
+  }
+
+  /* ----- PARTNERS LOGOS ----- */
+  .partner-logo {
+    width: 120px !important;
+    margin: 12px !important;
+  }
+
+  .partners-logos {
+    gap: 20px !important;
+    padding: 10px 0 !important;
+  }
+
+  /* ----- SECTION SPACING ----- */
+  .section {
+    padding: 32px 16px !important;
+  }
+
+  /* ----- PILLS / BUTTONS ----- */
+  .btn-pill,
+  .swipe {
+    width: 100% !important;
+    max-width: 280px;
+    height: 48px;
+    font-size: 14px;
+  }
+
+  /* Fix swipe button alignment */
+  .swipe-container {
+    width: 36px;
+    height: 36px;
+    left: 6px;
+  }
+
+  .swipe:hover .swipe-container {
+    left: calc(100% - 48px);
+  }
+
+  /* ----- TABLES ----- */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .indicators-table {
+    font-size: 12px !important;
+  }
+
+  .indicators-table th,
+  .indicators-table td {
+    padding: 6px !important;
+  }
+
+  /* ----- ACTION ICON BAR (hide on mobile) ----- */
+  .actionIconBar {
+    display: none !important;
+  }
+
+  /* ----- DROPDOWN ----- */
+  .section-dropdown {
+    width: 90% !important;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* ----- GENERAL TYPOGRAPHY ----- */
+  h1, h2, h3 {
+    line-height: 1.3 !important;
+    word-break: break-word;
+  }
+
+  .arvo-title,
+  .arvo-section {
+    font-size: 18px !important;
+  }
+}
+/* MOBILE NAV */
+.mobile-menu-btn {
+  display: none;
+}
+
+.nav-links {
+  display: flex;
+}
+
+/* ----- MOBILE ----- */
+@media (max-width: 768px) {
+
+  .mobile-menu-btn {
+    display: block;
+    font-size: 28px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-left: auto;
+    z-index: 99999;
+    padding: 0 !important; 
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 64px);
+    background: #111730;
+    padding-top: 40px;
+
+    transform: translateY(-100%);
+    transition: 0.3s ease;
+    z-index: 9999;
+  }
+
+  .nav-links.open {
+    transform: translateY(0);
+  }
+
+  .nav-links ul {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    align-items: center;
+    padding: 0;
+  }
+
+  nav.main-nav ul li {
+    margin-left: 0 !important;
+  }
+
+  nav.main-nav a {
+    font-size: 18px !important;
+  }
+}
+@media (max-width: 768px) {
+
+  /* Reset UL layout */
+  nav.main-nav ul {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    gap: 22px; /* clean spacing */
+  }
+
+  /* Reset LI layout */
+  nav.main-nav li {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Reset link styling */
+  nav.main-nav a,
+  nav.main-nav button {
+    font-size: 18px !important;
+    width: 100%;
+    text-align: center;
+    display: block;
+    padding: 8px 0;
+  }
+}
+@media (max-width: 768px) {
+  .logo img {
+    display: block;
+    height: 36px;     /* force visible */
+    width: auto;
+    z-index: 99999;
+  }
+
+  .logo {
+    z-index: 99999;
+  }
+}
+nav.main-nav {
+  z-index: 10000;
+}
+.nav-links {
+  z-index: 9990;
+}
+
+/* === FINAL FIX FOR HAMBURGER ALIGNMENT === */
+@media (max-width: 768px) {
+
+  /* Navbar padding fix */
+  nav.main-nav {
+    padding-left: 16px !important;
+    padding-right: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+
+  /* Remove desktop menu */
+  nav.main-nav > ul {
+    display: none !important;
+  }
+
+  /* Shrink button to icon */
+  .mobile-menu-btn {
+    padding: 0 !important;
+    margin-right: 16px !important; 
+    margin-left: auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    flex-shrink: 0 !important;
+  }
+}
+@media (max-width: 900px) {
+  * {
+    overflow: visible !important;
+  }
+
+  nav,
+  .navbar,
+  .container,
+  .twoColumnSection,
+  .tableWrapper {
+    overflow: visible !important;
+  }
+}

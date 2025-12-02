@@ -195,7 +195,7 @@ const deleteStakeholder = async (index: number) => {
 
   useEffect(() => {
     if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); // ✅ Validation check
+setError('Invalid or missing project ID.'); 
 return;
 }
 const controller = new AbortController();
@@ -1480,7 +1480,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
     <i className="uil uil-save"></i>
   </button>
 
-{/* <button 
+<button 
   className="actionIcon" 
   title="Generate Diagram"
   onClick={async () => {
@@ -1497,10 +1497,10 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
   >
     <path d="M426.666667,320 L426.666,383.999 L490.666667,384 L490.666667,426.666667 L426.666,426.666 L426.666667,490.666667 L384,490.666667 L383.999,426.666 L320,426.666667 L320,384 L383.999,383.999 L384,320 L426.666667,320 Z M341.333333,42.6666667 L405.333333,106.666667 L405.332667,298.666667 L362.666667,298.666667 L362.666667,362.666667 L298.666667,362.666667 L298.665667,426.666667 L106.666667,426.666667 L42.6666667,362.666667 L42.6666667,42.6666667 L341.333333,42.6666667 Z M320,85.3333333 L85.3333333,85.3333333 L85.3333333,341.333333 L320,341.333333 L320,85.3333333 Z M170.666667,128 L170.666667,149.333 L213.333333,149.333333 L213.332667,256 L234.666667,256 L234.666667,234.666667 L298.666667,234.666667 L298.666667,298.666667 L234.666667,298.666667 L234.666667,277.332667 L170.666667,277.333 L170.666667,298.666667 L106.666667,298.666667 L106.666667,234.666667 L170.666667,234.666667 L170.666667,256 L191.999667,256 L191.999667,170.666 L170.666667,170.666 L170.666667,192 L106.666667,192 L106.666667,128 L170.666667,128 Z"/>
   </svg>
-</button> */}
+</button>
 
 
-<button 
+{/* <button 
   className="actionIcon" 
   title="Edit Diagram"
   onClick={() => router.push(`/project/${projectId}/diagram`)}
@@ -1522,7 +1522,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
              L213.333,191.999333 L192,192 L192,213.333333 L128,213.333333 
              L128,149.333333 L192,149.333333 Z"/>
   </svg>
-</button>
+</button> */}
 
 
   <button className="actionIcon" title="Export as Excel"
@@ -1562,28 +1562,64 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
         editingField.anchorRect.right + 340 > window.innerWidth
           ? editingField.anchorRect.left - 340
           : editingField.anchorRect.right + 10,
-      position: 'absolute',
+      position: "absolute",
       zIndex: 1000,
     }}
   >
-    <textarea
-      ref={textareaRef}
-      value={editingField.value}
-      onChange={(e) =>
-        setEditingField({ ...editingField, value: e.target.value })
+   <div style={{ position: "relative" }}>
+  <textarea
+    ref={textareaRef}
+    value={editingField.value}
+    onChange={(e) => {
+      const text = e.target.value;
+      const MAX_CHARS = 95;
+      setEditingField({
+        ...editingField,
+        value: text.slice(0, MAX_CHARS),
+      });
+    }}
+    onBlur={saveEditingField}
+    onKeyDown={(e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        saveEditingField();
+      } else if (e.key === "Escape") {
+        setEditingField(null);
       }
-      onBlur={saveEditingField}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          saveEditingField();
-        } else if (e.key === 'Escape') {
-          setEditingField(null);
-        }
-      }}
-    />
+    }}
+    className={styles.textarea}
+  />
+
+  {/* Counter BELOW the border */}
+  <div
+    style={{
+      position: "absolute",
+      bottom: "0px",      // ⬅️ pushes it BELOW the textarea border
+      right: "4px",
+      fontSize: "10px",
+      color: "rgba(0, 0, 0, 0.57)",
+      pointerEvents: "none",
+    }}
+  >
+    {editingField.value.length} / 95
+  </div>
+</div>
+
   </div>
 )}
+
+{/* <div
+  style={{
+    position: "absolute",
+    top: "6px",
+    right: "10px",
+    fontSize: "11px",
+    color: "rgba(0,0,0,0.35)",
+    pointerEvents: "none",
+  }}
+>
+  {editingField.value.length} / 95
+</div> */}
 
 
   </div>

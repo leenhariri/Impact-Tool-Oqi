@@ -163,7 +163,7 @@ try {
   projectId,
   sourceSdgTargetId: sourceId,
   targetSdgTargetId: targetId,
-  score: score,           // null allowed
+  score: score,           
   rationale
 },
     { withCredentials: true }
@@ -211,7 +211,7 @@ const handleModalSave = async () => {
 await updateEntry(
   selectedPair.source.id,
   selectedPair.target.id,
-  tempScore,                 // can be null now
+  tempScore,                 
   tempRationale?.trim() || ""
 );
 
@@ -269,20 +269,20 @@ const exportMatrixAsPDF = async () => {
   const colSums = targets.map((target) =>
     targets.reduce((sum, source) => sum + (matrix[`${source.id}_${target.id}`]?.score ?? 0), 0)
   );
-  // --- STATISTICS COMPUTATION (CORRECTED) ---
+ 
 
-// All entries that have been saved (score is not null or undefined)
+
 const allEntries = Object.values(matrix).filter(
   (e) => e.score !== null && e.score !== undefined
 );
 
-// Colored cells only (scores !== 0)
+
 const coloredEntries = allEntries.filter((e) => e.score !== 0);
 
-// Denominator should be number of colored cells
+
 const totalColored = coloredEntries.length;
 
-// Stats per category
+
 const stats = {
   indivisible: coloredEntries.filter((e) => e.score === 3).length,
   reinforcing: coloredEntries.filter((e) => e.score === 2).length,
@@ -430,7 +430,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
     backgroundColor: isDiagonal
   ? '#F5F5F5'
   : score === null
-      ? '#FFFFFF'     // empty – untouched
+      ? '#FFFFFF'     
       : scoreColors[score],
 
     pointerEvents: isDiagonal ? 'none' : 'auto',
@@ -728,7 +728,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
         </em>
       </p>
 
-      {/* Score dropdown (styled like Create Project inputs) */}
+    
 <select
   value={tempScore}
   onChange={(e) => {
@@ -737,7 +737,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
   }}
   className={styles.modalInput}
 >
-  <option value="null">-- Clear (Empty) --</option>   {/* NEW */}
+  <option value="null">-- Clear (Empty) --</option>   
   {[3, 2, 1, 0, -1, -2, -3].map((val) => (
     <option key={val} value={val}>
       {val}
