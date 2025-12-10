@@ -1026,7 +1026,7 @@ To better understand how to assess or categorize risks, refer to the <a href="/u
               <tr>
                 <th className={styles.tooltipHeader}>
   Risk 
-  <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     Potential threat or challenge that could deter a project from achieving its intended results.
   </span>
@@ -1127,7 +1127,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
               <tr>
                 <th className={styles.tooltipHeader}>
   Action/ Assumption
-    <span style={{ color: "#ffffffff" }}>🛈</span> 
+    <span style={{ color: "#ffffffff" }}></span> 
    <span className={styles.tooltipText}>
     Activities undertaken using your solution to produce outputs and drive change. /
     Factor or condition that you assume will hold true for the project to succeed at each level of the change.
@@ -1135,7 +1135,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
 </th>
                 <th className={styles.tooltipHeader}>
   Description 
-   <span style={{ color: "#ffffffff" }}>🛈</span>
+   <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
     Describe the Action/Assumption in more details.
   </span> 
