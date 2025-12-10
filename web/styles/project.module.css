@@ -871,3 +871,53 @@
     width: 350px !important;
   }
 }
+/* --- Tooltip clipping fix --- */
+.container,
+.tableWrapper,
+.softTable,
+.softTable td,
+.softTable th {
+  overflow: visible !important;
+}
+
+/* --- Prevent tooltips from going off-screen --- */
+.tooltipHeader {
+  position: relative;
+  overflow: visible !important;
+}
+
+.tooltipHeader .tooltipText {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  bottom: 120%;
+  left: 0;
+  transform: translateX(0);
+
+  max-width: 260px;
+  white-space: normal;
+
+  background-color: #1a1f36;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+
+  z-index: 999999;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.tooltipHeader:hover .tooltipText {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Mobile fix — allow scroll only on the table wrapper */
+@media (max-width: 900px) {
+  .container {
+    overflow: visible !important;
+  }
+
+  .tableWrapper {
+    overflow-x: auto !important;
+  }
+}

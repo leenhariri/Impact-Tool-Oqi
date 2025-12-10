@@ -5,7 +5,7 @@ import { useEffect, useState ,useRef} from 'react';
 import styles from '../../styles/project.module.css';
 import SDGDropdown from '../../components/SDGDropdown';
 import HierarchyDropdown from '../../components/HierarchyDropdown';
-import DOMPurify from 'dompurify'; // or your own sanitizeInput
+import DOMPurify from 'dompurify'; 
 import * as XLSX from 'xlsx';
 
 function sanitizeInput(value: string): string {
@@ -89,7 +89,7 @@ const [assumptionsAndActivities, setAssumptionsAndActivities] = useState<Assumpt
 const [stakeholders, setStakeholders] = useState<Stakeholder[]>([])
 const [showInstructions, setShowInstructions] = useState(true); //  new
 
-// State for editing a specific cell
+
 const [editingField, setEditingField] = useState<{
   section: 'impact' | 'risk' | 'assumption' | 'stakeholder';
   index: number;
@@ -125,7 +125,7 @@ useEffect(() => {
 
 useEffect(() => {
   if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); // ✅ Validation check
+setError('Invalid or missing project ID.'); 
 return;
 }
 const controller = new AbortController();
@@ -247,7 +247,7 @@ sdgMap[row.id] = row.targets?.[0]?.sdg?.id || null;
   }, [projectId]);
 useEffect(() => {
   if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); // ✅ Validation check
+setError('Invalid or missing project ID.'); 
 return;
 }
 const controller = new AbortController();
@@ -257,7 +257,7 @@ const fetchRisks = async () => {
     const res = await fetch(`${API_BASE}/api/risks?projectId=${projectId}`,{credentials: 'include',});
     const data = await res.json();
 
-    // Transform DB data to match frontend Risk interface
+    
     const formatted = data.map((r: any) => ({
       id: r.id,
       text: r.text,
@@ -318,7 +318,7 @@ const fetchAssumptionsAndActivities = async () => {
 
 useEffect(() => {
   if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); // ✅ Validation check
+setError('Invalid or missing project ID.'); 
 return;
 }
 const controller = new AbortController();
@@ -377,7 +377,7 @@ const deleteAssumptionOrActivity = async (index: number) => {
   }
   const updated = [...assumptionsAndActivities];
   updated.splice(index, 1);
-  setAssumptionsAndActivities(updated); // ✅ Update local state
+  setAssumptionsAndActivities(updated); 
 };
 
   const addRow = () => {
@@ -462,7 +462,7 @@ const tempId = row.id!;
 savedRowId = created.id;
 impactRows[index].id = created.id;
 
-// 🔄 Update all references from temp ID to real ID
+
 if (tempId.startsWith('temp-')) {
   // Update selectedSDGs
   if (selectedSDGs[tempId] !== undefined) {
@@ -545,7 +545,7 @@ for (let i = 0; i < assumptionsAndActivities.length; i++) {
 
   if (!item.id) {
     const created = await res.json();
-    assumptionsAndActivities[i].id = created.id; // ✅ Save the new ID
+    assumptionsAndActivities[i].id = created.id; 
   }
 }
 for (let i = 0; i < stakeholders.length; i++) {
@@ -575,7 +575,7 @@ for (let i = 0; i < stakeholders.length; i++) {
 
   if (!s.id) {
     const created = await res.json();
-    stakeholders[i].id = created.id; // Save returned ID
+    stakeholders[i].id = created.id; 
   }
 }
 
@@ -652,7 +652,7 @@ const addRisk = () => {
     ...prev,
     {
       text: '',
-      hierarchyLevels: [], // ✅ send this to backend even if it's empty
+      hierarchyLevels: [], 
     },
   ]);
 };
@@ -721,7 +721,7 @@ const saveEditingField = () => {
 return (
   <div className={styles.container}>
 
-{/* 🔹 Collapsible Instructions */}
+
 <div className={styles.instructionsWrapper}>
   <button
     type="button"
@@ -768,7 +768,7 @@ return (
     
 <h1 className={styles.Title}>Indicator Matrix</h1>
 <p className={styles.note}>
-  {/* Please refer to the section in the User Guide for full instructions */}
+  
   Use this matrix to define what your solution aims to achieve at each result level and how change will be measured. Start from long-term impact down to deliverables.  
 Please refer to the full <a href="/user-guide" target="_blank" rel="noopener noreferrer">
      User Guide 
@@ -783,49 +783,49 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
                         <th className={styles.tooltipHeader}>
   Objective level <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
-      specify the Objective level 
+      The stage in the causal pathway when the result occurs (e.g. as Deliverable, Short-Term Impact, Mid-Term Impact, Long-Term Impact). 
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
   Result Level<span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
-    outline the defined result statements here
+    The change or outcome that happens as a consequence of the project.
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
   Indicator <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    Describe what will be measured to show progress toward the result
+    A measurable variable used to track progress and show whether a change or result is happening. It signals to us if our project is working as expected or not. It determines how much change has occurred. They can be both quantitative (e.g., % increase in access) or qualitative (e.g., user satisfaction).
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
   Indicator Definition <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    explain clearly what the indicator means and how it will be calculated
+   What the indicator means and how it will be calculated/quantified.
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
   Means of Measurement <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    state how or by what method, source, or tool the data will be measured
+    How or by what method, source, or tool the data will be measured
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
   Baseline <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    state the starting point/status on a particular result before your solution - cite references
+   The starting point/status on of the problem you are adressing before your solution (please cite references here).
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
   SDG <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
-    choose the SDG
+    Sustainable Development Goals (SDGs) address the global challenges we face, including those related to poverty, inequality, climate change, environmental degradation, peace and justice.
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
   SDG Target <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
-    choose the corresponding SDG Targets
+    An SDG target is a specific, measurable objective linked to one of the Sustainable Development Goals (SDGs) that defines what we aim to achieve by a set date (often 2030). Examples for the targets can be found in the useful links section. 
   </span>
 </th>
             <th></th>
@@ -849,7 +849,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
   onChange={(e) => handleRowChange(index, 'hierarchyLevel', e.target.value)}
   style={{
     height: "36px",
-    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    padding: "4px 36px 4px 12px", 
     fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
@@ -917,7 +917,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
   }}
   style={{
     height: "36px",
-    padding: "0 25px 0 12px", // ✅ added right padding for the arrow
+    padding: "0 25px 0 12px", 
     fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
@@ -928,7 +928,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
     MozAppearance: "none",
     backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 12px center", // ✅ arrow positioned perfectly
+    backgroundPosition: "right 12px center", 
     backgroundSize: "16px",
     width: "100%",
     boxSizing: "border-box",
@@ -960,7 +960,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
       onChange={(ids) => handleTargetChange(row.id || '', ids)}
     />
   ) : (
-    <div style={{ height: '38px' }}></div>  // Empty space to keep row height consistent
+    <div style={{ height: '38px' }}></div> 
   )}
 </td>
 
@@ -978,7 +978,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
 <button
   title="Add Row"
   className={styles.addCircleButton}
-  onClick={addRow} // or addRisk, addItem, etc.
+  onClick={addRow} 
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -1001,7 +1001,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
     <hr className={styles.horizontalDivider} />
 
 
-    {/* Two-up: Risks + Assumptions */}
+    
     
     <div className={styles.twoColumnSection}>
       {/* Risks */}
@@ -1026,15 +1026,15 @@ To better understand how to assess or categorize risks, refer to the <a href="/u
               <tr>
                 <th className={styles.tooltipHeader}>
   Risk 
-  {/* <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span style={{ color: "#ffffffff" }}>🛈</span>
   <span className={styles.tooltipText}>
-    Indicate the risks 
-  </span> */}
+    Potential threat or challenge that could deter a project from achieving its intended results.
+  </span>
 </th>
                 <th className={styles.tooltipHeader}>
   Objective level <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    Indicate to which Objective level(s) these risks apply
+    The stage in the causal pathway where the result occurs (Deliverable, Short-Term Impact, Mid-Term Impact, Long-Term Impact).
   </span>
 </th>
                 <th></th>
@@ -1086,7 +1086,7 @@ To better understand how to assess or categorize risks, refer to the <a href="/u
 <button
   title="Add Risk"
   className={styles.addCircleButton}
-  onClick={addRisk} // or addRisk, addItem, etc.
+  onClick={addRisk} 
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -1127,17 +1127,18 @@ If you need more information and help on this, refer to the <a href="/user-guide
               <tr>
                 <th className={styles.tooltipHeader}>
   Action/ Assumption
-   {/* <span style={{ color: "#ffffffff" }}>🛈</span> */}
-  {/* <span className={styles.tooltipText}>
-    choose action/ assumption
-  </span> */}
+    <span style={{ color: "#ffffffff" }}>🛈</span> 
+   <span className={styles.tooltipText}>
+    Activities undertaken using your solution to produce outputs and drive change. /
+    Factor or condition that you assume will hold true for the project to succeed at each level of the change.
+  </span> 
 </th>
                 <th className={styles.tooltipHeader}>
   Description 
-  {/* <span style={{ color: "#ffffffff" }}>🛈</span> */}
-  {/* <span className={styles.tooltipText}>
-    choose the corresponding SDG Targets
-  </span> */}
+   <span style={{ color: "#ffffffff" }}>🛈</span>
+  <span className={styles.tooltipText}>
+    Describe the Action/Assumption in more details.
+  </span> 
 </th>
                 <th></th>
               </tr>
@@ -1155,7 +1156,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
                       }}
                       style={{
     height: "36px",
-    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    padding: "4px 36px 4px 12px", 
     fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
@@ -1166,7 +1167,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
     MozAppearance: "none",
     backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 12px center", // ← make arrow sit nicely
+    backgroundPosition: "right 12px center", 
     backgroundSize: "16px",
     width: "100%",
     boxSizing: "border-box",
@@ -1244,7 +1245,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
     </div>
 <hr className={styles.horizontalDivider} />
 
-    {/* Stakeholders */}
+    
 
     <h1 className={styles.Title}>Stakeholders Matrix</h1>
      <p className={styles.note}>
@@ -1254,7 +1255,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
   </a> for reference and guidance.
 
      </p>
-   {/* <p className="text-[10px]">  Add the stakeholders responsible for each of the results</p> */}
+   
 
     <div className={styles.tableWrapper}>
       <table className={styles.softTable}>
@@ -1263,39 +1264,39 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
                                     <th className={styles.tooltipHeader}>
   Stakeholder <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    Who are the people to be involved directly or indirectly in the implementation
+    Key people, groups of people and organisations that are directly and indirectly involved in the implementation, monitoring of the project/solution or a affected by it.
 
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
   Role <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    specify their role
+    Describe what this stakeholder does and how they are involved in the project.
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
 Interest <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    What is their benefit
+    What is the stakeholder's benefit from engagement?
 
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
   Stakeholder Type <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    Indicate whether they are direct or indirect stakeholders
+    Indicate whether they are direct or indirect stakeholders.
   </span>
 </th>
                                     <th className={styles.tooltipHeader}>
 Engagement Strategy<span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-   How will they be mobilised/convinced to be involved?
+   How will the stakeholder be mobilised/convinced to be involved and supportive? 
   </span>
 </th>
             <th className={styles.tooltipHeader}>
 Objective level<span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-   Indicate which Objective level they are related to
+   The stage in the causal pathway when the result occurs (e.g. as Deliverable, Short-Term Impact, Mid-Term Impact, Long-Term Impact).
   </span>
 </th>
             <th></th>
@@ -1366,7 +1367,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
           }
           style={{
     height: "36px",
-    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    padding: "4px 36px 4px 12px",
     fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
@@ -1377,7 +1378,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
     MozAppearance: "none",
     backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 12px center", // ← make arrow sit nicely
+    backgroundPosition: "right 12px center",
     backgroundSize: "16px",
     width: "100%",
     boxSizing: "border-box",
@@ -1415,7 +1416,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
           }
           style={{
     height: "36px",
-    padding: "4px 36px 4px 12px", // ← RIGHT PADDING FIXED for arrow
+    padding: "4px 36px 4px 12px", 
     fontSize: "12px",
     lineHeight: "1.5",
     border: "1px solid #ccc",
@@ -1426,7 +1427,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
     MozAppearance: "none",
     backgroundImage: `url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23555' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>")`,
     backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 12px center", // ← make arrow sit nicely
+    backgroundPosition: "right 12px center", 
     backgroundSize: "16px",
     width: "100%",
     boxSizing: "border-box",
@@ -1454,7 +1455,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
 <button
   title="Add Stakeholder"
   className={styles.addCircleButton}
-  onClick={addStakeholder} // or addRisk, addItem, etc.
+  onClick={addStakeholder} 
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -1590,11 +1591,11 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
     className={styles.textarea}
   />
 
-  {/* Counter BELOW the border */}
+  
   <div
     style={{
       position: "absolute",
-      bottom: "0px",      // ⬅️ pushes it BELOW the textarea border
+      bottom: "0px",      
       right: "4px",
       fontSize: "10px",
       color: "rgba(0, 0, 0, 0.57)",
@@ -1607,20 +1608,6 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
 
   </div>
 )}
-
-{/* <div
-  style={{
-    position: "absolute",
-    top: "6px",
-    right: "10px",
-    fontSize: "11px",
-    color: "rgba(0,0,0,0.35)",
-    pointerEvents: "none",
-  }}
->
-  {editingField.value.length} / 95
-</div> */}
-
 
   </div>
 );
