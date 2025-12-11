@@ -467,7 +467,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
         color:#374151;
         font-weight:600;
       ">
-        ${score === 0 ? "No value assigned" : score}
+        ${score === 0 ? "0" : score}
       </div>
     `;
 

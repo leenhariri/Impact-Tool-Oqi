@@ -14,15 +14,15 @@ const envSchema = z.object({
     .optional(),
    
   FRONTEND_URL: z.string().url(),
-  DISABLE_SECURE_COOKIE: z.string().optional(),      // ✅ add this
-  DISABLE_COOKIE_DOMAIN: z.string().optional(),      // ✅ add this
+  DISABLE_SECURE_COOKIE: z.string().optional(),      
+  DISABLE_COOKIE_DOMAIN: z.string().optional(),      
 });
 
 export function validateEnv() {
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
-    console.error("❌ Invalid environment variables:");
+    console.error(" Invalid environment variables:");
     console.error(parsed.error.flatten().fieldErrors);
     process.exit(1);
   }

@@ -6,7 +6,7 @@ const legendItems = [
   { label: "Long-term Impact", color: "#cce5ff", border: "#004085" },
   { label: "Mid-term Impact", color: "#d6b3ff", border: "#5c2d91" },
   { label: "Short-term Impact", color: "#e07d7dff", border: "#a4494eff" },
-  { label: "Output", color: "#fde2b9", border: "#8a6d3b" },
+  { label: "Deliverable", color: "#fde2b9", border: "#8a6d3b" },
   { label: "Activity", color: "#468c4cff", border: "#156e21ff" },
   { label: "Assumption", color: "#d4f4dd", border: "#155724" },
   { label: "Stakeholder (Direct)", color: "#d4edda", border: "#14532d", style: "solid" },

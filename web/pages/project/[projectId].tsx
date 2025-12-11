@@ -1111,9 +1111,9 @@ To better understand how to assess or categorize risks, refer to the <a href="/u
       <div className={styles.column}>
         <div className={styles.sectionHeader}>
   
-  <h1 className={styles.Title}>Assumptions & Actions Table</h1>
+  <h1 className={styles.Title}>Assumptions & Activities Table</h1>
   <p className={styles.note}>
-    Fill in here the key conditions that must hold true for your solution’s anticipated change to succeed (assumptions) and the actions you plan to take to mitigate potential issues that may deter.
+    Fill in here the key conditions that must hold true for your solution’s anticipated change to succeed (assumptions) and the activities you plan to take to mitigate potential issues that may deter.
 If you need more information and help on this, refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
      User Guide 
   </a> for guidance.
@@ -1126,7 +1126,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
             <thead>
               <tr>
                 <th className={styles.tooltipHeader}>
-  Action/ Assumption
+  Activity/ Assumption
     <span style={{ color: "#ffffffff" }}></span> 
    <span className={styles.tooltipText}>
     Activities undertaken using your solution to produce outputs and drive change. /
@@ -1137,7 +1137,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
   Description 
    <span style={{ color: "#ffffffff" }}></span>
   <span className={styles.tooltipText}>
-    Describe the Action/Assumption in more details.
+    Describe the Activity/Assumption in more details.
   </span> 
 </th>
                 <th></th>
@@ -1176,7 +1176,7 @@ If you need more information and help on this, refer to the <a href="/user-guide
   }}
                     >
                       <option value="ASSUMPTION">Assumption</option>
-                      <option value="ACTIVITY">Action</option>
+                      <option value="ACTIVITY">Activity</option>
                     </select>
                   </td>
                   <td>

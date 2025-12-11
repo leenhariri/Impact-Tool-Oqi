@@ -27,8 +27,8 @@ export default function UserGuide() {
           <li><strong>Anticipated Impact Flowchart:</strong>  Based on the input of the Impact Indicator Matrix, this flowchart illustrates how different anticipated output and impact relate to each other. It helps to visualize potential correlations and causalities. </li>
           <li><strong>SDG Interlinkage Diagram:</strong>  In the form of a heat-map, this diagram helps uncover how the anticipated impact affects the SDGs. It highlights the degree to which impact on one SDG may be linked to another, while also drawing attention to areas where negative impacts may occur.
 </li>
-<li><strong>Stakeholder Matrix</strong>  ??
-</li>
+{/* <li><strong>Stakeholder Matrix</strong>  ??
+</li> */}
         </ul>
 
         <p>This structured framework is based on the <strong>Theory of Change (ToC)</strong> (See <a href="/resources"> Useful Resources</a> for more general details),    which outlines the logic flow, as a roadmap, of how a solution attains its ultimate impact. Below are defined the core components in the pathway of actions to intended long-term impact and how they are connected. </p>
@@ -51,8 +51,8 @@ In completing the Impact Indicator Matrix, long-term impact should be expressed 
  <strong> Risks</strong> are external or internal threats or challenges that could deter the success of the change pathway either in achieving intended results or in deploying the solution. Each risk should be associated with a mitigation action.
 </p>
 <h2 className="arvo-section"> Assumptions & Actions</h2>
-        <p><strong>5.1 Assumptions</strong> are external conditions that must be true for the pathway of change to succeed. They are the hidden enablers in the logic of change—if the assumptions break, the chain of change breaks as well. Consider the factors such as line of stakeholder’s behavior, data quality and availability, etc. </p>
-        <p><strong>5.2 Actions</strong> On-the-ground core activities that would be carried out or implemented to initiate the change process and deploy the quantum computing solution to the real-world. 
+        <p><strong>Assumptions</strong> are external conditions that must be true for the pathway of change to succeed. They are the hidden enablers in the logic of change—if the assumptions break, the chain of change breaks as well. Consider the factors such as line of stakeholder’s behavior, data quality and availability, etc. </p>
+        <p><strong>Actions</strong> On-the-ground core activities that would be carried out or implemented to initiate the change process and deploy the quantum computing solution to the real-world. 
 </p>
         
 
