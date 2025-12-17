@@ -486,7 +486,7 @@ if (tempId.startsWith('temp-')) {
   });
 }
 
-// Now save SDG + SDG Target using correct ID
+
 const targetIds = sdgTargets[savedRowId] || [];
 const sdgId = selectedSDGs[savedRowId];
 
@@ -750,7 +750,6 @@ return (
           for full instructions.
         </li>
         <li>Fill in the tables below.</li>
-        <li>Save each cell once filled in.</li>
         <li>Save final work once done.</li>
         <li>
           After filling mandatory fields, use <strong>Generate Diagram</strong> to
