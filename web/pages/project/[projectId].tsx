@@ -75,6 +75,68 @@ export default function ProjectDetailPage() {
 if (!projectId || typeof projectId !== "string") {
   return <div>Error: Invalid project ID.</div>;
 }
+// ===== Soft Lock: start + ping + stop =====
+useEffect(() => {
+  if (!projectId || typeof projectId !== "string") return;
+
+  (async () => {
+    // const res = await fetch(`${API_BASE}/api/projects/${projectId}/edit/start`, {
+    const res = await fetch(`${API_BASE}/api/projects/${projectId}/edit/start`, {
+
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (res.status === 423) {
+      const data = await res.json();
+      alert(`${data?.editingBy?.name ?? "Someone"} is editing this project. Please try again later.`);
+      router.push("/dashboard");
+      return;
+    }
+
+    if (!res.ok) {
+      // optional: handle error nicely
+      alert("Could not start editing session.");
+      router.push("/dashboard");
+    }
+  })();
+}, [projectId, API_BASE, router]);
+
+useEffect(() => {
+  if (!projectId || typeof projectId !== "string") return;
+
+  const interval = setInterval(() => {
+    // fetch(`${API_BASE}/api/projects/${projectId}/edit/ping`, {
+    fetch(`${API_BASE}/api/projects/${projectId}/edit/ping`, {
+
+      method: "POST",
+      credentials: "include",
+    }).catch(() => {});
+  }, 2_000);
+
+  return () => clearInterval(interval);
+}, [projectId, API_BASE]);
+
+useEffect(() => {
+  if (!projectId || typeof projectId !== "string") return;
+
+  const stop = () => {
+    // fetch(`${API_BASE}/api/projects/${projectId}/edit/stop`, {
+    fetch(`${API_BASE}/api/projects/${projectId}/edit/stop`, {
+
+      method: "POST",
+      credentials: "include",
+      keepalive: true,
+    }).catch(() => {});
+  };
+
+  window.addEventListener("beforeunload", stop);
+
+  return () => {
+    window.removeEventListener("beforeunload", stop);
+    stop();
+  };
+}, [projectId, API_BASE]);
 
 
   const [impactRows, setImpactRows] = useState<ImpactRow[]>([]);

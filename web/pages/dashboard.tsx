@@ -30,6 +30,10 @@ const [searchTerm, setSearchTerm] = useState("");
 const [collabEmails, setCollabEmails] = useState<string[]>([]);
 // Edit modal collaborators (chips)
 const [editCollabEmails, setEditCollabEmails] = useState<string[]>([]);
+const [lockModal, setLockModal] = useState<{ open: boolean; name: string }>({
+  open: false,
+  name: "",
+});
 
 // ✅ Close dropdown when clicking outside
 useEffect(() => {
@@ -94,15 +98,59 @@ setEditCollabEmails(
       .catch(() => router.push("/login"));
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => setProjects(data.projects));
+  // useEffect(() => {
+  //   if (user) {
+  //     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
+  //       credentials: "include",
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => setProjects(data.projects));
+  //   }
+  // }, [user]);
+const fetchProjects = async () => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
+    credentials: "include",
+  });
+  const data = await res.json();
+  setProjects(data.projects || []);
+};
+useEffect(() => {
+  if (!user) return;
+
+  fetchProjects();
+
+  const interval = setInterval(() => {
+    fetchProjects();
+  }, 1_000);
+
+  return () => clearInterval(interval);
+}, [user]);
+
+const openProject = async (projectId: string) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${projectId}/edit/start`,
+    {
+      method: "POST",
+      credentials: "include",
     }
-  }, [user]);
+  );
+
+  if (res.status === 423) {
+    const data = await res.json();
+    setLockModal({
+      open: true,
+      name: data?.editingBy?.name ?? "Someone",
+    });
+    return;
+  }
+
+  if (!res.ok) {
+    alert("Could not open project.");
+    return;
+  }
+
+  router.push(`/project/${projectId}`);
+};
 
 const handleCreate = async () => {
   setError("");
@@ -211,6 +259,7 @@ const handleCreate = async () => {
     <th>Name</th>
     <th>Members</th>
     <th>Requester</th>
+    <th>Currently editing</th>
     <th>Created</th>
     <th></th>
   </tr>
@@ -243,13 +292,30 @@ const handleCreate = async () => {
         <tr key={p.id}>
           <td className={styles.nameCell}>
             <span className={styles.avatar}>PR</span>
-<a
+{/* <a
   href={`/project/${p.id}`}
   className={styles.projectLink}
   style={{ textDecoration: "underline", color: "#111827" }}
 >
   {p.title}
-</a>
+</a> */}
+<button
+  type="button"
+  className={styles.projectLink}
+  onClick={() => openProject(p.id)}
+  style={{
+    background: "none",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+    textDecoration: "underline",
+    color: "#111827",
+    textAlign: "left",
+  }}
+>
+  {p.title}
+</button>
+
 
           </td>
 <td>
@@ -264,6 +330,15 @@ const handleCreate = async () => {
 </td>
 
           <td>{p.members.find((m: any) => m.role === "OWNER")?.user?.email || "Unknown"}</td>
+          <td>
+  {p.currentlyEditing ? (
+    <span style={{ color: "#b7791f", fontWeight: 600 }}>
+      {p.currentlyEditing.name}
+    </span>
+  ) : (
+    <span style={{ color: "#9ca3af" }}>—</span>
+  )}
+</td>
           <td>{new Date(p.createdAt).toLocaleString()}</td>
           <td>
             <div className={styles.actionsDropdown}>
@@ -513,7 +588,9 @@ setIsEditing(false);
         className="nice-button"
         onClick={() => {
           setSelectedProject(null);
-          router.push(`/project/${selectedProject.id}`);
+          // router.push(`/project/${selectedProject.id}`);
+          openProject(selectedProject.id);
+
         }}
       >
         Open Project →
@@ -582,6 +659,54 @@ setIsEditing(false);
       </div>
 
       {error && <p className={styles.error}>{error}</p>}
+    </div>
+  </div>
+)}
+{lockModal.open && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.45)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999,
+    }}
+    onClick={() => setLockModal({ open: false, name: "" })}
+  >
+    <div
+      style={{
+        width: 420,
+        background: "#fff",
+        borderRadius: 12,
+        padding: 20,
+        boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h3 style={{ margin: 0, fontSize: 18 }}>⚠️ Project currently in use</h3>
+      <p style={{ marginTop: 10, color: "#374151", lineHeight: 1.4 }}>
+        <b>{lockModal.name}</b> is currently editing this project.
+        <br />
+        Please try again later to avoid conflicting changes.
+      </p>
+
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+        <button
+          onClick={() => setLockModal({ open: false, name: "" })}
+          style={{
+            background: "#111730",
+            color: "#fff",
+            border: "none",
+            padding: "10px 14px",
+            borderRadius: 8,
+            cursor: "pointer",
+          }}
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 )}
