@@ -251,6 +251,7 @@
   cursor: help;
   white-space: nowrap;
   z-index: 1;
+  overflow: visible;
 }
 
 .tooltipHeader .tooltipText {
@@ -258,8 +259,8 @@
   opacity: 0;
   position: absolute;
   bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 80%;
+  transform: translateX(-60%);
   width: 220px;
   background-color: #1a1f36;
   color: #fff;
@@ -269,7 +270,7 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   font-size: 12px;
   line-height: 1.5;
-  z-index: 1000;
+   z-index: 1000000 !important;
   white-space: normal;
   transition: opacity 0.2s ease-in-out;
   pointer-events: none;
@@ -288,7 +289,7 @@
   position: relative;          /* needed for the decorative frame below */
   overflow: visible !important;/* ✅ critical: let tooltips escape */
   padding: 0;                  /* optional: lets the table touch the frame */
-  z-index: 1;  
+  /* z-index: 1;   */
 }
 
 /* 2) Draw a rounded frame behind the table (doesn't clip content) */
@@ -851,6 +852,7 @@
     overflow-x: auto !important;
     min-height: auto !important; /* FIX overlapping footer/buttons */
     padding-bottom: 6rem !important; /* Space for buttons */
+    
   }
 }
 @media (max-width: 900px) {
@@ -878,12 +880,13 @@
 .softTable td,
 .softTable th {
   overflow: visible !important;
+  
 }
 
 /* --- Prevent tooltips from going off-screen --- */
 .tooltipHeader {
   position: relative;
-  overflow: visible !important;
+  overflow: visible;
 }
 
 .tooltipHeader .tooltipText {
@@ -891,10 +894,13 @@
   opacity: 0;
   position: absolute;
   bottom: 120%;
-  left: 0;
-  transform: translateX(0);
 
-  max-width: 260px;
+  /* center above the header */
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* keep it inside the viewport */
+  max-width: min(260px, calc(100vw - 24px));
   white-space: normal;
 
   background-color: #1a1f36;
@@ -904,7 +910,11 @@
 
   z-index: 999999;
   transition: opacity 0.2s ease-in-out;
+
+  /* optional: stops it from blocking hover/click */
+  pointer-events: none;
 }
+
 
 .tooltipHeader:hover .tooltipText {
   visibility: visible;
@@ -915,9 +925,42 @@
 @media (max-width: 900px) {
   .container {
     overflow: visible !important;
+    
   }
 
   .tableWrapper {
     overflow-x: auto !important;
   }
+}
+/* keep the floating buttons below tooltips */
+.container :global(.actionIconBar) {
+  z-index: 20 !important;
+}
+
+/* when hovering a header, lift it above EVERYTHING */
+.tooltipHeader:hover {
+  z-index: 999999 !important;
+}
+
+.tooltipHeader {
+  position: relative;
+  z-index: 0;
+}
+
+.tooltipHeader .tooltipText {
+  z-index: 2147483647 !important; /* max-ish */
+  position: absolute;
+}
+/* First column tooltip: align to the left so it never goes off-screen */
+.softTable thead th:first-child .tooltipText {
+  left: 0;
+  transform: none;
+}
+
+/* Last column tooltip: align to the right so it never goes off-screen */
+/* SDG Target is the 2nd last TH because the last TH is the empty delete column */
+.softTable thead th:nth-last-child(2) .tooltipText {
+  left: auto !important;
+  right: 0 !important;
+  transform: translateX(-12px) !important;
 }
