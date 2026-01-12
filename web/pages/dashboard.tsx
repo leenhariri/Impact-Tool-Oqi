@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/dashboard.module.css";
 import "nice-forms.css";
+import CollaboratorPicker from "../components/CollaboratorPicker";
 function sanitizeInput(value: string): string {
   return value
     .trim()
@@ -25,6 +26,10 @@ const [editCollaborators, setEditCollaborators] = useState("");
 const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 const [filterRole, setFilterRole] = useState("All");
 const [searchTerm, setSearchTerm] = useState("");
+// Create modal collaborators (chips)
+const [collabEmails, setCollabEmails] = useState<string[]>([]);
+// Edit modal collaborators (chips)
+const [editCollabEmails, setEditCollabEmails] = useState<string[]>([]);
 
 // ✅ Close dropdown when clicking outside
 useEffect(() => {
@@ -53,12 +58,24 @@ useEffect(() => {
   if (selectedProject) {
     setEditTitle(selectedProject.title);
     setEditDesc(selectedProject.description || "");
-setEditCollaborators(
-  selectedProject.members
+// setEditCollaborators(
+//   selectedProject.members
+//     .filter((m: any) => m.role !== "OWNER")
+//     .map((m: any) => m.user?.email)
+//     .filter(Boolean) // remove nulls in case a user relation is missing
+//     .join(", ")
+// );
+// setEditCollabEmails(
+//   selectedProject.members
+//     .filter((m: any) => m.role !== "OWNER")
+//     .map((m: any) => m.user?.email)
+//     .filter(Boolean)
+// );
+setEditCollabEmails(
+  (selectedProject.members ?? [])
     .filter((m: any) => m.role !== "OWNER")
     .map((m: any) => m.user?.email)
-    .filter(Boolean) // remove nulls in case a user relation is missing
-    .join(", ")
+    .filter(Boolean)
 );
 
   }
@@ -99,9 +116,11 @@ const handleCreate = async () => {
       body: JSON.stringify({
         title: sanitizeInput(title),
         description: sanitizeInput(description),
-        collaborators: collaborators
-          .split(",")
-          .map((email) => ({ email: email.trim(), role: "EDITOR" })),
+        // collaborators: collaborators
+        //   .split(",")
+        //   .map((email) => ({ email: email.trim(), role: "EDITOR" })),
+        collaborators: collabEmails.map((email) => ({ email, role: "EDITOR" })),
+
       }),
     });
 
@@ -127,7 +146,9 @@ const handleCreate = async () => {
     // ✅ Reset form fields
     setTitle("");
     setDescription("");
-    setCollaborators("");
+    // setCollaborators("");
+    setCollabEmails([]);
+
     setError("");
   } catch (err: any) {
     setError(err.message);
@@ -355,14 +376,18 @@ Update the title, optional description, or invite new collaborators.
   onChange={(e) => setEditDesc(e.target.value)}
 />
 
-<input
+{/* <input
   type="text"
   className={styles.modalInput}
   placeholder="Invite collaborators (emails, comma-separated)"
   value={editCollaborators}
   onChange={(e) => setEditCollaborators(e.target.value)}
-/>
+/> */}
 
+<CollaboratorPicker
+  valueEmails={editCollabEmails}
+  onChangeEmails={setEditCollabEmails}
+/>
 
     {/* ===== Edit Mode Buttons ===== */}
     <div className={styles.modalActions}>
@@ -393,12 +418,17 @@ Update the title, optional description, or invite new collaborators.
                 body: JSON.stringify({
                   title: editTitle,
                   description: editDesc,
-                  collaborators: editCollaborators
-                    .split(",")
-                    .map((email) => ({
-                      email: email.trim(),
-                      role: "EDITOR",
-                    })),
+                  // collaborators: editCollaborators
+                  //   .split(",")
+                  //   .map((email) => ({
+                  //     email: email.trim(),
+                  //     role: "EDITOR",
+                  //   })),
+                  collaborators: editCollabEmails.map((email) => ({
+  email,
+  role: "EDITOR",
+})),
+
                 }),
               }
             );
@@ -415,8 +445,35 @@ Update the title, optional description, or invite new collaborators.
               }
               return;
             }
-            setSelectedProject(result);
-            setIsEditing(false);
+            // setSelectedProject(result);
+            // ✅ Refetch the full project so members include user (email/name)
+const fullRes = await fetch(
+  `${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`,
+  { credentials: "include" }
+);
+
+if (fullRes.ok) {
+  const json = await fullRes.json();
+
+  // supports both { project: {...} } and {...}
+  const fullProject = json.project ?? json;
+console.log("FULL PROJECT", fullProject);
+console.log("FULL MEMBERS", fullProject?.members);
+
+  setSelectedProject(fullProject);
+
+  // also update the table list so it stays in sync
+  setProjects((prev: any) =>
+    prev.map((p: any) => (p.id === fullProject.id ? fullProject : p))
+  );
+} else {
+  // fallback if refetch fails
+  setSelectedProject(result);
+}
+
+setIsEditing(false);
+
+            
           } catch (err) {
             alert("Failed to update project");
           }
@@ -440,7 +497,7 @@ Update the title, optional description, or invite new collaborators.
         <dt>Members</dt>
         <dd>
           <ul style={{ paddingLeft: "1rem", margin: 0 }}>
-            {selectedProject.members.map((m: any) => (
+            {(selectedProject?.members ?? []).map((m: any) => (
               <li key={m.userId || m.id}>
                 {m.user?.email || m.user?.name || "(unknown)"}{" "}
                 {m.role === "OWNER" && "(Owner)"}
@@ -494,13 +551,17 @@ Update the title, optional description, or invite new collaborators.
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <input
+      {/* <input
         type="text"
         className={styles.modalInput}
         placeholder="Invite collaborators (emails, comma-separated)"
         value={collaborators}
         onChange={(e) => setCollaborators(e.target.value)}
-      />
+      /> */}
+<CollaboratorPicker
+  valueEmails={collabEmails}
+  onChangeEmails={setCollabEmails}
+/>
 
       <div className={styles.modalActions}>
         {/* <button className="cancelLink" onClick={() => setShowCreateModal(false)}>Cancel</button> */}

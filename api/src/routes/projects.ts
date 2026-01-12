@@ -124,10 +124,18 @@ r.get("/:id", requireAuth, async (req, res) => {
   const userId = req.user!.uid;
   const { id } = req.params;
 
-  const project = await prisma.project.findUnique({
-    where: { id },
-    include: { members: true },
-  });
+  // const project = await prisma.project.findUnique({
+  //   where: { id },
+  //   include: { members: true },
+  // });
+const project = await prisma.project.findUnique({
+  where: { id },
+  include: {
+    members: {
+      include: { user: true },
+    },
+  },
+});
 
   if (!project) return res.status(404).json({ error: "Project not found" });
 
@@ -219,10 +227,15 @@ r.patch("/:projectId", requireAuth, async (req, res) => {
       );
     }
 
-    const full = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: { members: true },
-    });
+const full = await prisma.project.findUnique({
+  where: { id: projectId },
+  include: {
+    members: {
+      include: { user: true },
+    },
+  },
+});
+
 
     if (failedEmails.length > 0) {
       return res.status(200).json({

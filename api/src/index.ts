@@ -31,6 +31,7 @@ const { validateEnv } = await import("./config/validateEnv");
   app.use(cookieParser());
 
   // Routes
+  app.use("/api/users",require("./routes/userRoutes").default);
   app.use("/api/auth", require("./routes/auth").default);
   app.use("/api/projects", require("./routes/projects").default);
   app.use("/api/risks", require("./routes/risks").default);
