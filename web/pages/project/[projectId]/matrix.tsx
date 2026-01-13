@@ -38,6 +38,9 @@ export default function MatrixPage() {
   const router = useRouter();
   const { projectId } = router.query;
   const matrixRef = useRef<HTMLDivElement>(null);
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+const projectIdStr =
+  router.isReady && typeof projectId === "string" ? projectId : null;
 
   const [targets, setTargets] = useState<SDGTarget[]>([]);
   const [matrix, setMatrix] = useState<{ [key: string]: MatrixEntry }>({});
@@ -76,6 +79,124 @@ const [showInstructions, setShowInstructions] = useState(true); // 👈 new
   const [tempRationale, setTempRationale] = useState<string>("");
 const [showStats, setShowStats] = useState(false);
 const [showScale, setShowScale] = useState(false);
+const exportMatrixAsCSV = () => {
+  if (!targets?.length) {
+    alert("No targets to export.");
+    return;
+  }
+
+  // CSV-safe cell (handles commas/quotes/newlines)
+  const esc = (v: any) => {
+    if (v === null || v === undefined) return "";
+    const s = String(v);
+    const needsQuotes = /[",\n]/.test(s);
+    const escaped = s.replace(/"/g, '""');
+    return needsQuotes ? `"${escaped}"` : escaped;
+  };
+
+  // Header row: Influencing Targets + target codes + Outsum
+  const header = ["Influencing Targets", ...targets.map(t => t.code), "Outsum"];
+
+  const rows: string[][] = [];
+
+  // Data rows
+  targets.forEach((source, rowIndex) => {
+    const row: string[] = [];
+    row.push(source.code);
+
+    targets.forEach((target) => {
+      const key = `${source.id}_${target.id}`;
+      const entry = matrix[key];
+      const isDiagonal = source.id === target.id;
+
+      // Keep diagonal empty (matches your UI behavior)
+      const score = isDiagonal ? "" : (entry?.score ?? "");
+      row.push(score === "" ? "" : String(score));
+    });
+
+    // Outsum (row sum)
+    row.push(String(rowSums[rowIndex] ?? 0));
+    rows.push(row);
+  });
+
+  // Bottom "Insum" row (col sums)
+  rows.push(["Insum", ...colSums.map(s => String(s ?? 0)), ""]);
+
+  const csv = [header, ...rows]
+    .map(line => line.map(esc).join(","))
+    .join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `sdg-matrix-${projectIdStr ?? "project"}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+};
+
+useEffect(() => {
+  if (!router.isReady || !projectIdStr) return;
+
+  (async () => {
+    const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (res.status === 423) {
+      const data = await res.json();
+      alert(`${data?.editingBy?.name ?? "Someone"} is editing this project. Please try again later.`);
+      router.push("/dashboard");
+      return;
+    }
+
+    if (!res.ok) {
+      alert("Could not start editing session.");
+      router.push("/dashboard");
+    }
+  })();
+}, [router.isReady, projectIdStr, API_BASE, router]);
+useEffect(() => {
+  if (!router.isReady || !projectIdStr) return;
+
+  const interval = setInterval(() => {
+    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => {});
+  }, 5_000);
+
+  return () => clearInterval(interval);
+}, [router.isReady, projectIdStr, API_BASE]);
+useEffect(() => {
+  if (!router.isReady || !projectIdStr) return;
+
+  const stop = () => {
+    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
+      method: "POST",
+      credentials: "include",
+      keepalive: true,
+    }).catch(() => {});
+  };
+
+  const onRouteChangeStart = (url: string) => {
+    if (url.startsWith(`/project/${projectIdStr}`)) return; // stay in project
+    stop();
+  };
+
+  router.events.on("routeChangeStart", onRouteChangeStart);
+  window.addEventListener("beforeunload", stop);
+
+  return () => {
+    router.events.off("routeChangeStart", onRouteChangeStart);
+    window.removeEventListener("beforeunload", stop);
+  };
+}, [router.isReady, projectIdStr, API_BASE, router.events]);
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_API_BASE) {
@@ -658,10 +779,17 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
           Export as PDF
         </button> */}
         <div className="actionIconBar">
-          <button className="actionIcon" title="Export as PDF"
+          {/* <button className="actionIcon" title="Export as PDF"
     onClick={exportMatrixAsPDF}>
     <i className="uil uil-import"></i>
-  </button>
+  </button> */}
+<button
+  className="actionIcon"
+  title="Export as CSV"
+  onClick={exportMatrixAsCSV}
+>
+  <i className="uil uil-import"></i>
+</button>
 
   <button
     className="actionIcon"

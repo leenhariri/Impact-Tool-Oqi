@@ -109,6 +109,8 @@ export default function DiagramView({ projectId }: { projectId: string }) {
   const [showInstructions, setShowInstructions] = useState(true); 
   const shouldRegenerate = router.query.regenerate === "true";
 
+const projectIdStr = projectId; // already a string in your props
+
 const resetNodePositions = () => {
   const verticalSpacing = 110;
   const horizontalSpacing = 260;
@@ -214,6 +216,64 @@ const exportAsPDF = async () => {
     }));
 const [error, setError] = useState<string>(''); // Error state
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ;
+useEffect(() => {
+  if (!projectIdStr) return;
+
+  (async () => {
+    const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (res.status === 423) {
+      const data = await res.json();
+      alert(`${data?.editingBy?.name ?? "Someone"} is editing this project. Please try again later.`);
+      router.push("/dashboard");
+      return;
+    }
+
+    if (!res.ok) {
+      alert("Could not start editing session.");
+      router.push("/dashboard");
+    }
+  })();
+}, [projectIdStr, API_BASE, router]);
+useEffect(() => {
+  if (!projectIdStr) return;
+
+  const interval = setInterval(() => {
+    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
+      method: "POST",
+      credentials: "include",
+    }).catch(() => {});
+  }, 5_000);
+
+  return () => clearInterval(interval);
+}, [projectIdStr, API_BASE]);
+useEffect(() => {
+  if (!projectIdStr) return;
+
+  const stop = () => {
+    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
+      method: "POST",
+      credentials: "include",
+      keepalive: true,
+    }).catch(() => {});
+  };
+
+  const onRouteChangeStart = (url: string) => {
+    if (url.startsWith(`/project/${projectIdStr}`)) return;
+    stop();
+  };
+
+  router.events.on("routeChangeStart", onRouteChangeStart);
+  window.addEventListener("beforeunload", stop);
+
+  return () => {
+    router.events.off("routeChangeStart", onRouteChangeStart);
+    window.removeEventListener("beforeunload", stop);
+  };
+}, [projectIdStr, API_BASE, router.events]);
 
   useEffect(() => {
     if (!projectId || typeof projectId !== 'string') {

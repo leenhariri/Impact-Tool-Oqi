@@ -126,30 +126,57 @@ if (!router.isReady || !projectIdStr) return;
 }, [router.isReady, projectIdStr, API_BASE]);
 
 
+// useEffect(() => {
+//   // if (!projectId || typeof projectId !== "string") return;
+// if (!router.isReady || !projectIdStr) return;
+
+//   const stop = () => {
+//     if (!hasLockRef.current) return;
+//     hasLockRef.current = false;
+//     // fetch(`${API_BASE}/api/projects/${projectId}/edit/stop`, {
+//     fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
+
+//       method: "POST",
+//       credentials: "include",
+//       keepalive: true,
+//     }).catch(() => {});
+//   };
+
+//   window.addEventListener("beforeunload", stop);
+
+//   return () => {
+//     window.removeEventListener("beforeunload", stop);
+//     stop();
+//   };
+// }, [router.isReady, projectIdStr, API_BASE]);
+
 useEffect(() => {
-  // if (!projectId || typeof projectId !== "string") return;
-if (!router.isReady || !projectIdStr) return;
+  if (!router.isReady || !projectIdStr) return;
 
   const stop = () => {
-    if (!hasLockRef.current) return;
-    hasLockRef.current = false;
-    // fetch(`${API_BASE}/api/projects/${projectId}/edit/stop`, {
     fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
-
       method: "POST",
       credentials: "include",
       keepalive: true,
     }).catch(() => {});
   };
 
+  const onRouteChangeStart = (url: string) => {
+    // ✅ If we are still within the same project, DO NOT stop the lock
+    if (url.startsWith(`/project/${projectIdStr}`)) return;
+    stop();
+  };
+
+  router.events.on("routeChangeStart", onRouteChangeStart);
   window.addEventListener("beforeunload", stop);
 
   return () => {
+    router.events.off("routeChangeStart", onRouteChangeStart);
     window.removeEventListener("beforeunload", stop);
-    stop();
-  };
-}, [router.isReady, projectIdStr, API_BASE]);
 
+    // ❌ IMPORTANT: do NOT call stop() here anymore
+  };
+}, [router.isReady, projectIdStr, API_BASE, router.events]);
 
 
   const [impactRows, setImpactRows] = useState<ImpactRow[]>([]);
@@ -210,7 +237,7 @@ if (!router.isReady || !projectIdStr) return;
 const controller = new AbortController();
   const fetchStakeholders = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/stakeholders/${projectId}`,{credentials: 'include',});
+      const res = await fetch(`${API_BASE}/api/stakeholders/${projectIdStr}`,{credentials: 'include',});
       const data = await res.json();
       setStakeholders(data);
       if (data.length === 0) {
