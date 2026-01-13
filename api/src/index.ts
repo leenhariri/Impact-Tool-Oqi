@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 
-// Load .env only if not already defined (useful for local dev)
 if (!process.env.FRONTEND_URL) {
   dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 }
@@ -16,9 +15,9 @@ const app = express();
 app.set("trust proxy", 1);
 
 async function startServer() {
-  // ✅ Lazy import AFTER env is available
+
 const { validateEnv } = await import("./config/validateEnv");
-  const env = validateEnv(); // ✅ Call it here, after Docker env vars exist
+  const env = validateEnv(); 
 
   app.use(helmet());
   app.use(
@@ -31,8 +30,7 @@ const { validateEnv } = await import("./config/validateEnv");
   app.use(express.json());
   app.use(cookieParser());
 
-  // Routes
-  // Routes
+ 
 app.use("/api/projects", projectEditRoutes);
 
   app.use("/api/users",require("./routes/userRoutes").default);
@@ -62,9 +60,9 @@ app.use("/api/projects", projectEditRoutes);
 
   const PORT = env.PORT || 4000;
   app.listen(PORT, () => {
-    console.log(`🚀 API running on :${PORT}`);
+    console.log(`API running on :${PORT}`);
   });
-  console.log("✅ FRONTEND_URL:", env.FRONTEND_URL);
+  console.log("FRONTEND_URL:", env.FRONTEND_URL);
 }
 
 startServer();

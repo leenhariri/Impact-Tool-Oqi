@@ -22,7 +22,7 @@ export default function About() {
 </header> */}
 
 
-      {/* Main Content */}
+     
       <div className="about-container">
 <section>
   <h2 className="arvo-section">About the OQI</h2>

@@ -22,7 +22,7 @@ export default function Footer() {
 
 
 
-        {/* Now the actual footer starts below the curve */}
+        
         <footer style={{ backgroundColor: "var(--footer-bg)", color: "#fff" }}>
           {/* Main Footer Content */}
           <div style={{ padding: "40px 0 20px", textAlign: "center" }}>
@@ -102,7 +102,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Bottom Bar with Flex Layout */}
+       
           <div
             style={{
               backgroundColor: "#0e1129",

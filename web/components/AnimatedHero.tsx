@@ -1,7 +1,7 @@
 type Props = {
   title: string;
   subtitle?: string;
-  animate?: boolean; // true = animate on scroll like homepage
+  animate?: boolean; 
 };
 
 import { useEffect, useState } from "react";

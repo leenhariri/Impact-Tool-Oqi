@@ -21,7 +21,7 @@ const Login = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters long" }),
 });
 
-// === REGISTER ===
+// REGISTER 
 r.post("/register", async (req, res) => {
   try {
     const { email, name, password } = Register.parse(req.body);
@@ -50,7 +50,7 @@ r.post("/register", async (req, res) => {
   }
 });
 
-// === LOGIN ===
+// LOGIN 
 r.post("/login", loginLimiter, async (req, res) => {
   try {
     const { email, password } = Login.parse(req.body);
@@ -79,13 +79,13 @@ r.post("/login", loginLimiter, async (req, res) => {
   }
 });
 
-// === LOGOUT ===
+// LOGOUT 
 r.post("/logout", (_req, res) => {
   clearCookie(res);
   return res.json({ ok: true });
 });
 
-// === GET CURRENT USER ===
+// GET CURRENT USER
 r.get("/me", (req, res) => {
   try {
     const token = req.cookies[COOKIE_NAME];

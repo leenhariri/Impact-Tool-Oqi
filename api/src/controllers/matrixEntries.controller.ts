@@ -17,7 +17,7 @@ const upsertSchema = z.object({
   rationale: z.string().max(1000).optional(),
 });
 
-// 🔹 GET all matrix entries for a project
+//  GET all matrix entries for a project
 export const getMatrixForProject = async (req: Request, res: Response) => {
   const projectId = req.params.projectId || req.body.projectId;
 
@@ -37,7 +37,7 @@ export const getMatrixForProject = async (req: Request, res: Response) => {
     return res.status(200).json(entries);
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('❌ Failed to fetch matrix:', error);
+      console.error(' Failed to fetch matrix:', error);
     }
     return res.status(500).json({ error: 'Failed to fetch matrix' });
   }
@@ -79,7 +79,7 @@ export const upsertMatrixEntry = async (req: Request, res: Response) => {
     return res.status(200).json(entry);
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('❌ Failed to upsert matrix entry:', error);
+      console.error(' Failed to upsert matrix entry:', error);
     }
     return res.status(500).json({ error: 'Failed to save matrix entry' });
   }
@@ -98,7 +98,7 @@ export const clearMatrixForProject = async (req: Request, res: Response) => {
     return res.status(204).send();
   } catch (error) {
     if (process.env.NODE_ENV === 'development') {
-      console.error('❌ Failed to clear matrix:', error);
+      console.error(' Failed to clear matrix:', error);
     }
     return res.status(500).json({ error: 'Failed to clear matrix entries' });
   }

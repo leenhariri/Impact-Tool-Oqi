@@ -47,7 +47,7 @@ const filteredSuggestions = useMemo(
 useEffect(() => {
   const q = sanitize(query);
 
-  // If input is empty, clear + CLOSE dropdown
+ 
   if (!q) {
     setSuggestions([]);
     setOpen(false);

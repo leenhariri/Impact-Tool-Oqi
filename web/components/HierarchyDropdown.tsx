@@ -48,7 +48,7 @@ const HierarchyDropdown: React.FC<Props> = ({ selectedValues, onChange }) => {
           border: '1px solid #ccc',
           borderRadius: '8px',
           height: '36px',
-          padding: '0 36px 0 12px', // left padding + space for arrow
+          padding: '0 36px 0 12px', 
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',

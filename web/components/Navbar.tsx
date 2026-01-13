@@ -71,7 +71,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Hamburger Button (mobile only) */}
+        {/* Hamburger Button */}
         <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

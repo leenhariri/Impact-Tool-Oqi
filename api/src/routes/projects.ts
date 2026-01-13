@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PrismaClient, Prisma } from "@prisma/client"; // ✅ Added Prisma import
+import { PrismaClient, Prisma } from "@prisma/client"; 
 import requireAuth from "../middleware/requireAuth";
 import { z } from "zod";
 import { v4 as uuid } from "uuid";
@@ -100,7 +100,7 @@ r.post("/", requireAuth, async (req, res) => {
 });
 
 r.get("/", requireAuth, async (req, res) => {
-  const userId = req.user!.uid; // ✅ your JWT uses uid (keep this)
+  const userId = req.user!.uid; // JWT uses uid 
 
   const LOCK_TTL_MS = 60_000;
   const now = Date.now();
@@ -118,10 +118,10 @@ r.get("/", requireAuth, async (req, res) => {
         },
       },
 
-      // ✅ ADD THIS so you can display the editor name/email
+      
       editingByUser: true,
     },
-    // optional but nice:
+    
     // orderBy: { createdAt: "desc" },
   });
 

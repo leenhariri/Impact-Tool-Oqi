@@ -8,7 +8,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Basic frontend input sanitization
+
   const sanitize = (value: string): string =>
     value.trim().replace(/[<>"]/g, "");
 

@@ -109,7 +109,7 @@ export default function DiagramView({ projectId }: { projectId: string }) {
   const [showInstructions, setShowInstructions] = useState(true); 
   const shouldRegenerate = router.query.regenerate === "true";
 
-const projectIdStr = projectId; // already a string in your props
+const projectIdStr = projectId; 
 
 const resetNodePositions = () => {
   const verticalSpacing = 110;
@@ -157,7 +157,7 @@ const exportAsPDF = async () => {
 
   const element = diagramOnlyRef.current;
 
-  // Hide UI elements (e.g., Legend)
+
   const hiddenElements = element.querySelectorAll(".no-export");
   hiddenElements.forEach((el) => ((el as HTMLElement).style.display = "none"));
 
@@ -214,7 +214,7 @@ const exportAsPDF = async () => {
       x: node.position.x,
       y: node.position.y,
     }));
-const [error, setError] = useState<string>(''); // Error state
+const [error, setError] = useState<string>(''); 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ;
 useEffect(() => {
   if (!projectIdStr) return;
@@ -317,7 +317,7 @@ const controller = new AbortController();
          if (!stakeholderRes.ok) throw new Error("Failed to fetch stakeholders");
 const stakeholders: Stakeholder[] = await stakeholderRes.json();
         const nodeList: Node[] = [];
-        // We will accumulate measured auto-layout positions
+        
 let autoY = {
   LONG_TERM_IMPACT: 0,
   MID_TERM_IMPACT: 0,
@@ -356,7 +356,7 @@ const nodePositionMap = shouldRegenerate
           hierarchyYMap[level] = idx * verticalSpacing;
         });
 
-        // Impact Rows
+        
         for (const level of hierarchyOrder) {
           const group = impactGroups[level] || [];
           group.sort((a, b) => a.orderIndex - b.orderIndex);
@@ -367,7 +367,7 @@ const nodePositionMap = shouldRegenerate
               x: baseX + i * horizontalSpacing,
               y: hierarchyYMap[level],
             }) as { x: number; y: number };
-// let style = {};
+
 let style: React.CSSProperties = {
   padding: "8px 12px",
   fontSize: "16px",
@@ -421,7 +421,7 @@ risks.forEach((risk) => {
 const riskBoxBaseX = baseX - 350;
 let accumulatedY = 0;
 // const verticalPadding = 30;
-const baseRiskY = -50; // top margin
+const baseRiskY = -50; 
 
 Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
   const nodeId = `risk-${hierarchy}`;
@@ -704,7 +704,7 @@ const handleEdgesChange = (changes: any) => {
   const updatedEdges = applyEdgeChanges(changes, edges);
   setEdges(updatedEdges);
 
-  // Save updated edges to backend
+
   fetch(`${API_BASE}/api/diagram-edges`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -725,11 +725,11 @@ const onConnect = useCallback(
     const targetNode = nodes.find((n) => n.id === params.target);
     if (!sourceNode || !targetNode) return;
 
-    // Decide which node is higher vs lower
+
     const topNode = sourceNode.position.y < targetNode.position.y ? sourceNode : targetNode;
     const bottomNode = topNode.id === sourceNode.id ? targetNode : sourceNode;
 
-    // Create upward arrow (arrowhead below top box)
+
     const newEdge: Edge = {
       id: `${topNode.id}-${bottomNode.id}-${Date.now()}`,
       source: topNode.id,

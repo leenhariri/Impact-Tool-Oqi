@@ -39,7 +39,7 @@ const [editingCache, setEditingCache] = useState<
 >({});
 const projectsReqSeq = useRef(0);
 
-// ✅ Close dropdown when clicking outside
+
 useEffect(() => {
   function handleClickOutside(event: MouseEvent) {
     const dropdowns = document.querySelectorAll(`.${styles.dropdownMenu}`);
@@ -127,13 +127,13 @@ const fetchProjects = async () => {
 
   const data = await res.json();
 
-  // Ignore out-of-order responses (prevents “appears then disappears” due to races)
+ 
   if (seq !== projectsReqSeq.current) return;
 
   const nextProjects = data.projects || [];
   setProjects(nextProjects);
 
-  // Update editing cache with a grace period
+  
   const now = Date.now();
   setEditingCache((prev) => {
     const next = { ...prev };
@@ -144,8 +144,8 @@ const fetchProjects = async () => {
       }
     }
 
-    // expire cache entries if not seen recently (grace period)
-    const GRACE_MS = 6000; // 6 seconds
+    
+    const GRACE_MS = 6000;
     for (const [projectId, info] of Object.entries(next)) {
       if (now - info.lastSeen > GRACE_MS) {
         delete next[projectId];
@@ -230,10 +230,10 @@ const handleCreate = async () => {
     const newProject = await response.json();
     setProjects((prev: any) => [...prev, newProject]);
 
-    // ✅ Close the modal instead of opening the edit view
+   
     setShowCreateModal(false);
 
-    // ✅ Reset form fields
+    
     setTitle("");
     setDescription("");
     // setCollaborators("");
@@ -488,8 +488,7 @@ const handleCreate = async () => {
           {/* Title */}
 {isEditing ? (
   <>
-    {/* ===== EDIT MODE FORM ===== */}
-{/* ===== EDIT MODE FORM (MATCH CREATE FORM STYLE) ===== */}
+
 <h2 className={styles.modalTitle}>Edit Project</h2>
 <p className={styles.modalDescription}>
 Update the title, optional description, or invite new collaborators.
@@ -580,7 +579,7 @@ Update the title, optional description, or invite new collaborators.
               return;
             }
             // setSelectedProject(result);
-            // ✅ Refetch the full project so members include user (email/name)
+            
 const fullRes = await fetch(
   `${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`,
   { credentials: "include" }
@@ -589,19 +588,19 @@ const fullRes = await fetch(
 if (fullRes.ok) {
   const json = await fullRes.json();
 
-  // supports both { project: {...} } and {...}
+  
   const fullProject = json.project ?? json;
 console.log("FULL PROJECT", fullProject);
 console.log("FULL MEMBERS", fullProject?.members);
 
   setSelectedProject(fullProject);
 
-  // also update the table list so it stays in sync
+
   setProjects((prev: any) =>
     prev.map((p: any) => (p.id === fullProject.id ? fullProject : p))
   );
 } else {
-  // fallback if refetch fails
+ 
   setSelectedProject(result);
 }
 

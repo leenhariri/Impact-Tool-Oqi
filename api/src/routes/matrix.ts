@@ -2,7 +2,7 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import requireAuth from '../middleware/requireAuth';
-const router = express.Router({ mergeParams: true }); // ✅ not default
+const router = express.Router({ mergeParams: true }); //  not default
 
 const prisma = new PrismaClient();
 
@@ -52,10 +52,10 @@ router.post("/:projectId/matrix", requireAuth, async (req, res) => {
       },
     });
 
-    // console.log("🟢 Upsert success:", entry);
+    // console.log(" Upsert success:", entry);
     res.status(200).json(entry);
   } catch (err: any) {
-    // console.error("🔴 Upsert failed:", err);
+    // console.error(" Upsert failed:", err);
     res.status(500).json({ error: "Could not update matrix", details: err.message });
   }
 });

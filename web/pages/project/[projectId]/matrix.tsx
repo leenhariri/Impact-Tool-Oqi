@@ -25,13 +25,13 @@ interface MatrixEntry {
 }
 
 const scoreColors: { [key: number]: string } = {
-  [-3]: '#C7422A',   // Cancelling
-  [-2]: '#E6914A',   // Counteracting
-  [-1]: '#F1C120',   // Constraining
-   [0]: '#E6D720',   // NEW → "No influence" yellow
-   [1]: '#9CCF6C',   // Enabling
-   [2]: '#61AD4A',   // Reinforcing
-   [3]: '#185C29',   // Indivisible
+  [-3]: '#C7422A',   
+  [-2]: '#E6914A',   
+  [-1]: '#F1C120',   
+   [0]: '#E6D720',   
+   [1]: '#9CCF6C',   
+   [2]: '#61AD4A',   
+   [3]: '#185C29',   
 };
 
 export default function MatrixPage() {
@@ -44,7 +44,7 @@ const projectIdStr =
 
   const [targets, setTargets] = useState<SDGTarget[]>([]);
   const [matrix, setMatrix] = useState<{ [key: string]: MatrixEntry }>({});
-// 🔥 Dynamically scale matrix cells based on number of targets
+
 useEffect(() => {
   if (targets.length > 0) {
     document.documentElement.style.setProperty(
@@ -52,7 +52,7 @@ useEffect(() => {
       targets.length.toString()
     );
 
-    // compute cell sizes
+    
     const cellSize = Math.max(22, Math.min(60, 420 / targets.length));
 
     document.documentElement.style.setProperty(
@@ -63,11 +63,11 @@ useEffect(() => {
 }, [targets]);
 
   const [loading, setLoading] = useState(true);
-    // 🔥 Dynamically scale matrix cells based on number of targets
 
 
 
-const [showInstructions, setShowInstructions] = useState(true); // 👈 new
+
+const [showInstructions, setShowInstructions] = useState(true); 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPair, setSelectedPair] = useState<{
     source: SDGTarget;
@@ -85,7 +85,7 @@ const exportMatrixAsCSV = () => {
     return;
   }
 
-  // CSV-safe cell (handles commas/quotes/newlines)
+  
   const esc = (v: any) => {
     if (v === null || v === undefined) return "";
     const s = String(v);
@@ -94,12 +94,12 @@ const exportMatrixAsCSV = () => {
     return needsQuotes ? `"${escaped}"` : escaped;
   };
 
-  // Header row: Influencing Targets + target codes + Outsum
+  
   const header = ["Influencing Targets", ...targets.map(t => t.code), "Outsum"];
 
   const rows: string[][] = [];
 
-  // Data rows
+ 
   targets.forEach((source, rowIndex) => {
     const row: string[] = [];
     row.push(source.code);
@@ -109,17 +109,17 @@ const exportMatrixAsCSV = () => {
       const entry = matrix[key];
       const isDiagonal = source.id === target.id;
 
-      // Keep diagonal empty (matches your UI behavior)
+      
       const score = isDiagonal ? "" : (entry?.score ?? "");
       row.push(score === "" ? "" : String(score));
     });
 
-    // Outsum (row sum)
+   
     row.push(String(rowSums[rowIndex] ?? 0));
     rows.push(row);
   });
 
-  // Bottom "Insum" row (col sums)
+  
   rows.push(["Insum", ...colSums.map(s => String(s ?? 0)), ""]);
 
   const csv = [header, ...rows]
@@ -251,7 +251,7 @@ const fetchMatrix = async () => {
       setTargets(sortedTargets);
     }).finally(() => setLoading(false));
   }, [projectId]);
-// 🔥 Remove stale matrix entries for deleted SDG targets
+
 useEffect(() => {
   if (targets.length === 0 || Object.keys(matrix).length === 0) return;
 
@@ -289,9 +289,9 @@ try {
 },
     { withCredentials: true }
   );
-  // console.log("🟢 Matrix entry saved:", res.data);
+  // console.log("Matrix entry saved:", res.data);
 } catch (error: any) {
-  // console.error("🔴 Matrix entry save failed:", error.response?.data || error.message);
+  // console.error("Matrix entry save failed:", error.response?.data || error.message);
 }
 
 
@@ -311,18 +311,18 @@ try {
   };
 
 const handleModalSave = async () => {
-  // console.log("💾 Save button clicked");
+  // console.log(" Save button clicked");
   if (!projectId || typeof projectId !== "string") {
-    // console.warn("⚠️ No projectId, skipping save");
+    // console.warn("No projectId, skipping save");
     return;
   }
 
   if (!selectedPair) {
-    // console.warn("⚠️ No selected pair, skipping save");
+    // console.warn("No selected pair, skipping save");
     return;
   }
 
-  // console.log("📤 Proceeding to save", {
+  // console.log(" Proceeding to save", {
   //   source: selectedPair.source.id,
   //   target: selectedPair.target.id,
   //   score: tempScore,
@@ -412,7 +412,7 @@ const stats = {
   counteracting: coloredEntries.filter((e) => e.score === -2).length,
   cancelling: coloredEntries.filter((e) => e.score === -3).length,
 
-  // Score 0 shown separately (NOT included in denominator)
+
   noInfluence: allEntries.filter((e) => e.score === 0).length,
 };
 
@@ -635,10 +635,10 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
         <div id="hoverPopup" className={styles.hoverPopup}></div>
       </div>
 
-{/* --- RIGHT PANEL (Interaction Scale + Statistics stacked vertically) --- */}
+
 <div className={styles.rightPanel}>
 
-  {/* --- INTERACTION SCALE (NON-COLLAPSIBLE) --- */}
+
   <div className={styles.scaleBox}>
     <button
       className={styles.scaleHeader}
@@ -666,7 +666,7 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
     )}
   </div>
 
-  {/* --- STATISTICS (COLLAPSIBLE) --- */}
+  
    <div className={styles.statsAccordion}>
     <button
       className={styles.statsAccordionHeader}
@@ -840,14 +840,14 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
       className={styles.modalContent}
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Close button */}
+    
       <div className={styles.modalHeaderIcons}>
         <button onClick={() => setModalOpen(false)} className={styles.iconButton}>
           ✖
         </button>
       </div>
 
-      {/* Title + description */}
+      
       <h2 className={styles.modalTitle}>Edit Score</h2>
       <p className={styles.modalDescription}>
         <em>

@@ -76,7 +76,7 @@ const projectIdStr =
 // if (!projectId || typeof projectId !== "string") {
 //   return <div>Error: Invalid project ID.</div>;
 // }
-// ===== Soft Lock: start + ping + stop =====
+
 useEffect(() => {
   // if (!projectId || typeof projectId !== "string") return;
 if (!router.isReady || !projectIdStr) return;
@@ -97,7 +97,7 @@ if (!router.isReady || !projectIdStr) return;
     }
 
     if (!res.ok) {
-      // optional: handle error nicely
+      
       alert("Could not start editing session.");
       router.push("/dashboard");
     }
@@ -162,7 +162,7 @@ useEffect(() => {
   };
 
   const onRouteChangeStart = (url: string) => {
-    // ✅ If we are still within the same project, DO NOT stop the lock
+  
     if (url.startsWith(`/project/${projectIdStr}`)) return;
     stop();
   };
@@ -174,7 +174,7 @@ useEffect(() => {
     router.events.off("routeChangeStart", onRouteChangeStart);
     window.removeEventListener("beforeunload", stop);
 
-    // ❌ IMPORTANT: do NOT call stop() here anymore
+   
   };
 }, [router.isReady, projectIdStr, API_BASE, router.events]);
 
