@@ -1,11 +1,12 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
+
 // Load .env only if not already defined (useful for local dev)
 if (!process.env.FRONTEND_URL) {
   dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 }
-
+import projectEditRoutes from "./routes/projectEdit.routes";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -31,6 +32,9 @@ const { validateEnv } = await import("./config/validateEnv");
   app.use(cookieParser());
 
   // Routes
+  // Routes
+app.use("/api/projects", projectEditRoutes);
+
   app.use("/api/users",require("./routes/userRoutes").default);
   app.use("/api/auth", require("./routes/auth").default);
   app.use("/api/projects", require("./routes/projects").default);

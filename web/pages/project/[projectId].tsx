@@ -69,19 +69,21 @@ export default function ProjectDetailPage() {
   const router = useRouter();
   const { projectId } = router.query;
   const isInvalidId = !projectId || typeof projectId !== "string";
-
+const projectIdStr =
+  router.isReady && typeof projectId === "string" ? projectId : null;
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
-if (!projectId || typeof projectId !== "string") {
-  return <div>Error: Invalid project ID.</div>;
-}
+// if (!projectId || typeof projectId !== "string") {
+//   return <div>Error: Invalid project ID.</div>;
+// }
 // ===== Soft Lock: start + ping + stop =====
 useEffect(() => {
-  if (!projectId || typeof projectId !== "string") return;
+  // if (!projectId || typeof projectId !== "string") return;
+if (!router.isReady || !projectIdStr) return;
 
   (async () => {
     // const res = await fetch(`${API_BASE}/api/projects/${projectId}/edit/start`, {
-    const res = await fetch(`${API_BASE}/api/projects/${projectId}/edit/start`, {
+    const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
 
       method: "POST",
       credentials: "include",
@@ -100,14 +102,16 @@ useEffect(() => {
       router.push("/dashboard");
     }
   })();
-}, [projectId, API_BASE, router]);
+}, [router.isReady, projectIdStr, API_BASE, router]);
+
 
 useEffect(() => {
-  if (!projectId || typeof projectId !== "string") return;
+  // if (!projectId || typeof projectId !== "string") return;
+if (!router.isReady || !projectIdStr) return;
 
   const interval = setInterval(() => {
     // fetch(`${API_BASE}/api/projects/${projectId}/edit/ping`, {
-    fetch(`${API_BASE}/api/projects/${projectId}/edit/ping`, {
+    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
 
       method: "POST",
       credentials: "include",
@@ -115,14 +119,16 @@ useEffect(() => {
   }, 2_000);
 
   return () => clearInterval(interval);
-}, [projectId, API_BASE]);
+}, [router.isReady, projectIdStr, API_BASE]);
+
 
 useEffect(() => {
-  if (!projectId || typeof projectId !== "string") return;
+  // if (!projectId || typeof projectId !== "string") return;
+if (!router.isReady || !projectIdStr) return;
 
   const stop = () => {
     // fetch(`${API_BASE}/api/projects/${projectId}/edit/stop`, {
-    fetch(`${API_BASE}/api/projects/${projectId}/edit/stop`, {
+    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
 
       method: "POST",
       credentials: "include",
@@ -136,7 +142,8 @@ useEffect(() => {
     window.removeEventListener("beforeunload", stop);
     stop();
   };
-}, [projectId, API_BASE]);
+}, [router.isReady, projectIdStr, API_BASE]);
+
 
 
   const [impactRows, setImpactRows] = useState<ImpactRow[]>([]);
@@ -186,10 +193,12 @@ useEffect(() => {
 }, [editingField]);
 
 useEffect(() => {
-  if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); 
-return;
-}
+//   if (!projectId || typeof projectId !== 'string') {
+// setError('Invalid or missing project ID.'); 
+// return;
+// }
+if (!router.isReady || !projectIdStr) return;
+
 const controller = new AbortController();
   const fetchStakeholders = async () => {
     try {
@@ -217,7 +226,8 @@ const controller = new AbortController();
 
   fetchStakeholders();
   return () => controller.abort();
-}, [projectId])
+}, [router.isReady, projectIdStr, API_BASE])
+
 const updateStakeholderField = (
   index: number,
   field: keyof Stakeholder,
@@ -256,15 +266,17 @@ const deleteStakeholder = async (index: number) => {
 };
 
   useEffect(() => {
-    if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); 
-return;
-}
+//     if (!projectId || typeof projectId !== 'string') {
+// setError('Invalid or missing project ID.'); 
+// return;
+// }
+if (!router.isReady || !projectIdStr) return;
+
 const controller = new AbortController();
     const fetchRows = async () => {
 
       try {
-        const res = await fetch(`${API_BASE}/api/impact-rows/${projectId}`,{credentials: 'include',});
+        const res = await fetch(`${API_BASE}/api/impact-rows/${projectIdStr}`,{credentials: 'include',});
         
         const data = await res.json();
         setImpactRows(data);
@@ -306,17 +318,20 @@ sdgMap[row.id] = row.targets?.[0]?.sdg?.id || null;
 
     fetchRows();
     return () => controller.abort();
-  }, [projectId]);
+ }, [router.isReady, projectIdStr, API_BASE]);
+
 useEffect(() => {
-  if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); 
-return;
-}
+//   if (!projectId || typeof projectId !== 'string') {
+// setError('Invalid or missing project ID.'); 
+// return;
+// }
+if (!router.isReady || !projectIdStr) return;
+
 const controller = new AbortController();
 
 const fetchRisks = async () => {
   try {
-    const res = await fetch(`${API_BASE}/api/risks?projectId=${projectId}`,{credentials: 'include',});
+    const res = await fetch(`${API_BASE}/api/risks?projectId=${projectIdStr}`,{credentials: 'include',});
     const data = await res.json();
 
     
@@ -346,12 +361,13 @@ const fetchRisks = async () => {
 
   fetchRisks();
   return () => controller.abort();
-}, [projectId]);
+}, [router.isReady, projectIdStr, API_BASE]);
+
 const fetchAssumptionsAndActivities = async () => {
   try {
     const [assumptionRes, activityRes] = await Promise.all([
-      fetch(`${API_BASE}/api/assumptions/${projectId}`,{credentials: 'include',}),
-      fetch(`${API_BASE}/api/activities/${projectId}`,{credentials: 'include'})
+      fetch(`${API_BASE}/api/assumptions/${projectIdStr}`,{credentials: 'include',}),
+      fetch(`${API_BASE}/api/activities/${projectIdStr}`,{credentials: 'include'})
     ]);
 
     const assumptions = await assumptionRes.json();
@@ -379,14 +395,17 @@ const fetchAssumptionsAndActivities = async () => {
 };
 
 useEffect(() => {
-  if (!projectId || typeof projectId !== 'string') {
-setError('Invalid or missing project ID.'); 
-return;
-}
+//   if (!projectId || typeof projectId !== 'string') {
+// setError('Invalid or missing project ID.'); 
+// return;
+// }
+if (!router.isReady || !projectIdStr) return;
+
 const controller = new AbortController();
   fetchAssumptionsAndActivities();
   return () => controller.abort();
-}, [projectId]);
+}, [router.isReady, projectIdStr, API_BASE]);
+
 
 
   useEffect(() => {
@@ -570,7 +589,8 @@ await fetch(`${API_BASE}/api/impact-row-targets/${savedRowId}`, {
     await fetch(`${API_BASE}/api/risks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...risk, projectId }),
+      body: JSON.stringify({ ...risk, projectId: projectIdStr,
+ }),
       credentials: 'include',
     });
   } else {
@@ -580,7 +600,8 @@ await fetch(`${API_BASE}/api/impact-row-targets/${savedRowId}`, {
       body: JSON.stringify({
   text: sanitizeInput(risk.text),
   hierarchyLevels: risk.hierarchyLevels,
-  projectId
+  projectId: projectIdStr,
+
 }),
 
       
@@ -627,7 +648,8 @@ for (let i = 0; i < stakeholders.length; i++) {
   stakeholderType: s.stakeholderType,
   engagementStrategy: sanitizeInput(s.engagementStrategy),
   hierarchyLevel: s.hierarchyLevel,
-  projectId
+  projectId: projectIdStr,
+
 }),
 
     
@@ -756,9 +778,13 @@ const deleteRisk = async (index: number) => {
   setRisks(updated)
 }
 
+// if (loading) return <p>Loading...</p>;
+// if (isInvalidId) return <p style={{ color: 'red' }}>Invalid Project ID</p>;
+// if (error) return <p style={{ color: 'red' }}>{error}</p>;
+if (!router.isReady) return <p>Loading...</p>;
+if (!projectIdStr) return <p style={{ color: "red" }}>Invalid Project ID</p>;
+if (error) return <p style={{ color: "red" }}>{error}</p>;
 if (loading) return <p>Loading...</p>;
-if (isInvalidId) return <p style={{ color: 'red' }}>Invalid Project ID</p>;
-if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
 const saveEditingField = () => {
   if (!editingField) return;
@@ -1547,7 +1573,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
   title="Generate Diagram"
   onClick={async () => {
     const ok = await saveAll(true);
-    if (ok) router.push(`/project/${projectId}/diagram?regenerate=true`);
+    if (ok) router.push(`/project/${projectIdStr}/diagram?regenerate=true`);
   }}
 >
   <svg 
@@ -1593,7 +1619,7 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
   </button>
 
 <button className="actionIcon" title="Edit SDG Interlinkage"
-  onClick={() => router.push(`/project/${projectId}/matrix`)}>
+  onClick={() => router.push(`/project/${projectIdStr}/matrix`)}>
   
   <svg viewBox="0 0 48 48" fill="#ffffff" stroke="none" width="22" height="22">
     <rect x="4" y="4" width="10" height="10"></rect>

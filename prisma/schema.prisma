@@ -20,6 +20,7 @@ model User {
   updatedProjects Project[]       @relation("UpdatedBy")
   invitesSent     ProjectInvite[] @relation("InvitedBy")
   memberships     ProjectMember[]
+  editingProjects Project[]       @relation("ProjectEditingUser")
 }
 
 model Project {
@@ -46,6 +47,10 @@ model Project {
   members         ProjectMember[]
   risks           Risk[]
   stakeholders    Stakeholder[]
+  editingByUserId String?
+  editingByUser   User?             @relation("ProjectEditingUser", fields: [editingByUserId], references: [id])
+  editingSince    DateTime?
+  lastEditPing    DateTime?
 
   @@unique([title, ownerUserId], map: "unique_project_title_owner")
 }

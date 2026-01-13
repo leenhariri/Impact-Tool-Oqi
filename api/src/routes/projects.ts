@@ -100,7 +100,10 @@ r.post("/", requireAuth, async (req, res) => {
 });
 
 r.get("/", requireAuth, async (req, res) => {
-  const userId = req.user!.uid;
+  const userId = req.user!.uid; // ✅ your JWT uses uid (keep this)
+
+  const LOCK_TTL_MS = 60_000;
+  const now = Date.now();
 
   const projects = await prisma.project.findMany({
     where: {
@@ -114,11 +117,37 @@ r.get("/", requireAuth, async (req, res) => {
           user: true,
         },
       },
+
+      // ✅ ADD THIS so you can display the editor name/email
+      editingByUser: true,
     },
+    // optional but nice:
+    // orderBy: { createdAt: "desc" },
   });
 
-  res.json({ projects });
+  const projectsWithEditing = projects.map((p) => {
+    const active =
+      !!p.editingByUserId &&
+      !!p.lastEditPing &&
+      now - p.lastEditPing.getTime() < LOCK_TTL_MS;
+
+    return {
+      ...p,
+      currentlyEditing: active
+        ? {
+            name:
+              (p.editingByUser as any)?.name ??
+              (p.editingByUser as any)?.email ??
+              "Unknown",
+            since: p.editingSince,
+          }
+        : null,
+    };
+  });
+
+  res.json({ projects: projectsWithEditing });
 });
+
 
 r.get("/:id", requireAuth, async (req, res) => {
   const userId = req.user!.uid;
