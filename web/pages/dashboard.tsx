@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/dashboard.module.css";
 import "nice-forms.css";
@@ -34,6 +34,10 @@ const [lockModal, setLockModal] = useState<{ open: boolean; name: string }>({
   open: false,
   name: "",
 });
+const [editingCache, setEditingCache] = useState<
+  Record<string, { name: string; lastSeen: number }>
+>({});
+const projectsReqSeq = useRef(0);
 
 // ✅ Close dropdown when clicking outside
 useEffect(() => {
@@ -107,13 +111,51 @@ setEditCollabEmails(
   //       .then((data) => setProjects(data.projects));
   //   }
   // }, [user]);
+// const fetchProjects = async () => {
+//   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
+//     credentials: "include",
+//   });
+//   const data = await res.json();
+//   setProjects(data.projects || []);
+// };
 const fetchProjects = async () => {
+  const seq = ++projectsReqSeq.current;
+
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
     credentials: "include",
   });
+
   const data = await res.json();
-  setProjects(data.projects || []);
+
+  // Ignore out-of-order responses (prevents “appears then disappears” due to races)
+  if (seq !== projectsReqSeq.current) return;
+
+  const nextProjects = data.projects || [];
+  setProjects(nextProjects);
+
+  // Update editing cache with a grace period
+  const now = Date.now();
+  setEditingCache((prev) => {
+    const next = { ...prev };
+
+    for (const p of nextProjects) {
+      if (p.currentlyEditing?.name) {
+        next[p.id] = { name: p.currentlyEditing.name, lastSeen: now };
+      }
+    }
+
+    // expire cache entries if not seen recently (grace period)
+    const GRACE_MS = 6000; // 6 seconds
+    for (const [projectId, info] of Object.entries(next)) {
+      if (now - info.lastSeen > GRACE_MS) {
+        delete next[projectId];
+      }
+    }
+
+    return next;
+  });
 };
+
 useEffect(() => {
   if (!user) return;
 
@@ -330,7 +372,7 @@ const handleCreate = async () => {
 </td>
 
           <td>{p.members.find((m: any) => m.role === "OWNER")?.user?.email || "Unknown"}</td>
-          <td>
+          {/* <td>
   {p.currentlyEditing ? (
     <span style={{ color: "#b7791f", fontWeight: 600 }}>
       {p.currentlyEditing.name}
@@ -338,7 +380,24 @@ const handleCreate = async () => {
   ) : (
     <span style={{ color: "#9ca3af" }}>—</span>
   )}
+</td> */}
+<td>
+  {(() => {
+    const cached = editingCache[p.id];
+    const GRACE_MS = 6000;
+
+    const name =
+      p.currentlyEditing?.name ||
+      (cached && Date.now() - cached.lastSeen <= GRACE_MS ? cached.name : null);
+
+    return name ? (
+      <span style={{ color: "#b7791f", fontWeight: 600 }}>{name}</span>
+    ) : (
+      <span style={{ color: "#9ca3af" }}>—</span>
+    );
+  })()}
 </td>
+
           <td>{new Date(p.createdAt).toLocaleString()}</td>
           <td>
             <div className={styles.actionsDropdown}>

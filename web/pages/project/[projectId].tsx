@@ -101,6 +101,10 @@ if (!router.isReady || !projectIdStr) return;
       alert("Could not start editing session.");
       router.push("/dashboard");
     }
+    if (res.ok) {
+  hasLockRef.current = true;
+}
+
   })();
 }, [router.isReady, projectIdStr, API_BASE, router]);
 
@@ -116,7 +120,7 @@ if (!router.isReady || !projectIdStr) return;
       method: "POST",
       credentials: "include",
     }).catch(() => {});
-  }, 2_000);
+  }, 1_000);
 
   return () => clearInterval(interval);
 }, [router.isReady, projectIdStr, API_BASE]);
@@ -127,6 +131,8 @@ useEffect(() => {
 if (!router.isReady || !projectIdStr) return;
 
   const stop = () => {
+    if (!hasLockRef.current) return;
+    hasLockRef.current = false;
     // fetch(`${API_BASE}/api/projects/${projectId}/edit/stop`, {
     fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
 
@@ -157,6 +163,8 @@ const [risks, setRisks] = useState<Risk[]>([])
 const [assumptionsAndActivities, setAssumptionsAndActivities] = useState<AssumptionOrActivity[]>([]);
 const [stakeholders, setStakeholders] = useState<Stakeholder[]>([])
 const [showInstructions, setShowInstructions] = useState(true); //  new
+const hasLockRef = useRef(false);
+
 
 
 const [editingField, setEditingField] = useState<{
