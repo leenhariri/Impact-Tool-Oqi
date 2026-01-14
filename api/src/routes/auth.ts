@@ -86,20 +86,88 @@ r.post("/logout", (_req, res) => {
 });
 
 // GET CURRENT USER
-r.get("/me", (req, res) => {
-  try {
-    const token = req.cookies[COOKIE_NAME];
-    const session = verifySession(token);
+// r.get("/me", (req, res) => {
+//   try {
+//     const token = req.cookies[COOKIE_NAME];
+//     const session = verifySession(token);
 
-    if (!session) {
+//     if (!session) {
+//       return res.status(401).json({ error: "Unauthorized" });
+//     }
+
+//     return res.json({ user: session });
+//   } catch (err) {
+//     console.error("Me endpoint error:", err);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+// GET CURRENT USER (JWT OR SSO BOOTSTRAP)
+r.get("/me", async (req, res) => {
+  try {
+    // 1) If JWT exists and valid → return session user (current behavior)
+    const token = req.cookies?.[COOKIE_NAME];
+    const session = token ? verifySession(token) : null;
+
+    if (session) {
+      const dbUser = await prisma.user.findUnique({
+        where: { id: session.uid }, // session.uid must be string in jwt.ts
+        select: { id: true, email: true, name: true },
+      });
+
+      return res.json({
+        user: {
+          uid: session.uid,
+          email: session.email,
+          name: dbUser?.name ?? null,
+        },
+      });
+    }
+
+    // 2) No valid JWT → try CERN Auth Proxy headers
+    const forwardedUser = (req.header("x-forwarded-user") || "").trim();
+
+    if (!forwardedUser) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    return res.json({ user: session });
+    // CERN Auth Proxy: X-Forwarded-User is usually an email; sometimes "admXXX" (no @)
+    const email = forwardedUser.includes("@")
+      ? forwardedUser.toLowerCase()
+      : `${forwardedUser}@cern.ch`.toLowerCase();
+
+    // Optional: keep a friendly name (don’t overwrite if you don’t want to)
+    const rawName = forwardedUser;
+
+    // 3) Find or create user by email (keeps same User.id for existing users)
+const user = await prisma.user.upsert({
+  where: { email },
+  update: {},
+  create: {
+    email,
+    name: email,
+    passwordHash: null,
+  },
+  select: { id: true, email: true, name: true },
+});
+
+
+    // 4) Mint your existing JWT cookie (oqi_session)
+    const newToken = signSession({ uid: user.id, email: user.email });
+    setCookie(res, newToken);
+
+    // 5) Return user (same shape frontend expects)
+    return res.json({
+      user: {
+        uid: user.id,
+        email: user.email,
+        name: user.name ?? null,
+      },
+    });
   } catch (err) {
     console.error("Me endpoint error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 export default r;

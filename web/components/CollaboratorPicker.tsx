@@ -64,7 +64,7 @@ useEffect(() => {
         abortRef.current = new AbortController();
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/api/users/search?q=${encodeURIComponent(q)}`,
+          `/api/users/search?q=${encodeURIComponent(q)}`,
           { credentials: "include", signal: abortRef.current.signal }
         );
 

@@ -143,7 +143,7 @@ useEffect(() => {
   if (!router.isReady || !projectIdStr) return;
 
   (async () => {
-    const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
+    const res = await fetch(`/api/projects/${projectIdStr}/edit/start`, {
       method: "POST",
       credentials: "include",
     });
@@ -160,24 +160,24 @@ useEffect(() => {
       router.push("/dashboard");
     }
   })();
-}, [router.isReady, projectIdStr, API_BASE, router]);
+}, [router.isReady, projectIdStr, router]);
 useEffect(() => {
   if (!router.isReady || !projectIdStr) return;
 
   const interval = setInterval(() => {
-    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
+    fetch(`/api/projects/${projectIdStr}/edit/ping`, {
       method: "POST",
       credentials: "include",
     }).catch(() => {});
   }, 5_000);
 
   return () => clearInterval(interval);
-}, [router.isReady, projectIdStr, API_BASE]);
+}, [router.isReady, projectIdStr]);
 useEffect(() => {
   if (!router.isReady || !projectIdStr) return;
 
   const stop = () => {
-    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
+    fetch(`/api/projects/${projectIdStr}/edit/stop`, {
       method: "POST",
       credentials: "include",
       keepalive: true,
@@ -196,13 +196,13 @@ useEffect(() => {
     router.events.off("routeChangeStart", onRouteChangeStart);
     window.removeEventListener("beforeunload", stop);
   };
-}, [router.isReady, projectIdStr, API_BASE, router.events]);
+}, [router.isReady, projectIdStr,  router.events]);
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_API_BASE) {
-  // console.error("API base URL is not defined.");
-  return;
-}
+//     if (!process.env.NEXT_PUBLIC_API_BASE) {
+//   // console.error("API base URL is not defined.");
+//   return;
+// }
 
     if (!projectId || typeof projectId !== 'string') return;
 
@@ -210,7 +210,7 @@ useEffect(() => {
 const fetchTargets = async () => {
   try {
     const res = await axios.get<SDGTarget[]>(
-      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/sdg-targets`, { withCredentials: true } 
+      `/api/project/${projectId}/sdg-targets`, { withCredentials: true } 
     );
     setTargets(res.data);
     return res;
@@ -225,7 +225,7 @@ const fetchTargets = async () => {
 const fetchMatrix = async () => {
   try {
     const res = await axios.get<MatrixEntry[]>(
-      `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`, { withCredentials: true } 
+      `/api/project/${projectId}/matrix`, { withCredentials: true } 
     );
     const entries: { [key: string]: MatrixEntry } = {};
     res.data.forEach((entry) => {
@@ -279,7 +279,7 @@ const updateEntry = async (sourceId: string, targetId: string, score: number, ra
 
 try {
   const res = await axios.post(
-    `${process.env.NEXT_PUBLIC_API_BASE}/api/project/${projectId}/matrix`,
+    `/api/project/${projectId}/matrix`,
 { 
   projectId,
   sourceSdgTargetId: sourceId,

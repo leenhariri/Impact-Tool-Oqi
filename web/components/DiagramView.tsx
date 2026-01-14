@@ -220,7 +220,7 @@ useEffect(() => {
   if (!projectIdStr) return;
 
   (async () => {
-    const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
+    const res = await fetch(`/api/projects/${projectIdStr}/edit/start`, {
       method: "POST",
       credentials: "include",
     });
@@ -237,24 +237,24 @@ useEffect(() => {
       router.push("/dashboard");
     }
   })();
-}, [projectIdStr, API_BASE, router]);
+}, [projectIdStr, router]);
 useEffect(() => {
   if (!projectIdStr) return;
 
   const interval = setInterval(() => {
-    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
+    fetch(`/api/projects/${projectIdStr}/edit/ping`, {
       method: "POST",
       credentials: "include",
     }).catch(() => {});
   }, 5_000);
 
   return () => clearInterval(interval);
-}, [projectIdStr, API_BASE]);
+}, [projectIdStr]);
 useEffect(() => {
   if (!projectIdStr) return;
 
   const stop = () => {
-    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
+    fetch(`/api/projects/${projectIdStr}/edit/stop`, {
       method: "POST",
       credentials: "include",
       keepalive: true,
@@ -273,7 +273,7 @@ useEffect(() => {
     router.events.off("routeChangeStart", onRouteChangeStart);
     window.removeEventListener("beforeunload", stop);
   };
-}, [projectIdStr, API_BASE, router.events]);
+}, [projectIdStr , router.events]);
 
   useEffect(() => {
     if (!projectId || typeof projectId !== 'string') {
@@ -293,13 +293,13 @@ const controller = new AbortController();
           edgeRes,
           stakeholderRes,
         ] = await Promise.all([
- fetch(`${API_BASE}/api/impact-rows/${projectId}`, { signal: controller.signal ,credentials: 'include'}),
-        fetch(`${API_BASE}/api/risks/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
-        fetch(`${API_BASE}/api/activities/project/${projectId}`, { signal: controller.signal,credentials: 'include' }),
-        fetch(`${API_BASE}/api/assumptions/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
-        fetch(`${API_BASE}/api/diagram-nodes/${projectId}`, { signal: controller.signal,credentials: 'include', }),
-        fetch(`${API_BASE}/api/diagram-edges/${projectId}`, { signal: controller.signal,credentials: 'include', }),
-        fetch(`${API_BASE}/api/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+ fetch(`/api/impact-rows/${projectId}`, { signal: controller.signal ,credentials: 'include'}),
+        fetch(`/api/risks/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`/api/activities/project/${projectId}`, { signal: controller.signal,credentials: 'include' }),
+        fetch(`/api/assumptions/project/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
+        fetch(`/api/diagram-nodes/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`/api/diagram-edges/${projectId}`, { signal: controller.signal,credentials: 'include', }),
+        fetch(`/api/stakeholders/${projectId}`, { signal: controller.signal ,credentials: 'include',}),
           
         ]);
         if (!impactRes.ok) throw new Error("Failed to fetch impact rows");
@@ -684,7 +684,7 @@ useEffect(() => {
 
   const timeout = setTimeout(() => {
     const updated = extractDiagramNodeData(nodes);
-    fetch(`${API_BASE}/api/diagram-nodes`, {
+    fetch(`/api/diagram-nodes`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId, nodes: updated }),
@@ -705,7 +705,7 @@ const handleEdgesChange = (changes: any) => {
   setEdges(updatedEdges);
 
 
-  fetch(`${API_BASE}/api/diagram-edges`, {
+  fetch(`/api/diagram-edges`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectId, edges: updatedEdges }),
@@ -749,7 +749,7 @@ const onConnect = useCallback(
     const updatedEdges = [...edges, newEdge];
     setEdges(updatedEdges);
 
-    fetch(`${API_BASE}/api/diagram-edges`, {
+    fetch(`/api/diagram-edges`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -803,7 +803,7 @@ const newEdge: Edge = {
       setArrowSource(null);
       setIsDrawingArrow(false);
 
-      fetch(`${API_BASE}/api/diagram-edges`, {
+      fetch(`/api/diagram-edges`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -920,7 +920,7 @@ return (
         <div
           onClick={() => {
             setEdges([]);
-            fetch(`${API_BASE}/api/diagram-edges`, {
+            fetch(`/api/diagram-edges`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ projectId, edges: [] }),

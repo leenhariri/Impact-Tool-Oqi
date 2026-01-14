@@ -83,7 +83,7 @@ if (!router.isReady || !projectIdStr) return;
 
   (async () => {
     // const res = await fetch(`${API_BASE}/api/projects/${projectId}/edit/start`, {
-    const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
+    const res = await fetch(`/api/projects/${projectIdStr}/edit/start`, {
 
       method: "POST",
       credentials: "include",
@@ -106,7 +106,7 @@ if (!router.isReady || !projectIdStr) return;
 }
 
   })();
-}, [router.isReady, projectIdStr, API_BASE, router]);
+}, [router.isReady, projectIdStr,  router]);
 
 
 useEffect(() => {
@@ -115,7 +115,7 @@ if (!router.isReady || !projectIdStr) return;
 
   const interval = setInterval(() => {
     // fetch(`${API_BASE}/api/projects/${projectId}/edit/ping`, {
-    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
+    fetch(`/api/projects/${projectIdStr}/edit/ping`, {
 
       method: "POST",
       credentials: "include",
@@ -123,7 +123,7 @@ if (!router.isReady || !projectIdStr) return;
   }, 1_000);
 
   return () => clearInterval(interval);
-}, [router.isReady, projectIdStr, API_BASE]);
+}, [router.isReady, projectIdStr]);
 
 
 // useEffect(() => {
@@ -154,7 +154,7 @@ useEffect(() => {
   if (!router.isReady || !projectIdStr) return;
 
   const stop = () => {
-    fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
+    fetch(`/api/projects/${projectIdStr}/edit/stop`, {
       method: "POST",
       credentials: "include",
       keepalive: true,
@@ -176,7 +176,7 @@ useEffect(() => {
 
    
   };
-}, [router.isReady, projectIdStr, API_BASE, router.events]);
+}, [router.isReady, projectIdStr,  router.events]);
 
 
   const [impactRows, setImpactRows] = useState<ImpactRow[]>([]);
@@ -237,7 +237,7 @@ if (!router.isReady || !projectIdStr) return;
 const controller = new AbortController();
   const fetchStakeholders = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/stakeholders/${projectIdStr}`,{credentials: 'include',});
+      const res = await fetch(`/api/stakeholders/${projectIdStr}`,{credentials: 'include',});
       const data = await res.json();
       setStakeholders(data);
       if (data.length === 0) {
@@ -261,7 +261,7 @@ const controller = new AbortController();
 
   fetchStakeholders();
   return () => controller.abort();
-}, [router.isReady, projectIdStr, API_BASE])
+}, [router.isReady, projectIdStr])
 
 const updateStakeholderField = (
   index: number,
@@ -290,7 +290,7 @@ const addStakeholder = () => {
 const deleteStakeholder = async (index: number) => {
   const s = stakeholders[index];
   if (s.id) {
-    await fetch(`${API_BASE}/api/stakeholders/${s.id}`, {
+    await fetch(`/api/stakeholders/${s.id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -311,7 +311,7 @@ const controller = new AbortController();
     const fetchRows = async () => {
 
       try {
-        const res = await fetch(`${API_BASE}/api/impact-rows/${projectIdStr}`,{credentials: 'include',});
+        const res = await fetch(`/api/impact-rows/${projectIdStr}`,{credentials: 'include',});
         
         const data = await res.json();
         setImpactRows(data);
@@ -353,7 +353,7 @@ sdgMap[row.id] = row.targets?.[0]?.sdg?.id || null;
 
     fetchRows();
     return () => controller.abort();
- }, [router.isReady, projectIdStr, API_BASE]);
+ }, [router.isReady, projectIdStr]);
 
 useEffect(() => {
 //   if (!projectId || typeof projectId !== 'string') {
@@ -366,7 +366,7 @@ const controller = new AbortController();
 
 const fetchRisks = async () => {
   try {
-    const res = await fetch(`${API_BASE}/api/risks?projectId=${projectIdStr}`,{credentials: 'include',});
+    const res = await fetch(`/api/risks?projectId=${projectIdStr}`,{credentials: 'include',});
     const data = await res.json();
 
     
@@ -396,13 +396,13 @@ const fetchRisks = async () => {
 
   fetchRisks();
   return () => controller.abort();
-}, [router.isReady, projectIdStr, API_BASE]);
+}, [router.isReady, projectIdStr]);
 
 const fetchAssumptionsAndActivities = async () => {
   try {
     const [assumptionRes, activityRes] = await Promise.all([
-      fetch(`${API_BASE}/api/assumptions/${projectIdStr}`,{credentials: 'include',}),
-      fetch(`${API_BASE}/api/activities/${projectIdStr}`,{credentials: 'include'})
+      fetch(`/api/assumptions/${projectIdStr}`,{credentials: 'include',}),
+      fetch(`/api/activities/${projectIdStr}`,{credentials: 'include'})
     ]);
 
     const assumptions = await assumptionRes.json();
@@ -439,14 +439,14 @@ if (!router.isReady || !projectIdStr) return;
 const controller = new AbortController();
   fetchAssumptionsAndActivities();
   return () => controller.abort();
-}, [router.isReady, projectIdStr, API_BASE]);
+}, [router.isReady, projectIdStr]);
 
 
 
   useEffect(() => {
     const fetchTargets = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/sdg-targets`,{credentials: 'include',});
+        const res = await fetch(`/api/sdg-targets`,{credentials: 'include',});
         const data = await res.json();
 
         if (Array.isArray(data)) {
@@ -465,7 +465,7 @@ const controller = new AbortController();
 
     const fetchSDGs = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/sdgs`,{credentials: 'include',});
+        const res = await fetch(`/api/sdgs`,{credentials: 'include',});
         const data = await res.json();
         setAllSDGs(data);
       } catch (error) {
@@ -486,7 +486,7 @@ const controller = new AbortController();
 const deleteAssumptionOrActivity = async (index: number) => {
   const item = assumptionsAndActivities[index];
   if (item.id) {
-    await fetch(`${API_BASE}/api/${item.type === 'ASSUMPTION' ? 'assumptions' : 'activities'}/${item.id}`, {
+    await fetch(`/api/${item.type === 'ASSUMPTION' ? 'assumptions' : 'activities'}/${item.id}`, {
       method: 'DELETE',
       credentials: 'include',
     });
@@ -517,7 +517,7 @@ const deleteAssumptionOrActivity = async (index: number) => {
   const deleteRow = async (index: number) => {
     const row = impactRows[index];
     if (row.id && !row.id.startsWith('temp-')) {
-      await fetch(`${API_BASE}/api/impact-rows/${row.id}`, {
+      await fetch(`/api/impact-rows/${row.id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -556,7 +556,7 @@ if (validateForDiagram) {
 let savedRowId = row.id;
 
 if (!savedRowId || savedRowId.startsWith('temp-')) {
-  const res = await fetch(`${API_BASE}/api/impact-rows`, {
+  const res = await fetch(`/api/impact-rows`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -594,7 +594,7 @@ if (tempId.startsWith('temp-')) {
 }
 
 } else {
-  await fetch(`${API_BASE}/api/impact-rows/${savedRowId}`, {
+  await fetch(`/api/impact-rows/${savedRowId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...row, orderIndex: index }),
@@ -606,7 +606,7 @@ if (tempId.startsWith('temp-')) {
 const targetIds = sdgTargets[savedRowId] || [];
 const sdgId = selectedSDGs[savedRowId];
 
-await fetch(`${API_BASE}/api/impact-row-targets/${savedRowId}`, {
+await fetch(`/api/impact-row-targets/${savedRowId}`, {
   method: 'PUT',
   credentials: 'include',
   headers: { 'Content-Type': 'application/json' },
@@ -621,7 +621,7 @@ await fetch(`${API_BASE}/api/impact-row-targets/${savedRowId}`, {
     }
     for (const risk of risks) {
   if (!risk.id) {
-    await fetch(`${API_BASE}/api/risks`, {
+    await fetch(`/api/risks`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...risk, projectId: projectIdStr,
@@ -629,7 +629,7 @@ await fetch(`${API_BASE}/api/impact-row-targets/${savedRowId}`, {
       credentials: 'include',
     });
   } else {
-    await fetch(`${API_BASE}/api/risks/${risk.id}`, {
+    await fetch(`/api/risks/${risk.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -649,7 +649,7 @@ for (let i = 0; i < assumptionsAndActivities.length; i++) {
   const item = assumptionsAndActivities[i];
   const endpoint = item.type === 'ASSUMPTION' ? 'assumptions' : 'activities';
   const method = item.id ? 'PUT' : 'POST';
-  const url = `${API_BASE}/api/${endpoint}${item.id ? `/${item.id}` : ''}`;
+  const url = `/api/${endpoint}${item.id ? `/${item.id}` : ''}`;
 
   const res = await fetch(url, {
     method,
@@ -670,8 +670,8 @@ for (let i = 0; i < stakeholders.length; i++) {
   const s = stakeholders[i];
   const method = s.id ? 'PUT' : 'POST';
   const url = s.id
-    ? `${API_BASE}/api/stakeholders/${s.id}`
-    : `${API_BASE}/api/stakeholders`;
+    ? `/api/stakeholders/${s.id}`
+    : `/api/stakeholders`;
 
   const res = await fetch(url, {
     method,
@@ -800,7 +800,7 @@ const handleRiskChange = (
 const deleteRisk = async (index: number) => {
   const r = risks[index]
   if (r.id) {
-    await fetch(`${API_BASE}/api/risks/${r.id}`, {
+    await fetch(`/api/risks/${r.id}`, {
       method: 'DELETE',
       
   credentials: 'include',

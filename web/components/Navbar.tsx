@@ -44,20 +44,43 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [heroExists]);
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, { credentials: "include" })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then(() => setIsLoggedIn(true))
-      .catch(() => setIsLoggedIn(false))
-      .finally(() => setChecking(false));
-  }, [router.asPath]);
+  // useEffect(() => {
+  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, { credentials: "include" })
+  //     .then((res) => (res.ok ? res.json() : Promise.reject()))
+  //     .then(() => setIsLoggedIn(true))
+  //     .catch(() => setIsLoggedIn(false))
+  //     .finally(() => setChecking(false));
+  // }, [router.asPath]);
+useEffect(() => {
+  let cancelled = false;
+
+  (async () => {
+    try {
+      const res = await fetch("/api/auth/me", { credentials: "include" });
+      if (!cancelled) setIsLoggedIn(res.ok);
+    } catch {
+      if (!cancelled) setIsLoggedIn(false);
+    } finally {
+      if (!cancelled) setChecking(false);
+    }
+  })();
+
+  return () => {
+    cancelled = true;
+  };
+}, []); // ✅ run once on mount
 
   const handleLogout = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-    setIsLoggedIn(false);
+    setMobileMenuOpen(false);
+    // await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
+    //   method: "POST",
+    //   credentials: "include",
+    // });
+    // setIsLoggedIn(false);
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+setIsLoggedIn(false);
+router.push("/");
+
     window.location.href = "/";
   };
 
@@ -86,7 +109,7 @@ export default function Navbar() {
             <li><Link href="/user-guide" onClick={() => setMobileMenuOpen(false)}>User Guide</Link></li>
             <li><Link href="/resources" onClick={() => setMobileMenuOpen(false)}>Useful Resources</Link></li>
 
-            {!checking && isLoggedIn && (
+            {/* {!checking && isLoggedIn && (
               <>
                 <li><Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>Access Tool</Link></li>
                 <li><button onClick={handleLogout}>Sign Out</button></li>
@@ -95,7 +118,17 @@ export default function Navbar() {
 
             {!checking && !isLoggedIn && (
               <li><Link href="/login" onClick={() => setMobileMenuOpen(false)}>Access Tool</Link></li>
-            )}
+            )} */}
+            <li>
+  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+    Access Tool
+  </Link>
+</li>
+
+{!checking && isLoggedIn && (
+  <li><button onClick={handleLogout}>Sign Out</button></li>
+)}
+
           </ul>
         </div>
       </nav>

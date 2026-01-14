@@ -90,17 +90,38 @@ setEditCollabEmails(
 }, [selectedProject]);
 
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, {
-      credentials: "include",
+//   useEffect(() => {
+//     fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, {
+//       credentials: "include",
+//     })
+//       .then((res) => {
+//         if (!res.ok) throw new Error("Unauthorized");
+//         return res.json();
+//       })
+//       .then((data) => setUser(data.user))
+//       // .catch(() => router.push("/login"));
+//       .catch(() => {
+//   window.location.href = "/dashboard";
+// });
+//   }, []);
+useEffect(() => {
+  fetch("/api/auth/me", {
+    credentials: "include",
+  })
+    .then(async (res) => {
+      if (!res.ok) return null; // not logged in
+      return res.json();
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Unauthorized");
-        return res.json();
-      })
-      .then((data) => setUser(data.user))
-      .catch(() => router.push("/login"));
-  }, []);
+    .then((data) => {
+      if (data?.user) setUser(data.user);
+      // else leave user as null
+    })
+    .catch((err) => {
+      console.error("Failed to fetch /api/auth/me:", err);
+      // do NOT redirect here
+    });
+}, []);
+
 
   // useEffect(() => {
   //   if (user) {
@@ -121,10 +142,13 @@ setEditCollabEmails(
 const fetchProjects = async () => {
   const seq = ++projectsReqSeq.current;
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
+  const res = await fetch(`/api/projects`, {
     credentials: "include",
   });
-
+ if (res.status === 401) {
+    window.location.href = "/dashboard";
+    return;
+  }
   const data = await res.json();
 
  
@@ -170,7 +194,7 @@ useEffect(() => {
 
 const openProject = async (projectId: string) => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${projectId}/edit/start`,
+    `/api/projects/${projectId}/edit/start`,
     {
       method: "POST",
       credentials: "include",
@@ -199,7 +223,7 @@ const handleCreate = async () => {
   if (!title) return setError("Project title is required");
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects`, {
+    const response = await fetch(`/api/projects`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -409,7 +433,7 @@ const handleCreate = async () => {
                     onClick={async () => {
                       if (!confirm("Are you sure you want to delete this project?")) return;
                       try {
-                        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${p.id}`, {
+                        const res = await fetch(`/api/projects/${p.id}`, {
                           method: "DELETE",
                           credentials: "include",
                         });
@@ -461,7 +485,7 @@ const handleCreate = async () => {
                   onClick={async () => {
                     if (!confirm("Are you sure you want to delete this project?")) return;
                     try {
-                      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`, {
+                      const res = await fetch(`/api/projects/${selectedProject.id}`, {
                         method: "DELETE",
                         credentials: "include",
                       });
@@ -543,7 +567,7 @@ Update the title, optional description, or invite new collaborators.
         onClick={async () => {
           try {
             const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`,
+              `/api/projects/${selectedProject.id}`,
               {
                 method: "PATCH",
                 credentials: "include",
@@ -581,7 +605,7 @@ Update the title, optional description, or invite new collaborators.
             // setSelectedProject(result);
             
 const fullRes = await fetch(
-  `${process.env.NEXT_PUBLIC_API_BASE}/api/projects/${selectedProject.id}`,
+  `/api/projects/${selectedProject.id}`,
   { credentials: "include" }
 );
 

@@ -42,20 +42,39 @@ export function setCookie(res: any, token: string) {
 }
 
 
+// export function verifySession(token: string) {
+//   try {
+//     return jwt.verify(token, JWT_SECRET) as { uid: number; email: string };
+//   } catch (e) {
+//     return null;
+//   }
+// }
 export function verifySession(token: string) {
   try {
-    return jwt.verify(token, JWT_SECRET) as { uid: number; email: string };
-  } catch (e) {
+    return jwt.verify(token, JWT_SECRET) as { uid: string; email: string };
+  } catch {
     return null;
   }
 }
 
+// export function clearCookie(res: any) {
+//   res.clearCookie(COOKIE_NAME, {
+//     path: "/",
+//   });
+
+//   if (domain) {
+//     res.clearCookie(COOKIE_NAME, {
+//       path: "/",
+//       domain,
+//     });
+//   }
+// }
 export function clearCookie(res: any) {
   res.clearCookie(COOKIE_NAME, {
     path: "/",
+    domain: ".app.cern.ch",
   });
-
-  if (domain) {
+    if (domain) {
     res.clearCookie(COOKIE_NAME, {
       path: "/",
       domain,

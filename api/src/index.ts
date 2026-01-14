@@ -2,9 +2,13 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 
-if (!process.env.FRONTEND_URL) {
-  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// if (!process.env.FRONTEND_URL) {
+//   dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// }
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 }
+
 import projectEditRoutes from "./routes/projectEdit.routes";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
@@ -20,12 +24,18 @@ const { validateEnv } = await import("./config/validateEnv");
   const env = validateEnv(); 
 
   app.use(helmet());
-  app.use(
-    cors({
-      origin: env.FRONTEND_URL,
-      credentials: true,
-    })
-  );
+  // app.use(
+  //   cors({
+  //     origin: env.FRONTEND_URL,
+  //     credentials: true,
+  //   })
+  // );
+app.use(
+  cors({
+    origin: "https://oqi-impact-tool.app.cern.ch",
+    credentials: true,
+  })
+);
 
   app.use(express.json());
   app.use(cookieParser());

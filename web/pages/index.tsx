@@ -41,18 +41,21 @@ useEffect(() => {
     { num: 17, title: "Partnerships for the Goals",              color: "#19486a", url: "https://sdgs.un.org/goals/goal17",icon: "/icons/sdg/image_logo_clean10008_56.jpg" },
   ];
 
-  const handleAccessClick = async () => {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, {
-        credentials: "include",
-      });
-      if (res.ok) router.push("/dashboard");
-      else router.push("/login");
-    } catch (err) {
-      console.error("Auth check failed:", err);
-      router.push("/login");
-    }
-  };
+  // const handleAccessClick = async () => {
+  //   try {
+  //     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/me`, {
+  //       credentials: "include",
+  //     });
+  //     if (res.ok) router.push("/dashboard");
+  //     else router.push("/login");
+  //   } catch (err) {
+  //     console.error("Auth check failed:", err);
+  //     router.push("/login");
+  //   }
+  // };
+const handleAccessClick = () => {
+  router.push("/dashboard");
+};
 
   return (
     <>
