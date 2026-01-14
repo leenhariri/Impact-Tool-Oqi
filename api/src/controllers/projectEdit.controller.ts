@@ -6,14 +6,16 @@ const prisma = new PrismaClient();
 
 
 const LOCK_TTL_MS = 60_000; // 60s = "active editor" window
-
+type AuthedRequest<P extends Record<string, string>> = Request<P> & {
+  user?: { uid: string; email?: string; name?: string };
+};
 function lockIsActive(lastEditPing: Date | null) {
   if (!lastEditPing) return false;
   return Date.now() - lastEditPing.getTime() < LOCK_TTL_MS;
 }
 
 // POST /projects/:projectId/edit/start
-export async function startEditing(req: any, res: Response) {
+export async function startEditing(req: AuthedRequest<{ projectId: string }>, res: Response) {
   const { projectId } = req.params;
   const userId = req.user?.uid;
 
@@ -64,7 +66,7 @@ export async function startEditing(req: any, res: Response) {
 }
 
 // POST /projects/:projectId/edit/ping
-export async function pingEditing(req: any, res: Response) {
+export async function pingEditing(req: AuthedRequest<{ projectId: string }>, res: Response) {
   const { projectId } = req.params;
   const userId = req.user?.uid;
 
@@ -91,7 +93,7 @@ export async function pingEditing(req: any, res: Response) {
 }
 
 // POST /projects/:projectId/edit/stop
-export async function stopEditing(req: any, res: Response) {
+export async function stopEditing(req: AuthedRequest<{ projectId: string }>, res: Response) {
   const { projectId } = req.params;
   const userId = req.user?.uid;
 

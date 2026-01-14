@@ -21,25 +21,25 @@ export function verify(token: string) {
   return jwt.verify(token, JWT_SECRET) as any;
 }
 // for testing
-export function setCookie(res: any, token: string) {
-  res.cookie(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: !disableSecure && isProd,
-    sameSite: isProd ? "none" : "lax",
-    path: "/",
-    domain, 
-  });
-}
-// for production
 // export function setCookie(res: any, token: string) {
 //   res.cookie(COOKIE_NAME, token, {
 //     httpOnly: true,
-//     secure: true,
-//     sameSite: "none",
+//     secure: !disableSecure && isProd,
+//     sameSite: isProd ? "none" : "lax",
 //     path: "/",
-//     domain: ".app.cern.ch", 
+//     domain, 
 //   });
 // }
+// for production
+export function setCookie(res: any, token: string) {
+  res.cookie(COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    domain: ".app.cern.ch", 
+  });
+}
 
 
 export function verifySession(token: string) {

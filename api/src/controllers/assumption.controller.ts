@@ -15,7 +15,7 @@ const assumptionUpdateSchema = z.object({
 });
 
 // CREATE Assumption
-export const createAssumption = async (req: Request, res: Response) => {
+export const createAssumption = async (req: Request<{ projectId: string }>, res: Response) => {
   const parseResult = assumptionCreateSchema.safeParse(req.body);
   if (!parseResult.success) {
     return res.status(400).json({ error: 'Invalid input', details: parseResult.error.flatten() });
@@ -34,7 +34,7 @@ export const createAssumption = async (req: Request, res: Response) => {
 };
 
 // READ all Assumptions for a project
-export const getAssumptions = async (req: Request, res: Response) => {
+export const getAssumptions = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
   try {
@@ -48,7 +48,7 @@ export const getAssumptions = async (req: Request, res: Response) => {
 };
 
 // UPDATE Assumption
-export const updateAssumption = async (req: Request, res: Response) => {
+export const updateAssumption = async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
   const parseResult = assumptionUpdateSchema.safeParse(req.body);
 
@@ -68,7 +68,7 @@ export const updateAssumption = async (req: Request, res: Response) => {
 };
 
 // DELETE Assumption
-export const deleteAssumption = async (req: Request, res: Response) => {
+export const deleteAssumption = async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
 
   try {
@@ -80,7 +80,7 @@ export const deleteAssumption = async (req: Request, res: Response) => {
 };
 
 // Alias: getAssumptionsForProject
-export const getAssumptionsForProject = async (req: Request, res: Response) => {
+export const getAssumptionsForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
   try {

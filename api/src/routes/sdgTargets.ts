@@ -4,7 +4,7 @@ import requireAuth from '../middleware/requireAuth';
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// // GET /sdg-targets
+// GET /sdg-targets
 router.get("/", requireAuth,async (_req, res) => {
   try {
     const targets = await prisma.sDGTarget.findMany({

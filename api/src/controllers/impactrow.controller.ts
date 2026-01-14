@@ -1,7 +1,7 @@
-import { Request, Response } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 // CREATE ImpactRow
 export const createImpactRow = async (req: Request, res: Response) => {
@@ -14,7 +14,7 @@ export const createImpactRow = async (req: Request, res: Response) => {
     indicatorDefinition,
     meansOfMeasurement,
     baseline,
-  } = req.body
+  } = req.body;
 
   try {
     const row = await prisma.impactRow.create({
@@ -28,16 +28,19 @@ export const createImpactRow = async (req: Request, res: Response) => {
         meansOfMeasurement,
         baseline,
       },
-    })
-    res.status(201).json(row)
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Failed to create impact row' })
+    });
+
+    res.status(201).json(row);
+  } catch {
+    res.status(500).json({ error: 'Failed to create impact row' });
   }
-}
+};
 
 // GET ImpactRows for a project
-export const getImpactRows = async (req: Request, res: Response) => {
+export const getImpactRows = async (
+  req: Request<{ projectId: string }>,
+  res: Response
+) => {
   const { projectId } = req.params;
 
   try {
@@ -59,15 +62,16 @@ export const getImpactRows = async (req: Request, res: Response) => {
     });
 
     res.json(rows);
-  } catch (error) {
-    // console.error(error);
+  } catch {
     res.status(500).json({ error: 'Failed to fetch impact rows' });
   }
 };
 
 // UPDATE ImpactRow
-// UPDATE ImpactRow
-export const updateImpactRow = async (req: Request, res: Response) => {
+export const updateImpactRow = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
   const { id } = req.params;
   const {
     projectId,
@@ -97,16 +101,17 @@ export const updateImpactRow = async (req: Request, res: Response) => {
     });
 
     res.json(updated);
-  } catch (error) {
-    // console.error("UPDATE ERROR:", error);
+  } catch {
     res.status(500).json({ error: 'Failed to update row' });
   }
 };
 
-
 // DELETE ImpactRow
-export const deleteImpactRow = async (req: Request, res: Response) => {
-  const { id } = req.params
+export const deleteImpactRow = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
+  const { id } = req.params;
 
   try {
     // First delete all related ImpactRowTarget entries
@@ -119,9 +124,8 @@ export const deleteImpactRow = async (req: Request, res: Response) => {
       where: { id },
     });
 
-    res.status(204).send()
-  } catch (error) {
-    // console.error('Failed to delete impact row:', error)
-    res.status(500).json({ error: 'Failed to delete row' })
+    res.status(204).send();
+  } catch {
+    res.status(500).json({ error: 'Failed to delete row' });
   }
-}
+};

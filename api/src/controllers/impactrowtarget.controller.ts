@@ -44,12 +44,11 @@ export const addSdgTarget = async (req: Request, res: Response) => {
 };
 
 // --- GET SDG Targets for a row ---
-export const getTargetsForRow = async (req: Request, res: Response) => {
+export const getTargetsForRow = async (
+  req: Request<{ impactRowId: string }>,
+  res: Response
+) => {
   const { impactRowId } = req.params;
-
-  if (!impactRowId || typeof impactRowId !== 'string') {
-    return res.status(400).json({ error: 'Missing or invalid impactRowId' });
-  }
 
   try {
     const targets = await prisma.impactRowTarget.findMany({
@@ -70,12 +69,11 @@ export const getTargetsForRow = async (req: Request, res: Response) => {
 };
 
 // --- DELETE one SDG target link ---
-export const deleteTarget = async (req: Request, res: Response) => {
+export const deleteTarget = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
   const { id } = req.params;
-
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'Missing or invalid target ID' });
-  }
 
   try {
     await prisma.impactRowTarget.delete({ where: { id } });
@@ -89,12 +87,12 @@ export const deleteTarget = async (req: Request, res: Response) => {
 };
 
 // --- REPLACE all SDG Targets for a row ---
-export const replaceTargetsForRow = async (req: Request, res: Response) => {
+// Route: /.../:rowId
+export const replaceTargetsForRow = async (
+  req: Request<{ rowId: string }>,
+  res: Response
+) => {
   const { rowId } = req.params;
-
-  if (!rowId || typeof rowId !== 'string') {
-    return res.status(400).json({ error: 'Missing or invalid rowId' });
-  }
 
   const parsed = replaceTargetsSchema.safeParse(req.body);
   if (!parsed.success) {

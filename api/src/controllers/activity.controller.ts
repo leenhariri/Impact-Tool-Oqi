@@ -15,7 +15,8 @@ const activityUpdateSchema = z.object({
 });
 
 // CREATE Activity
-export const createActivity = async (req: Request, res: Response) => {
+export const createActivity = async (req: Request<{ projectId: string }>
+, res: Response) => {
   const parseResult = activityCreateSchema.safeParse(req.body);
   if (!parseResult.success) {
     return res.status(400).json({ error: 'Invalid input', details: parseResult.error.flatten() });
@@ -32,7 +33,8 @@ export const createActivity = async (req: Request, res: Response) => {
 };
 
 // READ Activities by Project
-export const getActivities = async (req: Request, res: Response) => {
+export const getActivities = async (req: Request<{ projectId: string }>
+, res: Response) => {
   const { projectId } = req.params;
 
   try {
@@ -47,7 +49,8 @@ export const getActivities = async (req: Request, res: Response) => {
 };
 
 // UPDATE Activity
-export const updateActivity = async (req: Request, res: Response) => {
+export const updateActivity = async (req: Request<{  id: string  }>
+, res: Response) => {
   const { id } = req.params;
   const parseResult = activityUpdateSchema.safeParse(req.body);
 
@@ -67,7 +70,8 @@ export const updateActivity = async (req: Request, res: Response) => {
 };
 
 // DELETE Activity
-export const deleteActivity = async (req: Request, res: Response) => {
+export const deleteActivity = async (req: Request<{  id: string  }>
+, res: Response) => {
   const { id } = req.params;
 
   try {
@@ -79,7 +83,7 @@ export const deleteActivity = async (req: Request, res: Response) => {
 };
 
 // (Alias for getActivities)
-export const getActivitiesForProject = async (req: Request, res: Response) => {
+export const getActivitiesForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
   try {

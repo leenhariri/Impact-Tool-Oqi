@@ -18,7 +18,7 @@ const saveNodesSchema = z.object({
 });
 
 // GET nodes for a project
-export const getDiagramNodes = async (req: Request, res: Response) => {
+export const getDiagramNodes = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
   try {
@@ -30,7 +30,7 @@ export const getDiagramNodes = async (req: Request, res: Response) => {
 };
 
 // SAVE (overwrite) nodes for a project
-export const saveDiagramNodes = async (req: Request, res: Response) => {
+export const saveDiagramNodes = async (req: Request<{ projectId: string }>,res: Response) => {
   const parsed = saveNodesSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({ error: "Invalid input", details: parsed.error.flatten() });

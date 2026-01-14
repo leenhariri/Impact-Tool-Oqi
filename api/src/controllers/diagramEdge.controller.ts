@@ -16,7 +16,7 @@ const saveEdgesSchema = z.object({
 });
 
 // GET edges for a project
-export const getDiagramEdges = async (req: Request, res: Response) => {
+export const getDiagramEdges = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
   try {
@@ -29,7 +29,7 @@ export const getDiagramEdges = async (req: Request, res: Response) => {
 };
 
 //  SAVE (overwrite) edges for a project
-export const saveDiagramEdges = async (req: Request, res: Response) => {
+export const saveDiagramEdges = async (req: Request<{ projectId: string }>, res: Response) => {
   const parsed = saveEdgesSchema.safeParse(req.body);
   if (!parsed.success) {
     return res.status(400).json({

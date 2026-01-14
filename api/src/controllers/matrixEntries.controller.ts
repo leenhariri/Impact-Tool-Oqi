@@ -18,7 +18,7 @@ const upsertSchema = z.object({
 });
 
 //  GET all matrix entries for a project
-export const getMatrixForProject = async (req: Request, res: Response) => {
+export const getMatrixForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const projectId = req.params.projectId || req.body.projectId;
 
   if (!projectId || typeof projectId !== 'string') {
@@ -44,7 +44,7 @@ export const getMatrixForProject = async (req: Request, res: Response) => {
 };
 
 // 🔹 UPSERT (create or update) a matrix entry
-export const upsertMatrixEntry = async (req: Request, res: Response) => {
+export const upsertMatrixEntry = async (req: Request<{ projectId: string }>, res: Response) => {
   const parsed = upsertSchema.safeParse(req.body);
 
   if (!parsed.success) {
@@ -86,7 +86,7 @@ export const upsertMatrixEntry = async (req: Request, res: Response) => {
 };
 
 // 🔹 DELETE all matrix entries for a project
-export const clearMatrixForProject = async (req: Request, res: Response) => {
+export const clearMatrixForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
   if (!projectId || typeof projectId !== 'string') {
