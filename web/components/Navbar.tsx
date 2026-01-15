@@ -70,19 +70,32 @@ useEffect(() => {
   };
 }, []); // ✅ run once on mount
 
-  const handleLogout = async () => {
-    setMobileMenuOpen(false);
-    // await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
-    //   method: "POST",
-    //   credentials: "include",
-    // });
-    // setIsLoggedIn(false);
-    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
-setIsLoggedIn(false);
-router.push("/");
+//   const handleLogout = async () => {
+//     setMobileMenuOpen(false);
+//     // await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/auth/logout`, {
+//     //   method: "POST",
+//     //   credentials: "include",
+//     // });
+//     // setIsLoggedIn(false);
+//     await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+// setIsLoggedIn(false);
+// router.push("/");
 
-    window.location.href = "/";
-  };
+//     window.location.href = "/";
+//   };
+const handleLogout = async () => {
+  setMobileMenuOpen(false);
+
+  try {
+    // 1) logout your backend (optional but fine)
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+  } catch {}
+
+  // 2) logout oauth2-proxy session
+  window.location.href =
+  "https://oqi-impact-tool.app.cern.ch/oauth2/sign_out?rd=%2F";
+
+};
 
   return (
     <>
@@ -120,9 +133,17 @@ router.push("/");
               <li><Link href="/login" onClick={() => setMobileMenuOpen(false)}>Access Tool</Link></li>
             )} */}
             <li>
-  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+  {/* <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
     Access Tool
-  </Link>
+  </Link> */}
+
+<a
+  href="https://oqi-impact-tool.app.cern.ch/oauth2/start?rd=%2Fdashboard"
+  onClick={() => setMobileMenuOpen(false)}
+>
+  Access Tool
+</a>
+
 </li>
 
 {!checking && isLoggedIn && (

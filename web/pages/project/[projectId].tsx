@@ -947,7 +947,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
                         <th className={styles.tooltipHeader}>
   SDG Target <span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
-    An SDG target is a specific, measurable objective linked to one of the Sustainable Development Goals (SDGs) that defines what we aim to achieve by a set date (often 2030). Examples for the targets can be found in the useful links section. 
+    An SDG target is a specific, measurable objective linked to one of the Sustainable Development Goals (SDGs) that defines what we aim to achieve by a set date (often 2030). Examples for the targets can be found in the useful resources section. 
   </span>
 </th>
             <th></th>

@@ -3,6 +3,29 @@ import { useRouter } from "next/router";
 import styles from "../styles/dashboard.module.css";
 import "nice-forms.css";
 import CollaboratorPicker from "../components/CollaboratorPicker";
+import type { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const cookie = ctx.req.headers.cookie || "";
+  const host = ctx.req.headers.host || "";
+
+  // Call your own Next API route on the SAME host (goes through oauth2-proxy)
+  const res = await fetch(`https://${host}/api/auth/me`, {
+    headers: { cookie },
+  });
+
+  if (!res.ok) {
+    return {
+      redirect: {
+        destination: `/oauth2/start?rd=${encodeURIComponent("/dashboard")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
+
 function sanitizeInput(value: string): string {
   return value
     .trim()
@@ -145,10 +168,15 @@ const fetchProjects = async () => {
   const res = await fetch(`/api/projects`, {
     credentials: "include",
   });
- if (res.status === 401) {
-    window.location.href = "/dashboard";
-    return;
-  }
+//  if (res.status === 401) {
+//     window.location.href = "/dashboard";
+//     return;
+//   }
+if (res.status === 401) {
+  window.location.href = "/oauth2/start?rd=%2Fdashboard";
+  return;
+}
+
   const data = await res.json();
 
  
@@ -270,7 +298,8 @@ const handleCreate = async () => {
 };
 
 
-  if (!user) return <p>Loading...</p>;
+  // if (!user) return <p>Loading...</p>;
+if (!user) return null;
 
  return (
   <div style={{ position: "relative", zIndex: 1 }} className={styles.container}>

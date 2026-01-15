@@ -53,9 +53,14 @@ useEffect(() => {
   //     router.push("/login");
   //   }
   // };
+// const handleAccessClick = () => {
+//   router.push("/dashboard");
+// };
 const handleAccessClick = () => {
-  router.push("/dashboard");
+  window.location.href =
+    "https://oqi-impact-tool.app.cern.ch/oauth2/start?rd=%2Fdashboard";
 };
+
 
   return (
     <>

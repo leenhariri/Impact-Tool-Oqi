@@ -73,38 +73,39 @@ The table below provides examples of questions to guide defining indicators.
 </p>
 <div className="table-container">
   <table className="indicators-table">
-    <thead>
-      <tr>
-        <th rowSpan={2}>Policy Domain / Framework</th>
-        <th rowSpan={2}>SDG Domain</th>
-        <th colSpan={2} style={{ background: "#b22222", color: "#fff" }}>
-          Local Level Measurement
-          <br />
-          (positive/negative)
-          <br />
-          (direct/indirect)
-          <br />
-          (short term/long term)
-        </th>
-        <th colSpan={2} style={{ background: "#a0522d", color: "#fff" }}>
-          Global Projection
-        </th>
-      </tr>
-      <tr>
-        <th style={{ background: "#4682b4", color: "#fff" }}>
-          Examples of qualitative/quantitative questions
-        </th>
-        <th style={{ background: "#228b22", color: "#fff" }}>
-          Examples of Indicators
-        </th>
-        <th style={{ background: "#4682b4", color: "#fff" }}>
-          Enabling factors for global projection
-        </th>
-        <th style={{ background: "#228b22", color: "#fff" }}>
-          Example of qualitative question
-        </th>
-      </tr>
-    </thead>
+   <thead>
+  <tr className="hdr1">
+    <th rowSpan={2}>Policy Domain / Framework</th>
+    <th rowSpan={2}>SDG Domain</th>
+    <th colSpan={2} style={{ background: "#b22222", color: "#fff" }}>
+      Local Level Measurement
+      <br />
+      (positive/negative)
+      <br />
+      (direct/indirect)
+      <br />
+      (short term/long term)
+    </th>
+    <th colSpan={2} style={{ background: "#a0522d", color: "#fff" }}>
+      Global Projection
+    </th>
+  </tr>
+
+  <tr className="hdr2">
+    <th style={{ background: "#4682b4", color: "#fff" }}>
+      Examples of qualitative/quantitative questions
+    </th>
+    <th style={{ background: "#228b22", color: "#fff" }}>
+      Examples of Indicators
+    </th>
+    <th style={{ background: "#4682b4", color: "#fff" }}>
+      Enabling factors for global projection
+    </th>
+    <th style={{ background: "#228b22", color: "#fff" }}>
+      Example of qualitative question
+    </th>
+  </tr>
+</thead>
 
     <tbody>
       {/* Example row */}
@@ -349,6 +350,52 @@ In completing the SDG Interlinkage Diagram, self-select SDG targets based on the
       </div>
 
       <style jsx>{`
+.table-container {
+  max-height: 520px;
+
+  overflow-y: auto;
+  overflow-x: auto;
+
+  /* key line: keeps layout width stable even when scrolling */
+  scrollbar-gutter: stable;
+
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+
+  --hdr1-height: 100px; /* adjust once after this change */
+}
+
+
+/* Helps sticky headers behave nicely */
+.indicators-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.indicators-table thead th {
+  position: sticky;
+  z-index: 10;            /* stay above body cells */
+  background: #fff;       /* so text doesn’t overlap through */
+}
+
+/* First header row sticks at the top */
+.indicators-table thead tr.hdr1 th {
+  top: 0;
+  z-index: 20;
+}
+
+/* Second header row sticks under the first row */
+.indicators-table thead tr.hdr2 th {
+  top: var(--hdr1-height);
+  z-index: 19;
+}
+
+/* Optional: a little separator shadow/line under the sticky header */
+.indicators-table thead tr.hdr2 th {
+  box-shadow: 0 2px 0 rgba(0,0,0,0.06);
+}
+
   .arvo-title {
     font-family: 'Arvo', serif;
     font-size: 28px;
