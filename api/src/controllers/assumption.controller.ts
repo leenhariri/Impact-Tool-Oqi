@@ -4,7 +4,6 @@ import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
-// Zod validation schemas
 const assumptionCreateSchema = z.object({
   projectId: z.string().uuid(),
   text: z.string().min(1),
@@ -14,7 +13,7 @@ const assumptionUpdateSchema = z.object({
   text: z.string().min(1),
 });
 
-// CREATE Assumption
+
 export const createAssumption = async (req: Request<{ projectId: string }>, res: Response) => {
   const parseResult = assumptionCreateSchema.safeParse(req.body);
   if (!parseResult.success) {
@@ -33,7 +32,7 @@ export const createAssumption = async (req: Request<{ projectId: string }>, res:
   }
 };
 
-// READ all Assumptions for a project
+
 export const getAssumptions = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
@@ -47,7 +46,7 @@ export const getAssumptions = async (req: Request<{ projectId: string }>, res: R
   }
 };
 
-// UPDATE Assumption
+
 export const updateAssumption = async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
   const parseResult = assumptionUpdateSchema.safeParse(req.body);
@@ -67,7 +66,7 @@ export const updateAssumption = async (req: Request<{ id: string }>, res: Respon
   }
 };
 
-// DELETE Assumption
+
 export const deleteAssumption = async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
 
@@ -79,7 +78,7 @@ export const deleteAssumption = async (req: Request<{ id: string }>, res: Respon
   }
 };
 
-// Alias: getAssumptionsForProject
+
 export const getAssumptionsForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 

@@ -4,7 +4,7 @@ import requireAuth from '../middleware/requireAuth';
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// GET /sdg-targets
+
 router.get("/", requireAuth,async (_req, res) => {
   try {
     const targets = await prisma.sDGTarget.findMany({
@@ -12,11 +12,11 @@ router.get("/", requireAuth,async (_req, res) => {
     });
     res.json({ targets });
   } catch (err) {
-    // console.error("Error fetching SDG targets:", err);
+   
     res.status(500).json({ error: "Failed to fetch SDG targets" });
   }
 });
-// GET /api/project/:projectId/sdg-targets
+
 router.get("/project/:projectId/sdg-targets", requireAuth, async (req, res) => {
 const { projectId } = req.params;
 
@@ -37,7 +37,7 @@ const targets = linkedTargets.map((entry: any) => entry.sdgTarget);
 
 res.json(targets);
 } catch (err) {
-// console.error("Error fetching project SDG targets:", err);
+
 res.status(500).json({ error: "Failed to fetch project-specific targets" });
 }
 });

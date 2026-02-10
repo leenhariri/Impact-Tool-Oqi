@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
-// Zod Schemas for validation
+
 const activityCreateSchema = z.object({
   projectId: z.string().uuid(),
   text: z.string().min(1),
@@ -14,7 +14,7 @@ const activityUpdateSchema = z.object({
   text: z.string().min(1).optional(),
 });
 
-// CREATE Activity
+
 export const createActivity = async (req: Request<{ projectId: string }>
 , res: Response) => {
   const parseResult = activityCreateSchema.safeParse(req.body);
@@ -32,7 +32,7 @@ export const createActivity = async (req: Request<{ projectId: string }>
   }
 };
 
-// READ Activities by Project
+
 export const getActivities = async (req: Request<{ projectId: string }>
 , res: Response) => {
   const { projectId } = req.params;
@@ -48,7 +48,7 @@ export const getActivities = async (req: Request<{ projectId: string }>
   }
 };
 
-// UPDATE Activity
+
 export const updateActivity = async (req: Request<{  id: string  }>
 , res: Response) => {
   const { id } = req.params;
@@ -69,7 +69,7 @@ export const updateActivity = async (req: Request<{  id: string  }>
   }
 };
 
-// DELETE Activity
+
 export const deleteActivity = async (req: Request<{  id: string  }>
 , res: Response) => {
   const { id } = req.params;
@@ -82,7 +82,7 @@ export const deleteActivity = async (req: Request<{  id: string  }>
   }
 };
 
-// (Alias for getActivities)
+
 export const getActivitiesForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 

@@ -3,14 +3,14 @@ import { PrismaClient } from '@prisma/client';
 
 export const prisma = new PrismaClient();
 
-// Helper: normalize query param to a single string
+
 function getQueryString(value: unknown): string | undefined {
   if (typeof value === 'string') return value;
   if (Array.isArray(value) && typeof value[0] === 'string') return value[0];
   return undefined;
 }
 
-// CREATE Risk
+
 export const createRisk = async (req: Request, res: Response) => {
   const { projectId, text, hierarchyLevels } = req.body;
 
@@ -34,7 +34,7 @@ export const createRisk = async (req: Request, res: Response) => {
   }
 };
 
-// READ all Risks for a project (query: ?projectId=...)
+
 export const getRisks = async (req: Request, res: Response) => {
   const projectId = getQueryString(req.query.projectId);
 
@@ -54,7 +54,7 @@ export const getRisks = async (req: Request, res: Response) => {
   }
 };
 
-// READ Risk by ID
+
 export const getRiskById = async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
 
@@ -72,13 +72,13 @@ export const getRiskById = async (req: Request<{ id: string }>, res: Response) =
   }
 };
 
-// UPDATE Risk
+
 export const updateRisk = async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
   const { text, hierarchyLevels } = req.body;
 
   try {
-    // delete existing hierarchy links
+   
     await prisma.riskHierarchy.deleteMany({ where: { riskId: id } });
 
     const updatedRisk = await prisma.risk.update({
@@ -100,7 +100,7 @@ export const updateRisk = async (req: Request<{ id: string }>, res: Response) =>
   }
 };
 
-// DELETE Risk
+
 export const deleteRisk = async (req: Request<{ id: string }>, res: Response) => {
   const { id } = req.params;
 
@@ -112,7 +112,6 @@ export const deleteRisk = async (req: Request<{ id: string }>, res: Response) =>
   }
 };
 
-// READ Risks for project (params: /projects/:projectId/risks)
 export const getRisksForProject = async (
   req: Request<{ projectId: string }>,
   res: Response

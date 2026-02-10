@@ -1,4 +1,4 @@
-// pages/project/[projectId].tsx
+
 
 import { useRouter } from 'next/router';
 import { useEffect, useState ,useRef} from 'react';
@@ -885,8 +885,7 @@ return (
 </div>
 
 
-    {/* Impact Rows */}
-    {/* <h3>Impact Rows</h3> */}
+
     
 <h1 className={styles.Title}>Indicator Matrix</h1>
 <p className={styles.note}>
@@ -909,7 +908,7 @@ Please refer to the full <a href="/user-guide" target="_blank" rel="noopener nor
   </span>
 </th>
                         <th className={styles.tooltipHeader}>
-  Result Level<span style={{ color: "#ffffffff" }}>*</span>
+  Result Statement<span style={{ color: "#ffffffff" }}>*</span>
   <span className={styles.tooltipText}>
     The change or outcome that happens as a consequence of the project.
   </span>

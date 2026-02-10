@@ -1,4 +1,4 @@
-// api/src/controllers/userController.ts
+
 import { Request, Response } from "express";
 import { PrismaClient } from '@prisma/client'
 

@@ -4,20 +4,20 @@ import { z } from "zod";
 
 const prisma = new PrismaClient();
 
-// Schema for a single node
+
 const nodeSchema = z.object({
   nodeId: z.string().min(1),
   x: z.number(),
   y: z.number(),
 });
 
-// Schema for the whole save request
+
 const saveNodesSchema = z.object({
   projectId: z.string().uuid(),
   nodes: z.array(nodeSchema),
 });
 
-// GET nodes for a project
+
 export const getDiagramNodes = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
@@ -29,7 +29,7 @@ export const getDiagramNodes = async (req: Request<{ projectId: string }>, res: 
   }
 };
 
-// SAVE (overwrite) nodes for a project
+
 export const saveDiagramNodes = async (req: Request<{ projectId: string }>,res: Response) => {
   const parsed = saveNodesSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -39,10 +39,10 @@ export const saveDiagramNodes = async (req: Request<{ projectId: string }>,res: 
   const { projectId, nodes } = parsed.data;
 
   try {
-    // Step 1: Delete existing nodes
+    
     await prisma.diagramNode.deleteMany({ where: { projectId } });
 
-    // Step 2: Create new nodes
+   
     const created = await prisma.diagramNode.createMany({
       data: nodes.map((n) => ({
         nodeId: n.nodeId,

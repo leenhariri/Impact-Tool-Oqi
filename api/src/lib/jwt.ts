@@ -42,13 +42,7 @@ export function setCookie(res: any, token: string) {
 }
 
 
-// export function verifySession(token: string) {
-//   try {
-//     return jwt.verify(token, JWT_SECRET) as { uid: number; email: string };
-//   } catch (e) {
-//     return null;
-//   }
-// }
+
 export function verifySession(token: string) {
   try {
     return jwt.verify(token, JWT_SECRET) as { uid: string; email: string };

@@ -100,7 +100,7 @@ r.post("/", requireAuth, async (req, res) => {
 });
 
 r.get("/", requireAuth, async (req, res) => {
-  const userId = req.user!.uid; // JWT uses uid 
+  const userId = req.user!.uid;  
 
   const LOCK_TTL_MS = 60_000;
   const now = Date.now();
@@ -153,10 +153,7 @@ r.get("/:id", requireAuth, async (req, res) => {
   const userId = req.user!.uid;
   const { id } = req.params;
 
-  // const project = await prisma.project.findUnique({
-  //   where: { id },
-  //   include: { members: true },
-  // });
+
 const project = await prisma.project.findUnique({
   where: { id },
   include: {

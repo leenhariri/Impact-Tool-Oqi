@@ -23,24 +23,7 @@ import Legend from "../components/Legend";
 import { useRouter } from 'next/router';
 import { Handle, Position } from "reactflow";
 
-// async function measureNodeSize(htmlString: string): Promise<{ width: number; height: number }> {
-//   return new Promise((resolve) => {
-//     const div = document.createElement("div");
-//     div.style.position = "absolute";
-//     div.style.visibility = "hidden";
-//     div.style.top = "-9999px";
-//     div.style.left = "-9999px";
-//     div.innerHTML = htmlString;
 
-//     document.body.appendChild(div);
-
-//     requestAnimationFrame(() => {
-//       const rect = div.getBoundingClientRect();
-//       document.body.removeChild(div);
-//       resolve({ width: rect.width, height: rect.height });
-//     });
-//   });
-// }
 
 type ImpactRow = {
   id: string;
@@ -65,11 +48,7 @@ const iconHoverStyle: React.CSSProperties = {
 
 
 
-// type Risk = {
-//   id: string;
-//   hierarchyLevel: string;
-//   text: string;
-// };
+
 type Risk = {
   id: string;
   text: string;
@@ -420,7 +399,7 @@ risks.forEach((risk) => {
 
 const riskBoxBaseX = baseX - 350;
 let accumulatedY = 0;
-// const verticalPadding = 30;
+
 const baseRiskY = -50; 
 
 Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {

@@ -1,4 +1,4 @@
-/* === Global Layout === */
+
 
 .container {
   padding: 2rem;
@@ -132,7 +132,7 @@
   box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
-/* === Error Text === */
+
 .error {
   color: red;
   margin-top: 1rem;
@@ -141,7 +141,6 @@
 
 
 
-/* === Modal Buttons === */
 .modalButton, .deleteButton, .saveButton {
   padding: 12px 24px;
   background-color: #111730;
@@ -183,7 +182,7 @@ padding-top: 60px;
   border-radius: 20px;
   width: 90%;
   max-width: 450px;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.15); /* ✅ deeper shadow */
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
   overflow-y: auto;
   max-height: 80vh;
   font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
@@ -239,7 +238,7 @@ transition: all 0.2s ease;
   font-weight: 700;
   font-size: 0.85rem;
   color: #333;
-  text-transform: uppercase; /* ✅ smaller, but stronger */
+  text-transform: uppercase; 
   margin-bottom: 2px; 
   letter-spacing: 0.5px;
 }
@@ -295,7 +294,7 @@ transition: all 0.2s ease;
 }
 
 .modalContent {
-  position: relative; /* required for absolute positioning */
+  position: relative; 
 }
 
 .modalText {
@@ -401,7 +400,7 @@ transition: all 0.2s ease;
   border-collapse: collapse;
   background: white;
   border-spacing: 0;
-  transform: translateZ(0); /* optional */
+  transform: translateZ(0);
 }
 
 
@@ -423,13 +422,13 @@ transition: all 0.2s ease;
 .projectLink,
 .projectLink:link,
 .projectLink:visited {
-  text-decoration: none !important; /* 🚫 force removes underline */
+  text-decoration: none !important; 
   color: #111730 !important;
 }
 
 .projectLink:hover,
 .projectLink:focus {
-  text-decoration: underline !important;/* optional hover underline */
+  text-decoration: underline !important;
   color: #1a1a40;
 }
 
@@ -466,18 +465,18 @@ transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   z-index: 999;
   overflow: hidden;
-  min-width: 160px; /* ✅ ensures wide enough */
-  padding: 4px 0;    /* ✅ controls spacing between items */
+  min-width: 160px;
+  padding: 4px 0;  
   margin-top: 2px;
 }
 
 .dropdownMenu button {
   display: block;
   width: 100%;
-  padding: 10px 16px;               /* ✅ fix tall spacing */
-  font-size: 0.75rem;               /* ✅ fix font size */
+  padding: 10px 16px;               
+  font-size: 0.75rem;             
   font-weight: 500;
-  white-space: nowrap;              /* ✅ prevent wrapping */
+  white-space: nowrap;         
   background: white;
   border: none;
   cursor: pointer;
@@ -501,14 +500,14 @@ transition: all 0.2s ease;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  transform: translateZ(0); /* ✅ GPU rendering */
+  transform: translateZ(0); 
 }
 
 .projectTable th,
 .projectTable td {
   padding: 14px 16px;
   text-align: left;
-  background-color: white; /* ✅ avoids "hairline" glow */
+  background-color: white; 
   border-bottom: 1px solid #e5e7eb;
   font-size: 0.85rem;
   vertical-align: middle;
@@ -531,11 +530,11 @@ transition: all 0.2s ease;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* ✅ trims shadows and borders cleanly */
+  overflow: hidden;
 }
-/* === FIX DOUBLE BORDER + ALIGN ROWS === */
 
-/* Remove overlapping borders */
+
+
 .projectTable {
   border-collapse: collapse;
   width: 100%;
@@ -553,7 +552,7 @@ transition: all 0.2s ease;
   z-index: -1;
 }
 
-/* Apply border only once per row */
+
 .projectTable tr {
   border-bottom: 1px solid #e5e7eb;
 }
@@ -562,7 +561,7 @@ transition: all 0.2s ease;
   border-bottom: none;
 }
 
-/* Reset td/th borders to avoid doubling */
+
 .projectTable th,
 .projectTable td {
   border: none;
@@ -575,7 +574,7 @@ transition: all 0.2s ease;
   background-color: #fff;
 }
 
-/* Align all text & list items */
+
 .projectTable td ul {
   list-style: none;
   margin: 0;
@@ -587,11 +586,11 @@ transition: all 0.2s ease;
   line-height: 1.4;
 }
 
-/* Optional: match header thickness */
+
 .projectTable th {
   font-weight: 600;
   color: #111730;
-  border-bottom: 2px solid #e5e7eb; /* cleaner top divider */
+  border-bottom: 2px solid #e5e7eb; 
 }
 .filterBar {
   display: flex;
@@ -642,10 +641,10 @@ transition: all 0.2s ease;
 }
 
 .Title {
-  font-size: 1.8rem;              /* adjust size */
-  font-weight: 600;             /* bold */
-  color: #111730;               /* your navy color */
-  margin-bottom: 1rem;          /* spacing below */
+  font-size: 1.8rem;             
+  font-weight: 600;             
+  color: #111730;              
+  margin-bottom: 1rem;         
   font-family: 'BlinkMacSystemFont', sans-serif;
 }
 .instructionsWrapper {
@@ -715,7 +714,7 @@ transition: all 0.2s ease;
 }
 @media (max-width: 768px) {
   .container {
-    overflow-x: auto !important;   /* ENABLE horizontal scrolling */
+    overflow-x: auto !important;  
   }
 
   .tableWrapper {
@@ -726,7 +725,7 @@ transition: all 0.2s ease;
   }
 
   .projectTable {
-    min-width: 700px !important;  /* adjust based on your headers */
+    min-width: 700px !important;  
   }
 }
 .autocompleteMenu {
@@ -760,7 +759,7 @@ transition: all 0.2s ease;
 }
 
 .autocompleteName {
-  font-weight: 500;          /* no longer bold */
+  font-weight: 500;         
   font-size: 12px;
   color: #111827;
   line-height: 1.2;

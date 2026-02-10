@@ -1,12 +1,12 @@
 .legend {
-  /* keep it small + clean */
+  
   font-size: 12px;
   line-height: 1.2;
   padding: 8px 10px;
-  background: transparent;   /* change to #f8fafb for a soft box */
-  border: 0;                 /* change to 1px solid #e5e7eb if you want a box */
+  background: transparent;   
+  border: 0;                 
   box-shadow: none;
-  width: 240px;              /* small width so it doesn’t grow vertically */
+  width: 240px;             
 }
 
 .title {
@@ -16,22 +16,22 @@
 }
 
 .list {
-  list-style: none;          /* avoid huge bullets */
+  list-style: none;          
   margin: 0;
   padding: 0;
-  display: grid;             /* two columns = half the height */
+  display: grid;            
   grid-template-columns: 1fr 1fr;
   gap: 6px 10px;
 }
 
-/* each row */
+
 .list li {
   display: flex;
   align-items: center;
   white-space: nowrap;
 }
 
-/* color square */
+
 .swatch {
   width: 10px;
   height: 10px;
@@ -42,7 +42,6 @@
   border: 1px solid rgba(0,0,0,0.08);
 }
 
-/* lines for stakeholders */
 .lineSolid,
 .lineDotted {
   width: 18px;

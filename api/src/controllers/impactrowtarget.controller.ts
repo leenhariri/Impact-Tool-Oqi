@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
-// --- Validation Schemas ---
+
 const addTargetSchema = z.object({
   projectId: z.string().uuid(),
   impactRowId: z.string().uuid(),
@@ -18,7 +18,7 @@ const replaceTargetsSchema = z.object({
   sdgTargetIds: z.array(z.string().uuid()),
 });
 
-// --- ADD SDG + SDG Target ---
+
 export const addSdgTarget = async (req: Request, res: Response) => {
   const parsed = addTargetSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -43,7 +43,7 @@ export const addSdgTarget = async (req: Request, res: Response) => {
   }
 };
 
-// --- GET SDG Targets for a row ---
+
 export const getTargetsForRow = async (
   req: Request<{ impactRowId: string }>,
   res: Response
@@ -68,7 +68,7 @@ export const getTargetsForRow = async (
   }
 };
 
-// --- DELETE one SDG target link ---
+
 export const deleteTarget = async (
   req: Request<{ id: string }>,
   res: Response
@@ -86,8 +86,7 @@ export const deleteTarget = async (
   }
 };
 
-// --- REPLACE all SDG Targets for a row ---
-// Route: /.../:rowId
+
 export const replaceTargetsForRow = async (
   req: Request<{ rowId: string }>,
   res: Response
@@ -102,7 +101,7 @@ export const replaceTargetsForRow = async (
   const { sdgId, sdgTargetIds, projectId } = parsed.data;
 
   try {
-    // Validate existence of all target IDs under that SDG
+   
     const validTargets = await prisma.sDGTarget.findMany({
       where: {
         id: { in: sdgTargetIds },
@@ -116,16 +115,16 @@ export const replaceTargetsForRow = async (
       });
     }
 
-    // If empty array, just delete and return
+
     if (sdgTargetIds.length === 0) {
       await prisma.impactRowTarget.deleteMany({ where: { impactRowId: rowId } });
       return res.status(200).json([]);
     }
 
-    // Delete existing targets
+   
     await prisma.impactRowTarget.deleteMany({ where: { impactRowId: rowId } });
 
-    // Add new ones
+    
     const created = await Promise.all(
       sdgTargetIds.map((targetId: string) =>
         prisma.impactRowTarget.create({

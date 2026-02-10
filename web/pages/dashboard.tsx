@@ -9,7 +9,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const cookie = ctx.req.headers.cookie || "";
   const host = ctx.req.headers.host || "";
 
-  // Call your own Next API route on the SAME host (goes through oauth2-proxy)
+
   const res = await fetch(`https://${host}/api/auth/me`, {
     headers: { cookie },
   });
@@ -49,9 +49,9 @@ const [editCollaborators, setEditCollaborators] = useState("");
 const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 const [filterRole, setFilterRole] = useState("All");
 const [searchTerm, setSearchTerm] = useState("");
-// Create modal collaborators (chips)
+
 const [collabEmails, setCollabEmails] = useState<string[]>([]);
-// Edit modal collaborators (chips)
+
 const [editCollabEmails, setEditCollabEmails] = useState<string[]>([]);
 const [lockModal, setLockModal] = useState<{ open: boolean; name: string }>({
   open: false,
@@ -132,16 +132,16 @@ useEffect(() => {
     credentials: "include",
   })
     .then(async (res) => {
-      if (!res.ok) return null; // not logged in
+      if (!res.ok) return null; 
       return res.json();
     })
     .then((data) => {
       if (data?.user) setUser(data.user);
-      // else leave user as null
+     
     })
     .catch((err) => {
       console.error("Failed to fetch /api/auth/me:", err);
-      // do NOT redirect here
+      
     });
 }, []);
 
@@ -319,7 +319,7 @@ if (!user) return null;
   </button>
 </div>
 <div className={styles.filterBar}>
-  {/* Filter dropdown */}
+  
   <div className={styles.filterGroup}>
     <label htmlFor="roleFilter" className={styles.filterLabel}>
       <i className="fa fa-filter" style={{ marginRight: "6px" }}></i> Filter
@@ -336,7 +336,7 @@ if (!user) return null;
     </select>
   </div>
 
-  {/* Search box */}
+  
   <div className={styles.searchGroup}>
     <input
       type="text"
@@ -494,7 +494,7 @@ if (!user) return null;
       }}>
         <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
 
-          {/* ICONS top-right */}
+        
           <div className={styles.modalHeaderIcons}>
             {!isEditing && selectedProject.ownerUserId === user?.uid && (
               <>
@@ -538,7 +538,7 @@ if (!user) return null;
             )}
           </div>
 
-          {/* Title */}
+         
 {isEditing ? (
   <>
 
@@ -671,7 +671,7 @@ setIsEditing(false);
   </>
 ) : (
   <>
-    {/* ===== VIEW MODE INFO ===== */}
+
     <div className="styled-dl-template">
       <dl className="definition-list">
         <dt>Project Title</dt>
@@ -796,7 +796,7 @@ setIsEditing(false);
       }}
       onClick={(e) => e.stopPropagation()}
     >
-      <h3 style={{ margin: 0, fontSize: 18 }}>⚠️ Project currently in use</h3>
+      <h3 style={{ margin: 0, fontSize: 18 }}> Project currently in use</h3>
       <p style={{ marginTop: 10, color: "#374151", lineHeight: 1.4 }}>
         <b>{lockModal.name}</b> is currently editing this project.
         <br />

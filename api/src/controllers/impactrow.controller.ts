@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// CREATE ImpactRow
+
 export const createImpactRow = async (req: Request, res: Response) => {
   const {
     projectId,
@@ -36,7 +36,7 @@ export const createImpactRow = async (req: Request, res: Response) => {
   }
 };
 
-// GET ImpactRows for a project
+
 export const getImpactRows = async (
   req: Request<{ projectId: string }>,
   res: Response
@@ -67,7 +67,7 @@ export const getImpactRows = async (
   }
 };
 
-// UPDATE ImpactRow
+
 export const updateImpactRow = async (
   req: Request<{ id: string }>,
   res: Response
@@ -82,7 +82,7 @@ export const updateImpactRow = async (
     indicatorDefinition,
     meansOfMeasurement,
     baseline,
-    // targets should NOT be included here
+    
   } = req.body;
 
   try {
@@ -106,7 +106,7 @@ export const updateImpactRow = async (
   }
 };
 
-// DELETE ImpactRow
+
 export const deleteImpactRow = async (
   req: Request<{ id: string }>,
   res: Response
@@ -114,12 +114,12 @@ export const deleteImpactRow = async (
   const { id } = req.params;
 
   try {
-    // First delete all related ImpactRowTarget entries
+   
     await prisma.impactRowTarget.deleteMany({
       where: { impactRowId: id },
     });
 
-    // Then delete the ImpactRow
+
     await prisma.impactRow.delete({
       where: { id },
     });

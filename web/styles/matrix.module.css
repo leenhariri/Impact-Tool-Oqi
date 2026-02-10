@@ -1,16 +1,16 @@
-/* 🔹 Page Container */
+
 .container {
   padding: 2rem;
   font-family: 'Segoe UI', sans-serif;
   background-color:  #f9f9f9;
   min-height: 100vh;
-  /* REMOVE position and overflow */
+
    font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 
 }
 
 
-/* 🔹 Instructions Box */
+
 /* .instructions {
   background-color: #eeeeee95;
   border-left: 5px solid #111730;
@@ -31,7 +31,7 @@
 
 }
 
-/* 🔹 Matrix Table */
+
 .matrixTable {
   border-collapse: collapse;
   background-color: white;
@@ -48,12 +48,12 @@
   text-align: center;
   font-size: 12px;
 
-  /* 🔥 Dynamic square size */
+
   width: var(--matrix-cell-size) !important;
   height: var(--matrix-cell-size) !important;
 }
 
-/* --- MAKE MATRIX CELLS PERFECTLY SQUARE --- */
+
 
 .headerCell {
   background-color: #dadce76d;
@@ -63,7 +63,7 @@
   text-align: center;
 }
 
-/* 🔹 Matrix Inputs */
+
 .inputCell {
   width: 40px;
   height: 24px;
@@ -83,7 +83,7 @@
 }
 
 
-/* 🔹 Legend Box */
+
 .legendWrapper {
   background-color: #ffffff;
   border: 1px solid #ccc;
@@ -138,7 +138,7 @@
   background-color: #111d47;
 }
 
-/* ✅ Fix: Buttons that stay at bottom corners */
+
 .bottomLeft {
   position: fixed;
   bottom: 2rem;
@@ -156,12 +156,12 @@
 }
 
 
-/* 🔹 Matrix + Legend Layout */
+
 .flexRow {
   display: flex;
   align-items: flex-start;
   gap: 3rem;
-  flex-wrap: nowrap;   /* 🔥 do NOT wrap */
+  flex-wrap: nowrap;  
   justify-content: flex-start;
 }
 
@@ -183,7 +183,7 @@
   display: flex;
   gap: 1rem;
 }
-/* 🔹 Modal Overlay */
+
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -205,7 +205,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* 🔹 Modal Content Box */
+
 
 
 .modalContent h3 {
@@ -258,17 +258,17 @@
 .sectionTitle {
   font-weight: bold;
   font-size: 1.2rem;
-  color: #0c0c2c; /* dark navy/black */
-  margin-bottom: 0.2rem; /* reduce gap below title */
+  color: #0c0c2c; 
+  margin-bottom: 0.2rem; 
 }
 
 .note {
   font-weight: normal;
   font-size: 0.9rem;
-  color: #525252; /* purple */
+  color: #525252;
   margin-top: 0; 
-  margin-bottom: 0.8rem; /* tighter gap before table */
-  line-height: 1.3; /* improve readability */
+  margin-bottom: 0.8rem;
+  line-height: 1.3; 
 }
 .tooltip {
   position: relative;
@@ -294,7 +294,7 @@
   transition: opacity 0.25s;
   pointer-events: none;
   white-space: normal;
-  top: 125%; /* default position for row tooltips */
+  top: 125%;
 }
 
 .tooltip:hover .tooltipText {
@@ -349,7 +349,7 @@
   font-size: 0.9rem;
   resize: vertical;
   transition: all 0.2s ease;
-  appearance: none; /* ✅ makes dropdown match the input style */
+  appearance: none;
 }
 
 .modalInput:focus {
@@ -395,10 +395,10 @@
 .matrixTable td:not([style*="pointer-events: none"]):hover::after {
   opacity: 1;
 }
-/* Subtle hover indication for editable cells */
 
 
-/* 🔹 Instructions Accordion */
+
+
 
 .instructionsWrapper {
   margin-bottom: 1.75rem;
@@ -472,14 +472,14 @@
   color: inherit;
 }
 
-/* --- Make editable cells show a hand cursor --- */
+
 .matrixTable td:not([style*="pointer-events: none"]) {
   cursor: pointer !important;
 }
-/* --- Hover popup container --- */
+
 .hoverPopup {
   position: absolute;
-  background: #111730;        /* same grey as your example */
+  background: #111730;       
   color: white;
   padding: 1rem 1.2rem;
   border-radius: 12px;
@@ -492,18 +492,18 @@
   display: none;
 }
 
-/* Title inside popup */
+
 .hoverPopup h4 {
   margin: 0 0 0.3rem 0;
-  color: #fbbf24;              /* gold accent like screenshot */
+  color: #fbbf24;             
   font-size: 1rem;
 }
 
-/* Visible when hovered */
+
 .showPopup {
   display: block !important;
 }
-/* Fixed right side popup */
+
 .hoverPopup {
   position: fixed;
   right: 20px;
@@ -522,11 +522,11 @@
   line-height: 1.45;
 }
 
-/* Show when active */
+
 .showPopup {
   display: block !important;
 }
-/* ================ ACCORDIONS ================== */
+
 
 .accordionWrapper {
   margin-top: 1.5rem;
@@ -571,7 +571,6 @@
   border-top: 1px solid #dadce76d;
 }
 
-/* ============= Statistics rows ================ */
 
 .statRow {
   margin-bottom: 1rem;
@@ -607,7 +606,7 @@
   transition: width 0.3s ease;
 }
 
-/* ============= Interaction Scale ============== */
+
 
 .scaleList {
   padding: 0;
@@ -631,7 +630,7 @@
   border-radius: 3px;
   border: 1px solid #2222;
 }
-/* Right panel containing both cards */
+
 .rightPanel {
   width: 200px !important;
   gap: 0.8rem !important;
@@ -639,7 +638,6 @@
 
 
 
-/* Card container */
 .card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -648,7 +646,7 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
-/* Card header */
+
 .cardHeader {
   width: 100%;
   background: #f1f5f9;
@@ -662,28 +660,28 @@
   cursor: pointer;
 }
 
-/* Content box */
+
 .cardContent {
   padding: 1rem;
 }
 
-/* --- Statistics Card (matches your screenshot) --- */
+
 
 .statsCard {
-  background: #ffffff;       /* match your Interaction Scale box exactly */
-  border: 1px solid #ccc;    /* same border */
-  border-radius: 0px !important;   /* 🔥 square corners */
+  background: #ffffff;      
+  border: 1px solid #ccc;   
+  border-radius: 0px !important;  
   margin-top: 1rem;
   width: 260px;
   overflow: hidden;
-  box-shadow: none;          /* remove soft shadow */
+  box-shadow: none;         
 }
 
 .statsHeader {
   padding: 0.9rem 1rem;
   background: #f1f5f9;
   border-bottom: 1px solid #d7dce0;
-  border-radius: 0 !important;    /* 🔥 no rounding */
+  border-radius: 0 !important;   
   box-shadow: none !important;
 }
 
@@ -700,15 +698,15 @@
 .statsContent {
   padding: 1rem;
 }
-/* --- STATISTICS ACCORDION (Matches screenshot exactly) --- */
+
 
 .statsAccordion {
   width: 260px;
-  /* background: #f1f4f7; */
-   border-radius: 0px !important;     /* ⬅️ SQUARE */
-  background: #ffffff !important;    /* match Interaction Scale */
-  border: 1px solid #ccc !important; /* same border */
-  box-shadow: none !important;       /* remove shadow */
+  
+   border-radius: 0px !important;     
+  background: #ffffff !important;   
+  border: 1px solid #ccc !important; 
+  box-shadow: none !important;       
   overflow: hidden;
   font-family: Inter, sans-serif;
 }
@@ -751,7 +749,7 @@
   border-top: 1px solid #d7dce0;
 }
 
-/* perfect stat rows */
+
 .statRow {
   margin-bottom: 1.4rem;
 }
@@ -785,7 +783,7 @@
   border-radius: 4px;
   transition: width 0.3s ease;
 }
-/* Container that holds both accordions */
+
 .rightPanel {
   display: flex;
   flex-direction: column;
@@ -793,7 +791,7 @@
   width: 260px;
 }
 
-/* ---------------- Interaction Scale ---------------- */
+
 
 .scaleBox {
   border: 1px solid #ccc;
@@ -836,7 +834,7 @@
 .scaleChevron {
   font-size: 0.9rem !important;
 }
-/* Legend list inside Interaction Scale */
+
 .legendBox {
   padding: 0;
   margin: 0;
@@ -865,7 +863,7 @@
 }
 
 
-/* ---------------- Statistics Accordion ---------------- */
+
 
 .statsAccordion {
   border: 1px solid #ccc;
@@ -949,11 +947,11 @@
   transition: width 0.3s ease;
 }
 #matrix-table-wrapper {
-  flex-shrink: 1;        /* 🔥 important: table can shrink */
-  max-width: 100%;       /* prevents overflow */
-  overflow-x: auto;      /* optional — only if needed */
+  flex-shrink: 1;       
+  max-width: 100%;     
+  overflow-x: auto;      
 }
-/* ===== SUPER COMPRESSED INSTRUCTIONS BOX ===== */
+
 
 .instructionsWrapper {
   margin-bottom: 1rem !important;
@@ -963,40 +961,40 @@
   padding: 0 !important;
 }
 
-/* Header height smaller */
+
 .instructionsHeader {
   padding: 0.5rem 0.8rem !important;
   min-height: unset !important;
 }
 
-/* Title smaller */
+
 .instructionsTitle {
   font-size: 0.85rem !important;
   font-weight: 600 !important;
   margin: 0 !important;
 }
 
-/* Subtitle smaller + reduced spacing */
+
 .instructionsSubtitle {
   font-size: 0.7rem !important;
   color: #64748b !important;
   margin: 0 !important;
 }
 
-/* CONTENT very compact */
+
 .instructions {
   padding: 0.6rem 0.9rem !important;
   font-size: 0.78rem !important;
   line-height: 1.15 !important;
 }
 
-/* Reduce spacing between list items */
+
 .instructions li {
   margin-bottom: 0.25rem !important;
   padding: 0 !important;
 }
 
-/* Remove left indent slightly */
+
 .instructions ol {
   padding-left: 1rem !important;
   margin: 0 !important;

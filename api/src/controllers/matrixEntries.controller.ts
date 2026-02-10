@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 const prisma = new PrismaClient();
 
-// --- Validation Schemas ---
+
 const upsertSchema = z.object({
   projectId: z.string().uuid(),
   sourceSdgTargetId: z.string().uuid(),
@@ -17,7 +17,7 @@ const upsertSchema = z.object({
   rationale: z.string().max(1000).optional(),
 });
 
-//  GET all matrix entries for a project
+
 export const getMatrixForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const projectId = req.params.projectId || req.body.projectId;
 
@@ -43,7 +43,6 @@ export const getMatrixForProject = async (req: Request<{ projectId: string }>, r
   }
 };
 
-// 🔹 UPSERT (create or update) a matrix entry
 export const upsertMatrixEntry = async (req: Request<{ projectId: string }>, res: Response) => {
   const parsed = upsertSchema.safeParse(req.body);
 
@@ -85,7 +84,7 @@ export const upsertMatrixEntry = async (req: Request<{ projectId: string }>, res
   }
 };
 
-// 🔹 DELETE all matrix entries for a project
+
 export const clearMatrixForProject = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 

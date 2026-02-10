@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const prisma = new PrismaClient();
 
-//  Schema for validating incoming edge objects
+
 const edgeSchema = z.object({
   source: z.string().min(1),
   target: z.string().min(1),
@@ -15,7 +15,7 @@ const saveEdgesSchema = z.object({
   edges: z.array(edgeSchema),
 });
 
-// GET edges for a project
+
 export const getDiagramEdges = async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
 
@@ -28,7 +28,7 @@ export const getDiagramEdges = async (req: Request<{ projectId: string }>, res: 
   }
 };
 
-//  SAVE (overwrite) edges for a project
+
 export const saveDiagramEdges = async (req: Request<{ projectId: string }>, res: Response) => {
   const parsed = saveEdgesSchema.safeParse(req.body);
   if (!parsed.success) {
@@ -41,10 +41,10 @@ export const saveDiagramEdges = async (req: Request<{ projectId: string }>, res:
   const { projectId, edges } = parsed.data;
 
   try {
-    // Clear old edges
+  
     await prisma.diagramEdge.deleteMany({ where: { projectId } });
 
-    // Save new edges
+   
     const created = await prisma.diagramEdge.createMany({
       data: edges.map((edge) => ({
         source: edge.source,

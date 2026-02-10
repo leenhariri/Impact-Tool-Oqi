@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// CREATE Stakeholder
+
 export const createStakeholder = async (req: Request, res: Response) => {
   const {
     projectId,
@@ -34,7 +34,7 @@ export const createStakeholder = async (req: Request, res: Response) => {
   }
 };
 
-// READ Stakeholders by Project
+
 export const getStakeholders = async (
   req: Request<{ projectId: string }>,
   res: Response
@@ -51,7 +51,7 @@ export const getStakeholders = async (
   }
 };
 
-// UPDATE Stakeholder
+
 export const updateStakeholder = async (
   req: Request<{ id: string }>,
   res: Response
@@ -70,7 +70,7 @@ export const updateStakeholder = async (
   }
 };
 
-// DELETE Stakeholder
+
 export const deleteStakeholder = async (
   req: Request<{ id: string }>,
   res: Response

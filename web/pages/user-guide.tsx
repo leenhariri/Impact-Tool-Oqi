@@ -1,4 +1,3 @@
-// pages/user-guide.tsx
 import React from "react";
 import Head from "next/head";
 
@@ -22,10 +21,10 @@ export default function UserGuide() {
         <p>The Impact User Guide consists of the following elements:</p>
 
         <ul>
-          <li><strong>Impact Indicator Matrix:</strong>  This matrix captures the anticipated long-, mid-and short-term impact of the quantum computing use case. Users are encouraged to carefully consider the assumptions underlying the anticipated impact, highlight possible risks and unintended consequences along with mitigation strategies, and list relevant stakeholders involved.
+          <li><strong>Indicator Matrix:</strong>  This matrix captures the anticipated long-, mid-and short-term impact of the quantum computing use case. Users are encouraged to carefully consider the assumptions underlying the anticipated impact, highlight possible risks and unintended consequences along with mitigation strategies, and list relevant stakeholders involved.
 </li>
-          <li><strong>Anticipated Impact Flowchart:</strong>  Based on the input of the Impact Indicator Matrix, this flowchart illustrates how different anticipated output and impact relate to each other. It helps to visualize potential correlations and causalities. </li>
-          <li><strong>SDG Interlinkage Diagram:</strong>  In the form of a heat-map, this diagram helps uncover how the anticipated impact affects the SDGs. It highlights the degree to which impact on one SDG may be linked to another, while also drawing attention to areas where negative impacts may occur.
+          <li><strong>Anticipated Impact Flowchart:</strong>  Based on the input of the Indicator Matrix, this flowchart illustrates how different anticipated output and impact relate to each other. It helps to visualize potential correlations and causalities. </li>
+          <li><strong>SDG Interlinkage Matrix:</strong>  In the form of a heat-map, this diagram helps uncover how the anticipated impact affects the SDGs. It highlights the degree to which impact on one SDG may be linked to another, while also drawing attention to areas where negative impacts may occur.
 </li>
 {/* <li><strong>Stakeholder Matrix</strong>  ??
 </li> */}
@@ -35,40 +34,40 @@ export default function UserGuide() {
 
         <h2 className="arvo-section">Long-term Impact</h2>
         <p>The long-term impact refers to the ultimate, lasting change that a quantum computing solution aims to achieve once deployed in the real-world. Considering the bigger picture, long-term impact reflects the societal transformation the solution contributes to–focusing on its effect on population, society, environment, economic, or global-level benefits that are anticipated to be achieved and would be attributed to the solution. The long-term impact should be aligned with the SDGs addressed by the quantum computing use case.
-In completing the Impact Indicator Matrix, long-term impact should be expressed as a high-level statement describing what success would look like beyond five years.</p>
+In completing the Indicator Matrix, long-term impact should be expressed as a high-level statement describing what success would look like beyond five years.</p>
 
         <h2 className="arvo-section">Short-term and Mid-term impacts</h2>
         <p>Before reaching the long-term impact, short-term and mid-term impacts would be realized first. This stage is known as outcomes—the necessary preconditions that pave the way toward long-term impact. </p>
-        <p><strong>Mid-term impacts (2-5 years)</strong> describe behavioral, institutional, or systemic changes that make the long-term impact achievable. They cover substantial shifts over time, triggering broader lasting transformation within society. This is a stage where probably societal systems would start shifting due to the quantum computing solution deployed in the real-world. In completing the Impact Indicator Matrix, identify 2-3 key changes in behaviors, policies, operations, resource use, etc that would demonstrate progress at this level.
+        <p><strong>Mid-term impacts (2-5 years)</strong> describe behavioral, institutional, or systemic changes that make the long-term impact achievable. They cover substantial shifts over time, triggering broader lasting transformation within society. This is a stage where probably societal systems would start shifting due to the quantum computing solution deployed in the real-world. In completing the Indicator Matrix, identify 2-3 key changes in behaviors, policies, operations, resource use, etc that would demonstrate progress at this level.
 </p>
-        <p><strong>Short-term impacts (0-2 years)</strong> represent the early, tangible changes emerging soon after the solution would be deployed. They are often the early wins, offering evidence that a quantum computing solution is beginning to address the societal problem it targets. In completing the Impact Indicator Matrix, consider 2-3 key concrete changes in knowledge, behavior, conditions, etc. that could be observed in the early stages.</p>
+        <p><strong>Short-term impacts (0-2 years)</strong> represent the early, tangible changes emerging soon after the solution would be deployed. They are often the early wins, offering evidence that a quantum computing solution is beginning to address the societal problem it targets. In completing the Indicator Matrix, consider 2-3 key concrete changes in knowledge, behavior, conditions, etc. that could be observed in the early stages.</p>
 
 
         <h2 className="arvo-section">Deliverables</h2>
         <p>Deliverables are the immediate, tangible outputs or results (products or services delivered by the solution) that the quantum computing solution would produce, with clear casual links to impacts. </p>
         <h2 className="arvo-section">Risks</h2>
         <p>Although all use cases are designed with a positive impact on SDGs in mind, it is equally important to consider possible negative or unintended consequences and plan appropriate strategies to mitigate them.  
- <strong> Risks</strong> are external or internal threats or challenges that could deter the success of the change pathway either in achieving intended results or in deploying the solution. Each risk should be associated with a mitigation action.
+ <strong> Risks</strong> are external or internal threats or challenges that could deter the success of the change pathway either in achieving intended results or in deploying the solution. Each risk would be associated with a mitigation action.
 </p>
-<h2 className="arvo-section"> Assumptions & Actions</h2>
+<h2 className="arvo-section"> Assumptions & Activities</h2>
         <p><strong>Assumptions</strong> are external conditions that must be true for the pathway of change to succeed. They are the hidden enablers in the logic of change—if the assumptions break, the chain of change breaks as well. Consider the factors such as line of stakeholder’s behavior, data quality and availability, etc. </p>
-        <p><strong>Actions</strong> On-the-ground core activities that would be carried out or implemented to initiate the change process and deploy the quantum computing solution to the real-world. 
+        <p><strong>Activities</strong> are on-the-ground core actions that would be carried out or implemented to initiate the change process and deploy the quantum computing solution to the real-world. 
 </p>
         
 
 
-        <h2 className="arvo-section">Resources</h2>
-        <p>The resources are inputs that would be needed beforehand to carry out the actions. The resources could be human, financial, technical, material or infrastructural, etc. invested in the implementation of the quantum computing solution.</p>
+        {/* <h2 className="arvo-section">Resources</h2>
+        <p>The resources are inputs that would be needed beforehand to carry out the actions. The resources could be human, financial, technical, material or infrastructural, etc. invested in the implementation of the quantum computing solution.</p> */}
 
         
 
         <h2 className="arvo-section">Stakeholders</h2>
         <p>Stakeholders are key people directly and indirectly involved or affected in the implementation or monitoring of the project/solution. 
-For each component of the ToC, it’s useful to map the relevant stakeholders (people or organizations) and the level of implications (direct/indirect) and analyze their roles and influence, and thereafter devising strategies for engagement and to manage expectations.
+For each objective level of the ToC, it’s useful to map the relevant stakeholders (people or organizations) and the level of implications (direct/indirect) and analyze their roles and influence, and thereafter devising strategies for engagement and to manage expectations.
 </p>
 <h2 className="arvo-section">Indicators</h2>
 <p>Indicators are measurable variables used to track progress and show whether a change or result is happening. It signals if the quantum computing solution would be working as expected or not and determines how much change has occurred. Indicators can be both quantitative (e.g., % increase in access) or qualitative (e.g., user satisfaction). 
-Each indicator is linked to a specific component in the ToC to ensure each result level is measurable, where means of measurement are a method, source or tool to assess change.
+Each indicator is linked to a specific result statement in the ToC to ensure each result statement is measurable, where means of measurement are a method, source or tool to assess change.
 The table below provides examples of questions to guide defining indicators. 
 </p>
 <div className="table-container">
@@ -324,18 +323,18 @@ How would it influence financial stability and growth opportunities for the popu
 </li>
           <li>What are the expected immediate results (short-term impact)?
 </li>
-          <li>What actions and resources drive these results (actions + inputs)?</li>
+          <li>What activities drive these results (activities)?</li>
           <li>What assumptions must be true? What are the risks that would deter the solution?
 </li>
           
         </ul>
 
         <h2 id="sdg-interlinkage" className="arvo-section">SDG Interlinkage</h2>
-        <p>The potential influence of a quantum computing use case on both system-wide SDG interactions and individual SDG targets can be assessed using the SDG cross-impact matrix and the related target influences. The matrix helps uncover synergies, dependencies, and trade-offs, providing valuable insights to guide implementation, evaluation, and decision-making and be used to refine strategy, prioritize targets, and identify potential risks or bottlenecks while designing the quantum computing use case. It reveals whether the solution has broad systemic value, assesses potential scalability or fragility and informs positive and negative externalities. At a macro-Level and global projection, this analysis helps compare use cases by systemic impact potential, and informs policy-level decisions on solution selection and scaling.
+        <p>The potential influence of a quantum computing use case on both system-wide SDG interactions and individual SDG targets can be assessed using the SDG interlinkage matrix. The matrix helps uncover synergies, dependencies, and trade-offs, providing valuable insights to guide implementation, evaluation, and decision-making and be used to refine strategy, prioritize targets, and identify potential risks or bottlenecks while designing the quantum computing use case. It reveals whether the solution has broad systemic value, assesses potential scalability or fragility and informs positive and negative externalities. At a macro-Level and global projection, this analysis helps compare use cases by systemic impact potential, and informs policy-level decisions on solution selection and scaling.
 
-In completing the SDG Interlinkage Diagram, self-select SDG targets based on the primary SDG tackled by the quantum computing solution. Effective self-assessment requires a good understanding of the problem analysis addressed by the quantum computing solution outlined in the ToC framework - prior completion of the Impact Indicator Matrix is thus needed. Please use the SDG targets and indicator global framework for reference.</p>
-<li>Each row represents an influencing SDG target (how that target affects others). A higher sum at the end of a row means: That target has a broad positive influence on many others. For instance, target 6.5 has the highest row sum (26), suggesting that improving water management would have widespread benefits across other targets. </li>
-<li>Each column shows how much a specific target is influenced by others. A higher sum at the bottom of a column means: That target depends on improvements in many other areas. It may be harder to achieve on its own and may need supportive conditions elsewhere. </li>
+In completing the SDG Interlinkage Matrix, self-select SDG targets based on the primary SDG tackled by the quantum computing solution. Effective self-assessment requires a good understanding of the problem analysis addressed by the quantum computing solution outlined in the ToC framework - prior completion of the Indicator Matrix is thus needed. Please use the SDG targets and Indicator Matrix for reference.</p>
+<li>Each row represents an influencing SDG target (how that target affects others). A higher outsum at the end of a row means: That target has a broad positive influence on many others. For instance, target 6.5 has the highest out sum (26), suggesting that improving water management would have widespread benefits across other targets. </li>
+<li>Each column shows how much a specific target is influenced by others. A higher insum at the bottom of a column means: That target depends on improvements in many other areas. It may be harder to achieve on its own and may need supportive conditions elsewhere. </li>
         <p><strong>Interaction Scale:</strong></p>
         <ul>
           <li><strong>+3, Strongly promoting </strong>(colour coded dark green); significant positive influence; progress in one target powerfully accelerates another. </li>

@@ -1,4 +1,4 @@
-// pages/about.tsx
+
 import React from "react";
 import Head from "next/head";
 
@@ -13,7 +13,7 @@ export default function About() {
         />
       </Head>
 
-      {/* Hero Section */}
+    
 {/* <header className="headline">
   <div className="inner">
     <h1>About the OQI Impact Tool</h1>
@@ -73,9 +73,9 @@ export default function About() {
           </p>
           <p>It contains three main parts:</p>
           <ul>
-            <li>Impact Indicator Matrix</li>
-            <li>Anticipated Impact Flow Chart</li>
-            <li>SDG Interlinkage Heat Map</li>
+            <li>Indicator Matrix</li>
+            <li>Anticipated Impact Flowchart</li>
+            <li>SDG Interlinkage Matrix</li>
           </ul>
           <p>
             The user is invited to go through these three parts to fully explore the

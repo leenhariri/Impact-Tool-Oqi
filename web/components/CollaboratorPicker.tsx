@@ -33,7 +33,7 @@ const filteredSuggestions = useMemo(
   [suggestions, selectedSet]
 );
 
-  // close dropdown on outside click
+
   useEffect(() => {
     function onDown(e: MouseEvent) {
       if (!wrapperRef.current) return;
@@ -43,7 +43,7 @@ const filteredSuggestions = useMemo(
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
-  // debounced search
+
 useEffect(() => {
   const q = sanitize(query);
 
@@ -77,7 +77,7 @@ useEffect(() => {
         setSuggestions(Array.isArray(data.users) ? data.users : []);
         setOpen(true);
       } catch {
-        // ignore abort / network
+       
         setSuggestions([]);
       } finally {
         setLoading(false);
@@ -102,7 +102,7 @@ useEffect(() => {
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" || e.key === "," || e.key === "Tab") {
-      // allow manual email entry too
+    
       const raw = query.replace(/,$/, "");
       const parts = raw.split(",").map((p) => p.trim()).filter(Boolean);
       if (parts.length) {
@@ -119,7 +119,7 @@ useEffect(() => {
   style={{ position: "relative", marginBottom: "14px" }}
 >
 
-      {/* chips */}
+     
       {valueEmails.length > 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
           {valueEmails.map((email) => (
@@ -156,7 +156,7 @@ useEffect(() => {
         </div>
       )}
 
-      {/* input */}
+     
       <input
         type="text"
         className={styles.modalInput}
@@ -169,7 +169,7 @@ useEffect(() => {
         onKeyDown={handleKeyDown}
       />
 
-      {/* dropdown */}
+    
       {open && (
 <div className={styles.autocompleteMenu}>
 

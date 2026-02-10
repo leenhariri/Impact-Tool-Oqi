@@ -68,7 +68,7 @@ useEffect(() => {
   return () => {
     cancelled = true;
   };
-}, []); // ✅ run once on mount
+}, []);
 
 //   const handleLogout = async () => {
 //     setMobileMenuOpen(false);
@@ -99,7 +99,7 @@ const handleLogout = async () => {
 
   return (
     <>
-      {/* Navbar */}
+      
       <nav className={`main-nav ${scrolled ? "scrolled" : ""}`}>
         <div className="logo">
           <Link href="/">
@@ -107,7 +107,7 @@ const handleLogout = async () => {
           </Link>
         </div>
 
-        {/* Hamburger Button */}
+      
         <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -115,7 +115,7 @@ const handleLogout = async () => {
           {mobileMenuOpen ? "✕" : "☰"}
         </button>
 
-        {/* Nav links (desktop & mobile) */}
+      
         <div className={`nav-links ${mobileMenuOpen ? "open" : ""}`}>
           <ul>
             <li><Link href="/about" onClick={() => setMobileMenuOpen(false)}>About</Link></li>
@@ -154,7 +154,7 @@ const handleLogout = async () => {
         </div>
       </nav>
 
-      {/* Hero Sections (unchanged) */}
+      
       {isHome && (
         <header className="headline">
           <div

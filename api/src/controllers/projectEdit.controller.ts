@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 
-const LOCK_TTL_MS = 60_000; // 60s = "active editor" window
+const LOCK_TTL_MS = 60_000; 
 type AuthedRequest<P extends Record<string, string>> = Request<P> & {
   user?: { uid: string; email?: string; name?: string };
 };
@@ -14,7 +14,7 @@ function lockIsActive(lastEditPing: Date | null) {
   return Date.now() - lastEditPing.getTime() < LOCK_TTL_MS;
 }
 
-// POST /projects/:projectId/edit/start
+
 export async function startEditing(req: AuthedRequest<{ projectId: string }>, res: Response) {
   const { projectId } = req.params;
   const userId = req.user?.uid;
@@ -32,7 +32,7 @@ export async function startEditing(req: AuthedRequest<{ projectId: string }>, re
 
   const active = lockIsActive(project.lastEditPing);
 
-  // If another user is actively editing -> block
+  
   if (
     active &&
     project.editingByUserId &&
@@ -52,7 +52,7 @@ export async function startEditing(req: AuthedRequest<{ projectId: string }>, re
     });
   }
 
-  // Acquire or renew lock for current user
+  
   await prisma.project.update({
     where: { id: projectId },
     data: {
@@ -65,7 +65,6 @@ export async function startEditing(req: AuthedRequest<{ projectId: string }>, re
   return res.json({ ok: true });
 }
 
-// POST /projects/:projectId/edit/ping
 export async function pingEditing(req: AuthedRequest<{ projectId: string }>, res: Response) {
   const { projectId } = req.params;
   const userId = req.user?.uid;
@@ -92,7 +91,7 @@ export async function pingEditing(req: AuthedRequest<{ projectId: string }>, res
   return res.json({ ok: true });
 }
 
-// POST /projects/:projectId/edit/stop
+
 export async function stopEditing(req: AuthedRequest<{ projectId: string }>, res: Response) {
   const { projectId } = req.params;
   const userId = req.user?.uid;
@@ -106,7 +105,7 @@ export async function stopEditing(req: AuthedRequest<{ projectId: string }>, res
 
   if (!project) return res.status(404).json({ error: "Project not found" });
 
-  // Only owner can release; others ignored
+ 
   if (project.editingByUserId !== userId) return res.json({ ok: true });
 
   await prisma.project.update({

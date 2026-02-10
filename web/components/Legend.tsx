@@ -1,4 +1,4 @@
-// components/DiagramLegend.tsx
+
 import React from "react";
 
 const legendItems = [

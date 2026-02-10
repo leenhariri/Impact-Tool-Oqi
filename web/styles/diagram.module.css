@@ -40,7 +40,7 @@
 .diagramArea {
   position: relative;
   width: 100%;
-  height: 400px; /* ✅ Ensure the diagram has height */
+  height: 400px; 
   background-color: #ffffff;
   border-radius: 10px;
   border: 1px solid #ddd;
@@ -51,7 +51,7 @@
 .reactFlowWrapper {
   width: 100%;
   height: 100%;
-  position: relative; /* ✅ Keep it relative so it fills parent */
+  position: relative; 
   z-index: 0;
   display: inline-block; 
   overflow: visible;
@@ -157,12 +157,12 @@
 .legend-container {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Reduce space between items */
+  gap: 4px; 
   padding: 6px 10px;
-  font-size: 13px; /* Smaller, cleaner font */
+  font-size: 13px; 
   font-weight: 500;
-  background-color: transparent; /* Removes big white box */
-  box-shadow: none; /* Removes borders/shadows */
+  background-color: transparent; 
+  box-shadow: none; 
   border: none;
   margin-bottom: 6px;
 }
@@ -186,21 +186,21 @@
   display: inline-block;
 }
 .react-flow__controls {
-  top: 10px !important;      /* Move to top */
-  bottom: auto !important;   /* Override default bottom */
-  left: 10px !important;     /* Adjust horizontal position */
+  top: 10px !important;      
+  bottom: auto !important;  
+  left: 10px !important;     
   z-index: 10;
 }
 
-/* Hide controls & legend ONLY when exporting */
+
 .no-export {
   display: none !important;
 }
 .sectionTitle {
   font-weight: bold;
   font-size: 1.2rem;
-  color: #0c0c2c; /* dark navy/black */
-  margin-bottom: 0.2rem; /* reduce gap below title */
+  color: #0c0c2c;
+  margin-bottom: 0.2rem;
 }
 
 .instructionsWrapper {
@@ -269,7 +269,7 @@
   text-decoration: underline;
 }
 
-/* ===== SUPER COMPRESSED INSTRUCTIONS BOX ===== */
+
 
 .instructionsWrapper {
   margin-bottom: 1rem !important;
@@ -279,40 +279,40 @@
   padding: 0 !important;
 }
 
-/* Header height smaller */
+
 .instructionsHeader {
   padding: 0.5rem 0.8rem !important;
   min-height: unset !important;
 }
 
-/* Title smaller */
+
 .instructionsTitle {
   font-size: 0.85rem !important;
   font-weight: 600 !important;
   margin: 0 !important;
 }
 
-/* Subtitle smaller + reduced spacing */
+
 .instructionsSubtitle {
   font-size: 0.7rem !important;
   color: #64748b !important;
   margin: 0 !important;
 }
 
-/* CONTENT very compact */
+
 .instructions {
   padding: 0.6rem 0.9rem !important;
   font-size: 0.78rem !important;
   line-height: 1.15 !important;
 }
 
-/* Reduce spacing between list items */
+
 .instructions li {
   margin-bottom: 0.25rem !important;
   padding: 0 !important;
 }
 
-/* Remove left indent slightly */
+
 .instructions ol {
   padding-left: 1rem !important;
   margin: 0 !important;

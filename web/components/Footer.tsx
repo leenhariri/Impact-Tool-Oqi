@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <>
-      {/* Footer Wave Shape */}
+    
       <div style={{ position: "relative", background: "var(--page-bg)" }}>
 
 <svg
@@ -115,12 +115,12 @@ export default function Footer() {
               opacity: 0.8,
             }}
           >
-            {/* Left Text */}
+           
             <div style={{ minWidth: "200px", marginBottom: "8px" }}>
               © 2025 | Open Quantum Institute
             </div>
 
-            {/* Center Logos */}
+           
             <div
               style={{
                 display: "flex",
@@ -135,22 +135,22 @@ export default function Footer() {
               <img
                 src="/images/cern-logo.png"
                 alt="CERN"
-                style={{ height: "22px" }}
+                style={{ height: "35px" }}
               />
               <img
                 src="/images/gesda-logo.png"
                 alt="GESDA"
-                style={{ height: "22px" }}
+                style={{ height: "55px" }}
               />
               <img
                 src="/images/ubs-logo.png"
                 alt="UBS"
-                style={{ height: "22px" }}
+                style={{ height: "30px" }}
               />
               <img
                 src="/images/quantum-logo.png"
                 alt="Quantum Science"
-                style={{ height: "22px" }}
+                style={{ height: "35px" }}
               />
             </div>
 
@@ -172,7 +172,7 @@ export default function Footer() {
                   Privacy Policy
                 </a>
               </div>
-              <div>
+              {/* <div>
                 For inquiries & access to our guidelines,&nbsp;
                 <a
                   href="mailto:oqi.info@cern.ch"
@@ -181,7 +181,32 @@ export default function Footer() {
                   contact us
                 </a>
                 .
-              </div>
+              </div> */}
+              <div
+  style={{
+    display: "flex",
+    justifyContent: "flex-end",   
+    alignItems: "center",
+    gap: "10px",
+    fontSize: "11px",
+    opacity: 1,
+  }}
+>
+  <img
+    src="/images/Cc_by-sa_(1).svg"
+    alt="Creative Commons BY-SA 4.0"
+    style={{ height: "20px" }}
+  />
+  <a
+    href="https://creativecommons.org/licenses/by-sa/4.0/"
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{ color: "#fff", textDecoration: "underline" }}
+  >
+    CC BY-SA 4.0
+  </a>
+</div>
+
             </div>
           </div>
         </footer>
