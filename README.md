@@ -1,8 +1,11 @@
 # OQI SDG Tool
 
-## Overview
-The OQI SDG Tool is a web-based platform developed by the Open Quantum Institute to help users design, map, and evaluate the impact pathways of their projects against the United Nations Sustainable Development Goals (SDGs). It enables individuals or teams to document their theory of change, align it with relevant SDGs, visualize the relationships between results and indicators, identify associated risks and assumptions, and assess cross-SDG interactions using a color-coded interlinkage matrix.
-The tool supports multi-user collaboration, a project initiator can invite others to work on the same project. All work can be saved, edited, and exported as PDF for reporting or presentation purposes.
+## Project Description
+OQI Impact Tool is a web-based impact assessment platform developed for the Open Quantum Institute (OQI). The tool supports structured Theory of Change modelling and enables projects to align their activities and outcomes with the UN Sustainable Development Goals (SDGs).
+
+The application allows users to define impact hierarchies, associate indicators and baselines, link results to SDGs and SDG Targets, and capture contextual elements such as risks, assumptions, activities, and stakeholders. Based on this structured data, the tool generates interactive Theory of Change diagrams and SDG interlinkage matrices to support analysis, reporting, and decision-making.
+
+The platform is designed for research, policy, and innovation projects that require transparent, evidence-based impact assessment. Authentication in the deployed environment is handled via Single Sign-On (SSO), and the tool is intended to run behind an institutional identity provider.
 
 
 ## Features
