@@ -9,7 +9,9 @@ The platform is designed for research, policy, and innovation projects that requ
 
 ## Tech Stack
 -Frontend: Next.js, React, TypeScript
+
 -Backend: Node.js, Express, TypeScript, Prisma ORM
+
 -Database: PostgreSQL 
 
 ## Installation 
