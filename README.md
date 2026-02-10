@@ -21,7 +21,7 @@ Ensure the following are installed on your system:
 -Docker and Docker Compose
 -PostgreSQL (for local development)
 
-#### Local Development
+### Local Development
 
 ### Clone the repository
 
