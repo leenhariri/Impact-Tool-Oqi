@@ -19,8 +19,11 @@ This project is designed to run behind an institutional Single Sign-On (SSO) lay
 
 ### Prerequisites 
 Ensure the following are installed on your system:
+
 -Node.js (v18 or later)
+
 -Docker and Docker Compose
+
 -PostgreSQL (for local development)
 
 ### Local Development
@@ -62,7 +65,9 @@ The OQI Impact Tool is used to structure, visualize, and analyze project impact 
 ### Accessing the Application
 
 -In the deployed environment, users access the application through institutional Single Sign-On (SSO).
+
 -Once authenticated, users are redirected to the project dashboard.
+
 -Local deployments are intended for development only and may rely on a development authentication mode or an SSO proxy.
 
 ### Typical Workflow
@@ -72,8 +77,11 @@ Users start by creating a new project or selecting an existing one from the dash
 
 #### Define Impact Structure
 Populate the impact tables with:
+
 -Hierarchy level (Inputs, Activities, Outputs, Outcomes, Impact)
+
 -Result statements and indicators
+
 -Baselines and means of measurement
 
 #### Link SDGs and SDG Targets
@@ -81,14 +89,20 @@ Associate each result with one or more SDGs and corresponding SDG Targets.
 
 #### Add Contextual Elements
 Capture additional information such as:
+
 -Risks
+
 -Assumptions
+
 -Activities
+
 -Stakeholders
 
 #### Generate Visual Outputs
 Use the structured data to generate:
+
 -A Theory of Change diagram
+
 -An SDG interlinkage matrix
 
 #### Review and Export
