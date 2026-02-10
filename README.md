@@ -8,9 +8,9 @@ The application allows users to define impact hierarchies, associate indicators 
 The platform is designed for research, policy, and innovation projects that require transparent, evidence-based impact assessment. Authentication in the deployed environment is handled via Single Sign-On (SSO), and the tool is intended to run behind an institutional identity provider.
 
 ## Tech Stack
-Frontend: Next.js, React, TypeScript
-Backend: Node.js, Express, TypeScript, Prisma ORM
-Database: PostgreSQL 
+-Frontend: Next.js, React, TypeScript
+-Backend: Node.js, Express, TypeScript, Prisma ORM
+-Database: PostgreSQL 
 
 ## Installation 
 This project is designed to run behind an institutional Single Sign-On (SSO) layer in production.
