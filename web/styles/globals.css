@@ -178,6 +178,15 @@ body {
   color: #444; 
   line-height: 1.4;
 }
+.modalTitle {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.modalDescription {
+  font-size: 0.95rem;
+  color: #555;
+  /* font-style: italic; */
+}
 
 .modalDescription i {
   font-style: normal; 

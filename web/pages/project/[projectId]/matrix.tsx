@@ -342,44 +342,102 @@ await updateEntry(
 };
 
 
-const exportMatrixAsPDF = async () => {
+// const exportMatrixAsPDF = async () => {
+//   const input = document.getElementById('matrix-table-wrapper');
+//   if (!input) {
+//     alert("Matrix element not found.");
+//     return;
+//   }
+
+//   try {
+//     const canvas = await html2canvas(input, { scale: 2 });
+//     const imgData = canvas.toDataURL('image/png');
+
+//     const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+//     const pageWidth = pdf.internal.pageSize.getWidth();
+//     const pageHeight = pdf.internal.pageSize.getHeight();
+
+//     const canvasAspectRatio = canvas.width / canvas.height;
+//     const maxWidth = pageWidth - 20;
+//     const maxHeight = pageHeight - 20;
+
+//     let imgWidth = maxWidth;
+//     let imgHeight = imgWidth / canvasAspectRatio;
+
+//     if (imgHeight > maxHeight) {
+//       imgHeight = maxHeight;
+//       imgWidth = imgHeight * canvasAspectRatio;
+//     }
+
+//     const x = (pageWidth - imgWidth) / 2;
+//     const y = (pageHeight - imgHeight) / 2;
+
+//     pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+//     pdf.save('sdg-matrix.pdf');
+//   } catch (error) {
+//     // console.error("Failed to export PDF:", error);
+//     alert("Could not export PDF. Please try again.");
+//   }
+// };
+const buildMatrixPdfBlob = async (): Promise<Blob> => {
   const input = document.getElementById('matrix-table-wrapper');
   if (!input) {
-    alert("Matrix element not found.");
-    return;
+    throw new Error("Matrix element not found.");
   }
 
+  const canvas = await html2canvas(input, {
+    scale: 2,
+    backgroundColor: "#ffffff",
+  });
+
+  const imgData = canvas.toDataURL('image/png');
+
+  const pdf = new jsPDF({
+    orientation: 'landscape',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const canvasAspectRatio = canvas.width / canvas.height;
+  const maxWidth = pageWidth - 20;
+  const maxHeight = pageHeight - 20;
+
+  let imgWidth = maxWidth;
+  let imgHeight = imgWidth / canvasAspectRatio;
+
+  if (imgHeight > maxHeight) {
+    imgHeight = maxHeight;
+    imgWidth = imgHeight * canvasAspectRatio;
+  }
+
+  const x = (pageWidth - imgWidth) / 2;
+  const y = (pageHeight - imgHeight) / 2;
+
+  pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
+
+  return pdf.output('blob');
+};
+
+const exportMatrixAsPDF = async () => {
   try {
-    const canvas = await html2canvas(input, { scale: 2 });
-    const imgData = canvas.toDataURL('image/png');
+    const blob = await buildMatrixPdfBlob();
+    const url = URL.createObjectURL(blob);
 
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "sdg-matrix.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 
-    const canvasAspectRatio = canvas.width / canvas.height;
-    const maxWidth = pageWidth - 20;
-    const maxHeight = pageHeight - 20;
-
-    let imgWidth = maxWidth;
-    let imgHeight = imgWidth / canvasAspectRatio;
-
-    if (imgHeight > maxHeight) {
-      imgHeight = maxHeight;
-      imgWidth = imgHeight * canvasAspectRatio;
-    }
-
-    const x = (pageWidth - imgWidth) / 2;
-    const y = (pageHeight - imgHeight) / 2;
-
-    pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
-    pdf.save('sdg-matrix.pdf');
+    URL.revokeObjectURL(url);
   } catch (error) {
-    // console.error("Failed to export PDF:", error);
     alert("Could not export PDF. Please try again.");
   }
 };
-
 
   if (loading) return <div className="p-6 font-medium">Loading matrix...</div>;
 
@@ -779,17 +837,17 @@ Refer to the <a href="/user-guide" target="_blank" rel="noopener noreferrer">
           Export as PDF
         </button> */}
         <div className="actionIconBar">
-          {/* <button className="actionIcon" title="Export as PDF"
+          <button className="actionIcon" title="Export as PDF"
     onClick={exportMatrixAsPDF}>
     <i className="uil uil-import"></i>
-  </button> */}
-<button
+  </button>
+{/* <button
   className="actionIcon"
   title="Export as CSV"
   onClick={exportMatrixAsCSV}
 >
   <i className="uil uil-import"></i>
-</button>
+</button> */}
 
   <button
     className="actionIcon"

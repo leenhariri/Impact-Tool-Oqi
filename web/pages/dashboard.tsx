@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import styles from "../styles/dashboard.module.css";
 import "nice-forms.css";
 import CollaboratorPicker from "../components/CollaboratorPicker";
+
 function sanitizeInput(value: string): string {
   return value
     .trim()
@@ -11,6 +12,7 @@ function sanitizeInput(value: string): string {
 }
 
 export default function Dashboard() {
+  const [exportMessage, setExportMessage] = useState("");
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [projects, setProjects] = useState([]);
@@ -61,7 +63,20 @@ const [showCreateModal, setShowCreateModal] = useState(false);
 const toggleDropdown = (id: string) => {
   setDropdownOpen(prev => (prev === id ? null : id));
 };
+useEffect(() => {
+  const handler = (event: MessageEvent) => {
+    if (
+      event.data?.type === "export-zip-done" ||
+      event.data?.type === "export-zip-error"
+    ) {
+      const iframes = document.querySelectorAll('iframe[src*="/export"]');
+      iframes.forEach((iframe) => iframe.remove());
+    }
+  };
 
+  window.addEventListener("message", handler);
+  return () => window.removeEventListener("message", handler);
+}, []);
 useEffect(() => {
   if (selectedProject) {
     setEditTitle(selectedProject.title);
@@ -404,6 +419,31 @@ const handleCreate = async () => {
               <button onClick={() => toggleDropdown(p.id)}>⋮</button>
               {dropdownOpen === p.id && (
                 <div className={styles.dropdownMenu}>
+<button
+  onClick={() => {
+    alert("Your ZIP export is being prepared. Please check your browser downloads.");
+
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.width = "1px";
+    iframe.style.height = "1px";
+    iframe.style.opacity = "0";
+    iframe.style.pointerEvents = "none";
+    iframe.style.border = "0";
+    iframe.style.left = "-9999px";
+    iframe.style.top = "0";
+    iframe.src = `/project/${p.id}/export`;
+    document.body.appendChild(iframe);
+
+    setTimeout(() => {
+      if (document.body.contains(iframe)) {
+        document.body.removeChild(iframe);
+      }
+    }, 45000);
+  }}
+>
+  Export ZIP
+</button>
                   <button onClick={() => setSelectedProject(p)}>Edit Project</button>
                   <button
                     onClick={async () => {

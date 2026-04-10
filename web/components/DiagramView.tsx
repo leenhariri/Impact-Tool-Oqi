@@ -23,24 +23,7 @@ import Legend from "../components/Legend";
 import { useRouter } from 'next/router';
 import { Handle, Position } from "reactflow";
 
-// async function measureNodeSize(htmlString: string): Promise<{ width: number; height: number }> {
-//   return new Promise((resolve) => {
-//     const div = document.createElement("div");
-//     div.style.position = "absolute";
-//     div.style.visibility = "hidden";
-//     div.style.top = "-9999px";
-//     div.style.left = "-9999px";
-//     div.innerHTML = htmlString;
 
-//     document.body.appendChild(div);
-
-//     requestAnimationFrame(() => {
-//       const rect = div.getBoundingClientRect();
-//       document.body.removeChild(div);
-//       resolve({ width: rect.width, height: rect.height });
-//     });
-//   });
-// }
 
 type ImpactRow = {
   id: string;
@@ -59,17 +42,6 @@ const iconStyle: React.CSSProperties = {
   transition: "opacity 0.2s ease",
 };
 
-const iconHoverStyle: React.CSSProperties = {
-  opacity: 0.6,
-};
-
-
-
-// type Risk = {
-//   id: string;
-//   hierarchyLevel: string;
-//   text: string;
-// };
 type Risk = {
   id: string;
   text: string;
@@ -108,55 +80,20 @@ export default function DiagramView({ projectId }: { projectId: string }) {
   const router = useRouter();
   const [showInstructions, setShowInstructions] = useState(true); 
   const shouldRegenerate = router.query.regenerate === "true";
-
+// CHANGE HERE
+const shouldDownloadPreviousPdf = router.query.downloadPreviousPdf === "1";
+const isDownloadOnlyMode = shouldDownloadPreviousPdf;
+// 
 const projectIdStr = projectId; 
 
-const resetNodePositions = () => {
-  const verticalSpacing = 110;
-  const horizontalSpacing = 260;
-  const baseX = 300;
-
-
-  const levelToY: Record<string, number> = {};
-  const hierarchyOrder = [
-    "LONG_TERM_IMPACT",
-    "MID_TERM_IMPACT",
-    "SHORT_TERM_IMPACT",
-    "OUTPUT",
-    "ACTIVITY",
-    "ASSUMPTION",
-  ];
-
-  hierarchyOrder.forEach((level, i) => {
-    levelToY[level] = i * verticalSpacing;
-  });
-
-  const newNodes = nodes.map((node, index) => {
-    const label: string = node.data?.label || "";
-    const rawLevel = label.split(":")[0].trim().toUpperCase().replace(/ /g, "_");
-    const level = rawLevel === "RISK" ? node.data?.hierarchyLevel : rawLevel;
-
-    const y = levelToY[level] ?? 0;
-
-    const isRisk = rawLevel === "RISK";
-    const x = isRisk ? baseX - horizontalSpacing : baseX;
-
-    return {
-      ...node,
-      position: { x, y },
-    };
-  });
-
-  setNodes(newNodes);
-};
-const reactFlowWrapper = useRef<HTMLDivElement>(null);
 const diagramOnlyRef = useRef<HTMLDivElement>(null);
 
-const exportAsPDF = async () => {
-  if (!diagramOnlyRef.current) return;
+const buildDiagramPdfBlob = async (): Promise<Blob> => {
+  if (!diagramOnlyRef.current) {
+    throw new Error("Diagram element not found.");
+  }
 
   const element = diagramOnlyRef.current;
-
 
   const hiddenElements = element.querySelectorAll(".no-export");
   hiddenElements.forEach((el) => ((el as HTMLElement).style.display = "none"));
@@ -164,25 +101,24 @@ const exportAsPDF = async () => {
   const scrollWidth = element.scrollWidth;
   const scrollHeight = element.scrollHeight;
   const originalStyle = element.getAttribute("style") || "";
+
   element.style.width = `${scrollWidth}px`;
   element.style.height = `${scrollHeight}px`;
 
   await new Promise((r) => setTimeout(r, 100));
 
- 
   const canvas = await html2canvas(element, {
     backgroundColor: "#ffffff",
     useCORS: true,
     width: scrollWidth,
     height: scrollHeight,
-    scale: 3, 
+    scale: 3,
   });
 
   element.setAttribute("style", originalStyle);
   hiddenElements.forEach((el) => ((el as HTMLElement).style.display = ""));
 
   const imgData = canvas.toDataURL("image/png");
-
 
   const pdf = new jsPDF({
     orientation: "landscape",
@@ -200,12 +136,53 @@ const exportAsPDF = async () => {
   const y = (pageHeight - imgHeight) / 2;
 
   pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
-  pdf.save("diagram-a3.pdf");
+
+  return pdf.output("blob");
 };
+// CHANGE HERE
+// const exportAsPDF = async () => {
+//   try {
+//     const blob = await buildDiagramPdfBlob();
+//     const url = URL.createObjectURL(blob);
+
+//     const a = document.createElement("a");
+//     a.href = url;
+//     a.download = "diagram-a3.pdf";
+//     document.body.appendChild(a);
+//     a.click();
+//     a.remove();
+
+//     URL.revokeObjectURL(url);
+//   } catch (error) {
+//     alert("Could not export diagram PDF. Please try again.");
+//   }
+// };
 
 
+const exportAsPDF = async (
+  fileName: string = "diagram-a3.pdf",
+  silent: boolean = false
+) => {
+  try {
+    const blob = await buildDiagramPdfBlob();
+    const url = URL.createObjectURL(blob);
 
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
 
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    if (!silent) {
+      alert("Could not export diagram PDF. Please try again.");
+    }
+    throw error;
+  }
+};
+// 
 
   const extractDiagramNodeData = (nodes: Node[]): any[] =>
     nodes.map((node) => ({
@@ -216,8 +193,31 @@ const exportAsPDF = async () => {
     }));
 const [error, setError] = useState<string>(''); 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ;
+// CHANGE HERE
+// useEffect(() => {
+//   if (!projectIdStr) return;
+
+//   (async () => {
+//     const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
+//       method: "POST",
+//       credentials: "include",
+//     });
+
+//     if (res.status === 423) {
+//       const data = await res.json();
+//       alert(`${data?.editingBy?.name ?? "Someone"} is editing this project. Please try again later.`);
+//       router.push("/dashboard");
+//       return;
+//     }
+
+//     if (!res.ok) {
+//       alert("Could not start editing session.");
+//       router.push("/dashboard");
+//     }
+//   })();
+// }, [projectIdStr, API_BASE, router]);
 useEffect(() => {
-  if (!projectIdStr) return;
+  if (!projectIdStr || isDownloadOnlyMode) return;
 
   (async () => {
     const res = await fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/start`, {
@@ -237,9 +237,23 @@ useEffect(() => {
       router.push("/dashboard");
     }
   })();
-}, [projectIdStr, API_BASE, router]);
+}, [projectIdStr, API_BASE, router, isDownloadOnlyMode]);
+// 
+// CHANGE HERE
+// useEffect(() => {
+//   if (!projectIdStr) return;
+
+//   const interval = setInterval(() => {
+//     fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
+//       method: "POST",
+//       credentials: "include",
+//     }).catch(() => {});
+//   }, 5_000);
+
+//   return () => clearInterval(interval);
+// }, [projectIdStr, API_BASE]);
 useEffect(() => {
-  if (!projectIdStr) return;
+  if (!projectIdStr || isDownloadOnlyMode) return;
 
   const interval = setInterval(() => {
     fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/ping`, {
@@ -249,9 +263,36 @@ useEffect(() => {
   }, 5_000);
 
   return () => clearInterval(interval);
-}, [projectIdStr, API_BASE]);
+}, [projectIdStr, API_BASE, isDownloadOnlyMode]);
+// 
+// CHANGE HERE
+// useEffect(() => {
+//   if (!projectIdStr) return;
+
+//   const stop = () => {
+//     fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
+//       method: "POST",
+//       credentials: "include",
+//       keepalive: true,
+//     }).catch(() => {});
+//   };
+
+//   const onRouteChangeStart = (url: string) => {
+//     if (url.startsWith(`/project/${projectIdStr}`)) return;
+//     stop();
+//   };
+
+//   router.events.on("routeChangeStart", onRouteChangeStart);
+//   window.addEventListener("beforeunload", stop);
+
+//   return () => {
+//     router.events.off("routeChangeStart", onRouteChangeStart);
+//     window.removeEventListener("beforeunload", stop);
+//   };
+// }, [projectIdStr, API_BASE, router.events]);
+
 useEffect(() => {
-  if (!projectIdStr) return;
+  if (!projectIdStr || isDownloadOnlyMode) return;
 
   const stop = () => {
     fetch(`${API_BASE}/api/projects/${projectIdStr}/edit/stop`, {
@@ -273,8 +314,8 @@ useEffect(() => {
     router.events.off("routeChangeStart", onRouteChangeStart);
     window.removeEventListener("beforeunload", stop);
   };
-}, [projectIdStr, API_BASE, router.events]);
-
+}, [projectIdStr, API_BASE, router.events, isDownloadOnlyMode]);
+// 
   useEffect(() => {
     if (!projectId || typeof projectId !== 'string') {
   setError('Invalid or missing project ID.');
@@ -318,14 +359,6 @@ const controller = new AbortController();
 const stakeholders: Stakeholder[] = await stakeholderRes.json();
         const nodeList: Node[] = [];
         
-let autoY = {
-  LONG_TERM_IMPACT: 0,
-  MID_TERM_IMPACT: 0,
-  SHORT_TERM_IMPACT: 0,
-  OUTPUT: 0,
-};
-
-const verticalPadding = 60;
 
 const nodePositionMap = shouldRegenerate
   ? new Map() // 
@@ -418,48 +451,57 @@ risks.forEach((risk) => {
 });
 
 
-const riskBoxBaseX = baseX - 350;
-let accumulatedY = 0;
-// const verticalPadding = 30;
-const baseRiskY = -50; 
+
 
 Object.entries(risksByHierarchy).forEach(([hierarchy, riskList]) => {
   const nodeId = `risk-${hierarchy}`;
   const y = hierarchyYMap[hierarchy] ?? 0;
 
-  const width = Math.max(320, riskList.length * 170); 
+  const width = Math.max(320, riskList.length * 170);
   const riskBoxOffset = 60;
 
-  const position = (nodePositionMap.get(nodeId) ?? {
-    x: baseX - width - riskBoxOffset, 
+  const defaultPosition = {
+    x: baseX - width - riskBoxOffset,
     y,
-  }) as { x: number; y: number };
+  };
+
+const savedRiskNode = nodePositionMap.get(nodeId);
+
+const position = {
+  x: defaultPosition.x,
+  y: savedRiskNode?.y ?? defaultPosition.y,
+} as { x: number; y: number };
 
   const combinedText = (
-    <div style={{
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "flex-start",
-      alignItems: "stretch",
-      gap: "12px",
-      flexWrap: "nowrap",
-      whiteSpace: "normal",
-    }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "stretch",
+        gap: "12px",
+        flexWrap: "nowrap",
+        whiteSpace: "normal",
+      }}
+    >
       {riskList.map((risk, i) => (
-        <div key={i} style={{
-          backgroundColor: "#f8d7da",
-          border: "1px solid #721c24",
-          color: "#721c24",
-          padding: "6px 8px",
-          borderRadius: "6px",
-          fontSize: "16px",
-          minWidth: "140px",
-          maxWidth: "180px",
-          whiteSpace: "normal",
-          wordBreak: "break-word",
-          display: "inline-block",
-          textAlign: "left",
-        }}>
+        <div
+          key={i}
+          style={{
+            backgroundColor: "#f8d7da",
+            border: "1px solid #721c24",
+            color: "#721c24",
+            padding: "6px 8px",
+            borderRadius: "6px",
+            fontSize: "16px",
+            minWidth: "140px",
+            maxWidth: "180px",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+            display: "inline-block",
+            textAlign: "left",
+          }}
+        >
           <b>{i + 1}.</b> {risk}
         </div>
       ))}
@@ -603,7 +645,7 @@ stakeholders.forEach((s) => {
 });
 
 
-const maxX = Math.max(...nodeList.map((n) => n.position.x)) || baseX;
+
 
 
 for (const level of hierarchyOrder) {
@@ -620,7 +662,7 @@ y: hierarchyYMap[level],
 
     
     const isDirect = s.stakeholderType === "DIRECT";
-    const borderStyle = isDirect ? "solid" : "dotted";
+    
 
     nodeList.push({
       id: nodeId,
@@ -678,9 +720,29 @@ if (shouldRegenerate) {
 const handleNodesChange: OnNodesChange = (changes) => {
   onNodesChange(changes); // update state only
 };
+// CHANGE HERE
+// useEffect(() => {
+//   if (!projectId || nodes.length === 0) return;
 
+//   const timeout = setTimeout(() => {
+//     const updated = extractDiagramNodeData(nodes);
+//     fetch(`${API_BASE}/api/diagram-nodes`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ projectId, nodes: updated }),
+//       credentials:'include'
+//     }).then(res => {
+//     if (!res.ok) throw new Error("Failed to save nodes");
+//   })
+//   .catch(err => {
+//     console.error("node save error:", err);
+//   });
+//   }, 300);
+
+//   return () => clearTimeout(timeout);
+// }, [nodes, projectId]);
 useEffect(() => {
-  if (!projectId || nodes.length === 0) return;
+  if (!projectId || nodes.length === 0 || isDownloadOnlyMode) return;
 
   const timeout = setTimeout(() => {
     const updated = extractDiagramNodeData(nodes);
@@ -688,18 +750,19 @@ useEffect(() => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId, nodes: updated }),
-      credentials:'include'
-    }).then(res => {
-    if (!res.ok) throw new Error("Failed to save nodes");
-  })
-  .catch(err => {
-    console.error("node save error:", err);
-  });
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to save nodes");
+      })
+      .catch((err) => {
+        console.error("node save error:", err);
+      });
   }, 300);
 
   return () => clearTimeout(timeout);
-}, [nodes, projectId]);
-
+}, [nodes, projectId, API_BASE, isDownloadOnlyMode]);
+// 
 const handleEdgesChange = (changes: any) => {
   const updatedEdges = applyEdgeChanges(changes, edges);
   setEdges(updatedEdges);
@@ -819,7 +882,44 @@ const newEdge: Edge = {
   },
   [isDrawingArrow, arrowSource, edges, nodes, projectId]
 );
+// CHANGE HERE 
+useEffect(() => {
+  if (!router.isReady) return;
+  if (!shouldDownloadPreviousPdf) return;
+  if (loading) return;
+  if (nodes.length === 0) return;
 
+  const timer = setTimeout(async () => {
+    try {
+      const fileName = `previous-diagram-${projectIdStr}.pdf`;
+      await exportAsPDF(fileName, true);
+    } catch (error) {
+      // ignore export failure here
+    } finally {
+      try {
+        if (window.opener && !window.opener.closed) {
+          window.opener.postMessage(
+            { type: "previous-diagram-pdf-downloaded" },
+            window.location.origin
+          );
+        }
+      } catch {}
+
+      setTimeout(() => {
+        window.close();
+      }, 500);
+    }
+  }, 700);
+
+  return () => clearTimeout(timer);
+}, [
+  router.isReady,
+  shouldDownloadPreviousPdf,
+  loading,
+  nodes,
+  projectIdStr,
+]);
+// 
   if (loading) return <p>Loading diagram...</p>;
 
 return (
@@ -893,16 +993,30 @@ return (
         className="no-export"
       >
         {/* Add Arrow */}
-        <div
-          onClick={() => {
-            setIsDrawingArrow(true);
-            setArrowSource(null);
-          }}
-          title="Add Arrow"
-          style={iconStyle}
-        >
-          <Plus size={18} />
-        </div>
+<div
+  onClick={() => {
+    setIsDrawingArrow(true);
+    setArrowSource(null);
+  }}
+  title="Add Arrow"
+  style={iconStyle}
+>
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6 18L18 6M18 6H10M18 6V14"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+</div>
 
         {/*  Cancel Arrow */}
         <div
@@ -986,10 +1100,19 @@ return (
       <line x1="12" y1="15" x2="12" y2="3" />
     </svg>
   </button> */}
-  <button className="actionIcon" title="Export as PDF"
+  {/* CHANGE HERE */}
+  {/* <button className="actionIcon" title="Export as PDF"
     onClick={exportAsPDF}>
     <i className="uil uil-import"></i>
-  </button>
+  </button> */}
+<button
+  className="actionIcon"
+  title="Export as PDF"
+  onClick={() => exportAsPDF()}
+>
+  <i className="uil uil-import"></i>
+</button>
+{/*  */}
   {/* Edit Input */}
   <button
     className="actionIcon"

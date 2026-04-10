@@ -1,4 +1,4 @@
-// pages/project/[projectId].tsx
+
 
 import { useRouter } from 'next/router';
 import { useEffect, useState ,useRef} from 'react';
@@ -191,8 +191,163 @@ const [assumptionsAndActivities, setAssumptionsAndActivities] = useState<Assumpt
 const [stakeholders, setStakeholders] = useState<Stakeholder[]>([])
 const [showInstructions, setShowInstructions] = useState(true); //  new
 const hasLockRef = useRef(false);
+// ---- Dirty tracking (unsaved changes) ----
+const [isDirty, setIsDirty] = useState(false);
+const baselineSnapshotRef = useRef<string>(""); // last saved/loaded snapshot
+const [showDiagramPrompt, setShowDiagramPrompt] = useState(false);
+const [rowsLoaded, setRowsLoaded] = useState(false);
+const [risksLoaded, setRisksLoaded] = useState(false);
+const [aaLoaded, setAaLoaded] = useState(false);
+const [stakeLoaded, setStakeLoaded] = useState(false);
+// CHANGE HERE
+const [downloadPreviousDiagramPdf, setDownloadPreviousDiagramPdf] = useState(true);
+// 
+useEffect(() => {
+  if (!router.isReady || !projectIdStr) return;
 
+  baselineSnapshotRef.current = "";
+  setIsDirty(false);
 
+  setRowsLoaded(false);
+  setRisksLoaded(false);
+  setAaLoaded(false);
+  setStakeLoaded(false);
+}, [router.isReady, projectIdStr]);
+const stableEntries = <T extends Record<string, any>>(obj: T) =>
+  Object.keys(obj || {})
+    .sort()
+    .map((k) => [k, obj[k]] as const);
+
+const buildSnapshot = () => {
+  // Only include data that should count as "a change"
+  return {
+    impactRows: impactRows.map((r) => ({
+      id: r.id ?? null,
+      hierarchyLevel: r.hierarchyLevel ?? "",
+      resultStatement: r.resultStatement ?? "",
+      indicator: r.indicator ?? "",
+      indicatorDefinition: r.indicatorDefinition ?? "",
+      meansOfMeasurement: r.meansOfMeasurement ?? "",
+      baseline: r.baseline ?? "",
+    })),
+
+    selectedSDGs: stableEntries(selectedSDGs),
+    sdgTargets: stableEntries(sdgTargets).map(([k, v]) => [k, [...(v || [])].sort()] as const),
+
+    risks: risks.map((r) => ({
+      id: r.id ?? null,
+      text: r.text ?? "",
+      hierarchyLevels: [...(r.hierarchyLevels ?? [])].sort(),
+    })),
+
+    assumptionsAndActivities: assumptionsAndActivities.map((a) => ({
+      id: a.id ?? null,
+      type: a.type,
+      text: a.text ?? "",
+    })),
+
+    stakeholders: stakeholders.map((s) => ({
+      id: s.id ?? null,
+      name: s.name ?? "",
+      role: s.role ?? "",
+      interest: s.interest ?? "",
+      stakeholderType: s.stakeholderType,
+      engagementStrategy: s.engagementStrategy ?? "",
+      hierarchyLevel: s.hierarchyLevel,
+    })),
+  };
+};
+//  CHANGE HERE 
+const downloadPreviousDiagramPdfBeforeRegenerate = async () => {
+  if (!projectIdStr) return;
+
+  await new Promise<void>((resolve) => {
+    let finished = false;
+
+    const cleanup = () => {
+      if (finished) return;
+      finished = true;
+      window.removeEventListener("message", handleMessage);
+      resolve();
+    };
+
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data?.type === "previous-diagram-pdf-downloaded") {
+        cleanup();
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    const popup = window.open(
+      `/project/${projectIdStr}/diagram?downloadPreviousPdf=1`,
+      "_blank",
+      "width=1200,height=800"
+    );
+
+    if (!popup) {
+      cleanup();
+      alert("Popup blocked. Please allow popups for this site if you want the previous diagram PDF to download automatically.");
+      return;
+    }
+
+    setTimeout(() => {
+      cleanup();
+    }, 15000);
+  });
+};
+// 
+const snapshotString = () => JSON.stringify(buildSnapshot());
+// Set baseline once initial data is loaded
+
+const saveEditingField = () => {
+  if (!editingField) return;
+  const { section, index, field, value } = editingField;
+
+  if (section === 'impact') {
+    handleRowChange(index, field as keyof ImpactRow, value);
+  } else if (section === 'risk') {
+    handleRiskChange(index, field as keyof Risk, value);
+  } else if (section === 'assumption') {
+    const updated = [...assumptionsAndActivities];
+    updated[index].text = value;
+    setAssumptionsAndActivities(updated);
+  } else if (section === 'stakeholder') {
+    updateStakeholderField(index, field as keyof Stakeholder, value);
+  }
+
+  setEditingField(null);
+};
+// CHANGE HERE
+const validateDiagramRequirements = () => {
+  const missingRequired = impactRows.some((row) => {
+    const rowId = row.id || '';
+    return (
+      !row.hierarchyLevel ||
+      !row.resultStatement.trim() ||
+      !selectedSDGs[rowId] ||
+      !sdgTargets[rowId] ||
+      sdgTargets[rowId].length === 0
+    );
+  });
+
+  if (missingRequired) {
+    alert("To generate the diagram, each row must have:\n- Objective Level\n- Result Statement\n- SDG\n- At least one SDG Target.");
+    return false;
+  }
+
+  return true;
+};
+// 
+const goToDiagram = () => {
+  if (!isDirty) {
+    router.push(`/project/${projectIdStr}/diagram`);
+    return;
+  }
+  setShowDiagramPrompt(true);
+};
 
 const [editingField, setEditingField] = useState<{
   section: 'impact' | 'risk' | 'assumption' | 'stakeholder';
@@ -257,6 +412,9 @@ const controller = new AbortController();
       // console.error("Failed to fetch stakeholders:", err);
       setStakeholders([]);
     }
+    finally {
+  setStakeLoaded(true);
+}
   }
 
   fetchStakeholders();
@@ -348,6 +506,7 @@ sdgMap[row.id] = row.targets?.[0]?.sdg?.id || null;
         setError(err.message);
       } finally {
         setLoading(false);
+        setRowsLoaded(true);
       }
     };
 
@@ -390,6 +549,9 @@ const fetchRisks = async () => {
     // console.error("Failed to fetch risks:", err);
     setRisks([]);
   }
+   finally {
+    setRisksLoaded(true);
+  }
 }
 
 
@@ -427,6 +589,9 @@ const fetchAssumptionsAndActivities = async () => {
     // console.error("Failed to fetch assumptions/activities:", err);
     setAssumptionsAndActivities([]);
   }
+  finally {
+  setAaLoaded(true);
+}
 };
 
 useEffect(() => {
@@ -702,10 +867,72 @@ for (let i = 0; i < stakeholders.length; i++) {
 
     alert('Saved successfully');
     // router.reload();
+    baselineSnapshotRef.current = snapshotString();
+setIsDirty(false);
     return true;
 
   };
-  const exportAllToExcel = () => {
+//   const exportAllToExcel = () => {
+//   const wb = XLSX.utils.book_new();
+
+//   // 1. Impact Rows
+//   const impactData = impactRows.map((row) => ({
+//     ObjectiveLevel: row.hierarchyLevel,
+//     ResultStatement: row.resultStatement,
+//     Indicator: row.indicator,
+//     IndicatorDefinition: row.indicatorDefinition,
+//     MeansOfMeasurement: row.meansOfMeasurement,
+//     Baseline: row.baseline,
+//     SDG: (() => {
+//   const sdgId = selectedSDGs[row.id || ''];
+//   const sdg = allSDGs.find((s) => s.id === sdgId);
+//   return sdg ? `${sdg.code} ${sdg.name}` : '';
+// })(),
+
+// SDGTargets: (sdgTargets[row.id || ''] || [])
+//   .map((id) => {
+//     const target = allTargets.find((t) => t.id === id);
+//     return target ? `${target.code} ${target.title}` : id;
+//   })
+//   .join('; ')
+
+
+//   }));
+//   const impactSheet = XLSX.utils.json_to_sheet(impactData);
+//   XLSX.utils.book_append_sheet(wb, impactSheet, "Impact Rows");
+
+//   // 2. Risks
+//   const risksData = risks.map((r) => ({
+//     Risk: r.text,
+//     ObjectiveLevels: r.hierarchyLevels.join(', ')
+//   }));
+//   const risksSheet = XLSX.utils.json_to_sheet(risksData);
+//   XLSX.utils.book_append_sheet(wb, risksSheet, "Risks");
+
+//   // 3. Assumptions & Activities
+//   const aaData = assumptionsAndActivities.map((item) => ({
+//     Type: item.type,
+//     Description: item.text
+//   }));
+//   const aaSheet = XLSX.utils.json_to_sheet(aaData);
+//   XLSX.utils.book_append_sheet(wb, aaSheet, "Assumptions & Activities");
+
+//   // 4. Stakeholders
+//   const stakeholdersData = stakeholders.map((s) => ({
+//     Name: s.name,
+//     Role: s.role,
+//     Interest: s.interest,
+//     StakeholderType: s.stakeholderType,
+//     EngagementStrategy: s.engagementStrategy,
+//     ObjectiveLevel: s.hierarchyLevel
+//   }));
+//   const stakeholdersSheet = XLSX.utils.json_to_sheet(stakeholdersData);
+//   XLSX.utils.book_append_sheet(wb, stakeholdersSheet, "Stakeholders");
+
+//   // Export
+//   XLSX.writeFile(wb, "OQI_Impact_Workbook.xlsx");
+// };
+const buildExcelBlob = () => {
   const wb = XLSX.utils.book_new();
 
   // 1. Impact Rows
@@ -717,20 +944,18 @@ for (let i = 0; i < stakeholders.length; i++) {
     MeansOfMeasurement: row.meansOfMeasurement,
     Baseline: row.baseline,
     SDG: (() => {
-  const sdgId = selectedSDGs[row.id || ''];
-  const sdg = allSDGs.find((s) => s.id === sdgId);
-  return sdg ? `${sdg.code} ${sdg.name}` : '';
-})(),
-
-SDGTargets: (sdgTargets[row.id || ''] || [])
-  .map((id) => {
-    const target = allTargets.find((t) => t.id === id);
-    return target ? `${target.code} ${target.title}` : id;
-  })
-  .join('; ')
-
-
+      const sdgId = selectedSDGs[row.id || ''];
+      const sdg = allSDGs.find((s) => s.id === sdgId);
+      return sdg ? `${sdg.code} ${sdg.name}` : '';
+    })(),
+    SDGTargets: (sdgTargets[row.id || ''] || [])
+      .map((id) => {
+        const target = allTargets.find((t) => t.id === id);
+        return target ? `${target.code} ${target.title}` : id;
+      })
+      .join('; ')
   }));
+
   const impactSheet = XLSX.utils.json_to_sheet(impactData);
   XLSX.utils.book_append_sheet(wb, impactSheet, "Impact Rows");
 
@@ -762,10 +987,29 @@ SDGTargets: (sdgTargets[row.id || ''] || [])
   const stakeholdersSheet = XLSX.utils.json_to_sheet(stakeholdersData);
   XLSX.utils.book_append_sheet(wb, stakeholdersSheet, "Stakeholders");
 
-  // Export
-  XLSX.writeFile(wb, "OQI_Impact_Workbook.xlsx");
+  const excelArray = XLSX.write(wb, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  return new Blob([excelArray], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
 };
 
+const exportAllToExcel = () => {
+  const blob = buildExcelBlob();
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "OQI_Impact_Workbook.xlsx";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+};
 const addRisk = () => {
   setRisks(prev => [
     ...prev,
@@ -812,7 +1056,27 @@ const deleteRisk = async (index: number) => {
   updated.splice(index, 1)
   setRisks(updated)
 }
+// ✅ Baseline set only AFTER all fetches finished
+useEffect(() => {
+  if (!router.isReady || !projectIdStr) return;
 
+  const allLoaded = rowsLoaded && risksLoaded && aaLoaded && stakeLoaded;
+  if (!allLoaded) return;
+
+  if (!baselineSnapshotRef.current) {
+    baselineSnapshotRef.current = snapshotString();
+    setIsDirty(false);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [router.isReady, projectIdStr, rowsLoaded, risksLoaded, aaLoaded, stakeLoaded]);
+
+// ✅ Dirty comparison runs after baseline exists
+useEffect(() => {
+  if (!baselineSnapshotRef.current) return;
+  const current = snapshotString();
+  setIsDirty(current !== baselineSnapshotRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [impactRows, selectedSDGs, sdgTargets, risks, assumptionsAndActivities, stakeholders]);
 // if (loading) return <p>Loading...</p>;
 // if (isInvalidId) return <p style={{ color: 'red' }}>Invalid Project ID</p>;
 // if (error) return <p style={{ color: 'red' }}>{error}</p>;
@@ -820,25 +1084,6 @@ if (!router.isReady) return <p>Loading...</p>;
 if (!projectIdStr) return <p style={{ color: "red" }}>Invalid Project ID</p>;
 if (error) return <p style={{ color: "red" }}>{error}</p>;
 if (loading) return <p>Loading...</p>;
-
-const saveEditingField = () => {
-  if (!editingField) return;
-  const { section, index, field, value } = editingField;
-
-  if (section === 'impact') {
-    handleRowChange(index, field as keyof ImpactRow, value);
-  } else if (section === 'risk') {
-    handleRiskChange(index, field as keyof Risk, value);
-  } else if (section === 'assumption') {
-    const updated = [...assumptionsAndActivities];
-    updated[index].text = value;
-    setAssumptionsAndActivities(updated);
-  } else if (section === 'stakeholder') {
-    updateStakeholderField(index, field as keyof Stakeholder, value);
-  }
-
-  setEditingField(null);
-};
 
 
 return (
@@ -1599,18 +1844,16 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
 
     {/* Final Buttons */}
 <div className="actionIconBar">
-  <button className="actionIcon" title="Save" onClick={() => saveAll(false)}>
+  {/* <button className="actionIcon" title="Save" onClick={() => saveAll(false)}>
     <i className="uil uil-save"></i>
-  </button>
+  </button> */}
 
-<button 
-  className="actionIcon" 
-  title="Generate Diagram"
-  onClick={async () => {
-    const ok = await saveAll(true);
-    if (ok) router.push(`/project/${projectIdStr}/diagram?regenerate=true`);
-  }}
+<button
+  className="actionIcon"
+  title="Save & go to Diagram"
+  onClick={goToDiagram}
 >
+  {/* keep your same icon if you want */}
   <svg 
     viewBox="0 0 512 512" 
     fill="#ffffff" 
@@ -1730,7 +1973,155 @@ Objective level<span style={{ color: "#ffffffff" }}></span>
 
   </div>
 )}
+{showDiagramPrompt && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.35)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 9999,
+      padding: "16px",
+    }}
+  >
+    <div
+      style={{
+        width: "min(520px, 95vw)",
+        background: "#fff",
+        borderRadius: "14px",
+        padding: "18px",
+        boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
+      }}
+    >
+      {/* changed buttons for unsaved changes and text */}
+     <h2
+  style={{
+    fontSize: "1rem",
+    fontWeight: 600
+  }}
+>
+  Unsaved Changes
+</h2>
+      <p   style={{
+  fontSize: "0.95rem",
+  color: "#555",
+  }}>
+ You’ve made changes in the tables. Do you want to save before opening the diagram?
+</p>
+{/* CHANGE HERE */}
+<label
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    marginTop: "16px",
+    fontSize: "0.95rem",
+    color: "#333",
+    cursor: "pointer",
+  }}
+>
+  <input
+    type="checkbox"
+    checked={downloadPreviousDiagramPdf}
+    onChange={(e) => setDownloadPreviousDiagramPdf(e.target.checked)}
+    style={{
+      width: "16px",
+      height: "16px",
+      cursor: "pointer",
+    }}
+  />
+  Download previous diagram as PDF before generating a new one
+</label>
+{/*  */}
 
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", justifyContent: "flex-end" }}>
+        {/* CHANGED THIS SAVE & GENERATE */}
+        <button
+          className="nice-button"
+        style={{
+          marginTop: "1.5rem",
+          backgroundColor: "#111827",
+          color: "#f3f4f6",
+          border: "1px solid #ccc",
+        }}
+        // CHANGE HERE
+          // onClick={async () => {
+          //   setShowDiagramPrompt(false);
+          //   const ok = await saveAll(true); // your existing generate validation logic
+          //   if (ok) router.push(`/project/${projectIdStr}/diagram?regenerate=true`);
+          // }}
+          onClick={async () => {
+  const valid = validateDiagramRequirements();
+  if (!valid) return;
+
+  setShowDiagramPrompt(false);
+
+  if (downloadPreviousDiagramPdf) {
+    await downloadPreviousDiagramPdfBeforeRegenerate();
+  }
+
+  const ok = await saveAll(true);
+  if (ok) {
+    router.push(`/project/${projectIdStr}/diagram?regenerate=true`);
+  }
+}}
+// 
+        >
+          Save & Generate New Diagram
+        </button>
+
+        {/* <button
+          style={{
+            padding: "10px 12px",
+            borderRadius: "10px",
+            border: "1px solid #ccc",
+            background: "#fff",
+            color: "#111",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            setShowDiagramPrompt(false);
+            router.push(`/project/${projectIdStr}/diagram`); // old existing diagram
+          }}
+        >
+          Don’t Save
+        </button> */}
+        {/* ADDED THIS BUTTON HERE */}
+              <button
+        className="nice-button"
+        style={{
+          marginTop: "1.5rem",
+          backgroundColor: "#f3f4f6",
+          color: "#111827",
+          border: "1px solid #ccc",
+        }}
+                  onClick={() => {
+            setShowDiagramPrompt(false);
+            router.push(`/project/${projectIdStr}/diagram`); // old existing diagram
+          }}
+      >
+        Don't Save
+      </button>
+
+        {/* <button
+          style={{
+            padding: "10px 12px",
+            borderRadius: "10px",
+            border: "none",
+            background: "transparent",
+            color: "#111",
+            cursor: "pointer",
+          }}
+          onClick={() => setShowDiagramPrompt(false)}
+        >
+          Cancel
+        </button> */}
+      </div>
+    </div>
+  </div>
+)}
   </div>
 );
 }
